@@ -1,6 +1,6 @@
 # ARGUS Domain Invariant Matrix
 
-- **Document version:** 0.0.3 (Skeleton — populated after the [Derivation Specification](DERIVATION_SPECIFICATION.md) ratifies, before Task 001)
+- **Document version:** 0.1.0 (Slice 1 populated — Case, EvidenceArtifact, AuditEntry; remaining entities populate with their slices)
 - **Date:** 2026-07-13
 - **Required by:** ADR-0006 (per-table enforcement specification and material-mutation enumeration)
 - **Derived from:** the [Ontology](ONTOLOGY.md) via the [Derivation Specification](DERIVATION_SPECIFICATION.md) (ADR-0014), with structure from the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md) and [Entity Lifecycles](ENTITY_LIFECYCLES.md)
@@ -28,7 +28,38 @@ The matrix thereby closes the ODE verification loop: test → matrix row → ont
 
 ## Status
 
-The [Derivation Specification](DERIVATION_SPECIFICATION.md) is ratified (1.0.0, AGC Session 003); the matrix instantiates its obligations **incrementally, slice by slice** (ADR-0015): the rows for a slice's entities exist before that slice's code is written. First population: Slice 1 (EvidenceArtifact and AuditEntry rows), with the corresponding ERD coverage. Rows are reviewed at slice review by the Governance Council's Architecture Review Board.
+Populated incrementally, slice by slice (ADR-0015): the rows for a slice's entities exist before that slice's code is written. **Slice 1 (Constitutional Evidence Activation) rows below.** Rows are reviewed at slice review by the Governance Council's Architecture Review Board.
+
+## Slice 1 rows — Constitutional Evidence Activation
+
+Enforcement mechanisms name their PostgreSQL construct per ADR-0006; the service layer enforces the same rule above the database (defense in depth, never instead of it). Verifying tests are release-blocking (Constitution, Enforcement §3) and cite their ontology rule per ADR-0010.
+
+### Case
+
+| Entity / field group | Ontology rule | Class | Permitted mutations | Permitted actors | Enforcing mechanism | Material mutations audited | Verifying test |
+|---|---|---|---|---|---|---|---|
+| Case: identity, created_at | ONT-CAS-001 | CI | none | — | no UPDATE grant on columns; no DELETE grant on table | — | `test_case_immutable_identity` |
+| Case: legal authority basis | ONT-CAS-001 | V | append new authority record | Human | INSERT-only authority table; no UPDATE/DELETE grants | case-authority-superseded | `test_case_authority_append_only` |
+| Case: status | ONT-CAS-001, ONT-PRN-012 | CT | OPEN⇄SUSPENDED, OPEN→CLOSED, CLOSED→OPEN per Lifecycles §1 | Human | transition via controlled function checking predecessor state; audit in same transaction | case-created/-suspended/-resumed/-closed/-reopened | `test_case_transitions_explicit_and_audited` |
+| Case: title/designation | ONT-CAS-001 | CT | update with audit | Human | controlled function; audit in same transaction | case-designation-changed | `test_case_designation_change_audited` |
+
+### EvidenceArtifact
+
+| Entity / field group | Ontology rule | Class | Permitted mutations | Permitted actors | Enforcing mechanism | Material mutations audited | Verifying test |
+|---|---|---|---|---|---|---|---|
+| Artifact: content bytes (object store) | ONT-EVA-001, ONT-PRN-006 | CI | none (content-addressed by hash) | — | write-once permanent location; reads verify recorded hash | sealed-content reads; integrity failures | `test_artifact_content_read_verifies_hash` |
+| Artifact: original hash, size, ingestion record | ONT-EVA-001 | CI | none (additive second hash permitted as new row/column, per ADR-0007 §5) | — | no UPDATE grant on columns; no DELETE grant on table | — | `test_artifact_hash_immutable_at_db` |
+| Artifact: status | ONT-EVA-001, ONT-PRN-012 | CT | exactly the transitions of Lifecycles §2 | System (activate, quarantine); Human (retract, seal, unseal, quarantine disposition) | transition via controlled function validating predecessor state and actor class; audit in same transaction | artifact-ingested/-activated/-quarantined/-reactivated/-retracted/-sealed/-unsealed | `test_artifact_transitions_explicit`, `test_artifact_activation_requires_verification`, `test_quarantine_disposition_human_only` |
+| Artifact: storage reference | ONT-EVA-001 | CT | re-home to verified equivalent copy | System (with human authority) | controlled function verifying hash of destination before switch | artifact-storage-rehomed | `test_rehoming_verifies_destination_hash` |
+| Artifact: analytical visibility | ONT-EVA-001, ONT-PRN-005 | invariant | — | — | analysis queries filter status = ACTIVE; FK from SourceLocator validated against ACTIVE at creation (Slice 2) | — | `test_non_active_artifact_invisible_to_analysis` |
+
+### AuditEntry
+
+| Entity / field group | Ontology rule | Class | Permitted mutations | Permitted actors | Enforcing mechanism | Material mutations audited | Verifying test |
+|---|---|---|---|---|---|---|---|
+| AuditEntry: all fields | ONT-AUD-001 | CI | none — for every role including administrators | — (system-emitted only, as side effect of attributed operations) | INSERT-only privileges for the application role; no UPDATE/DELETE grants for any role; corrections are compensating entries | — | `test_audit_entry_immutable_for_all_roles` |
+| AuditEntry: atomic emission | ONT-AUD-001, D-AUD | invariant | — | — | audit INSERT in the same transaction as the mutation (controlled functions emit both) | every material mutation above | `test_mutation_and_audit_atomic_rollback` |
+| AuditEntry: per-case ordering | ONT-AUD-001 | invariant | — | — | monotonic sequence per case; unique (case, seq) constraint | — | `test_audit_ordering_gapless_per_case` |
 
 ## Version history
 
@@ -38,3 +69,4 @@ The [Derivation Specification](DERIVATION_SPECIFICATION.md) is ratified (1.0.0, 
 | 0.0.2 | 2026-07-13 | Added Ontology-rule column (ADR-0011) and ODE loop-closure semantics (ADR-0010); population re-sequenced ahead of Task 001 per AGC Session 001. |
 | 0.0.3 | 2026-07-13 | Re-derived through the Derivation Specification (ADR-0014); population follows its ratification. |
 | 0.0.4 | 2026-07-13 | Population re-sequenced to slice-by-slice per ADR-0015; slice gate: rows before code. |
+| 0.1.0 | 2026-07-13 | First population: Slice 1 rows (Case, EvidenceArtifact, AuditEntry) instantiating Derivation Specification obligations and ADR-0007 as amended. |
