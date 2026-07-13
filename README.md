@@ -31,6 +31,8 @@ This project is governed through four documentation layers. Read them in order:
 
 Lower layers must comply with higher layers. Where they conflict, the Constitution prevails (see [ADR-0001](docs/adr/0001-adopt-layered-governance-documentation.md)).
 
+Supporting corpora (see [ADR-0008](docs/adr/0008-establish-arb-and-documentation-governance.md)): the [Lexicon](docs/glossary/LEXICON.md) — canonical vocabulary, normative everywhere — plus [Standards](docs/standards/README.md), [ISS research](docs/research/README.md), the [Academy](docs/academy/README.md), [Architecture artifacts](docs/architecture/README.md), and the [Domain Schema Specification](docs/domain/DOMAIN_SCHEMA_SPECIFICATION.md).
+
 ## Core commitments
 
 - **Evidence before opinion** — every claim traces to source evidence. No provenance, no claim.

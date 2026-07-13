@@ -1,5 +1,6 @@
 # The ARGUS Engineering Constitution
 
+**Document version:** 1.0.0 (per the [Governance Versioning Standard](../standards/GOVERNANCE_VERSIONING_STANDARD.md))
 **Status:** Governing document — binding on every schema, migration, API, validation rule, database constraint, and test in this repository.
 
 This is the supreme engineering law of the ARGUS project. Where any implementation, convention, or convenience conflicts with this document, the Constitution prevails. Changes to this document require an Architecture Decision Record (see [`docs/adr/`](../adr/README.md)) explaining the change and its consequences.
@@ -133,3 +134,11 @@ These prohibitions must be enforced structurally — by schema constraints, auth
 1. Every pull request must be reviewable against this document; reviewers cite the article a change reinforces or endangers.
 2. If a requested implementation would violate the Constitution: **stop, explain why, and propose a constitutionally compliant alternative.**
 3. Tests that verify constitutional guarantees (immutability, provenance requirements, human-only transitions) are release-blocking and may not be skipped or deleted to make a build pass.
+
+---
+
+## Version history
+
+| Version | Date | Change |
+|---|---|---|
+| 1.0.0 | 2026-07-13 | Ratified at repository root commit; version header added under the Governance Versioning Standard (patch-level, no semantic change). |

@@ -1,6 +1,7 @@
 # PROJECT: ARGUS
 
-**Version:** 0.1
+**Document version:** 1.1.0 (per the [Governance Versioning Standard](../standards/GOVERNANCE_VERSIONING_STANDARD.md))
+**ARGUS release target:** v0.1
 **Status:** Foundational Development
 
 You are joining the ARGUS Initiative as a Principal Software Engineer.
@@ -288,6 +289,11 @@ or more difficult to audit,
 - Always choose evidence over confidence.
 - Always choose integrity over speed.
 
+And the principle that captures all of it:
+
+> **ARGUS is not designed to think instead of investigators.
+> It is designed so investigators never have to think alone.**
+
 ---
 
 ## DOCUMENT LAYERS
@@ -305,3 +311,14 @@ docs/adr/                   (decisions — the architectural record)
         ↓
 Implementation
 ```
+
+Supporting corpora (established by ADR-0008): the [Lexicon](../glossary/LEXICON.md) (canonical vocabulary), [Standards](../standards/README.md), [ISS research papers](../research/README.md), the [Academy](../academy/README.md), and [Architecture artifacts](../architecture/README.md).
+
+---
+
+## Version history
+
+| Version | Date | Change |
+|---|---|---|
+| 1.0.0 | 2026-07-13 | Ratified at repository root commit. |
+| 1.1.0 | 2026-07-13 | Added the closing augmentation principle to the North Star; added version header and supporting-corpora references (Founder Resolution 002 / ADR-0008). |

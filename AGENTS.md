@@ -4,7 +4,8 @@ You are working on **ARGUS**, a cognitive infrastructure platform that helps hum
 
 1. [`docs/foundation/PROJECT_BRIEF.md`](docs/foundation/PROJECT_BRIEF.md) — why ARGUS exists (onboarding)
 2. [`docs/foundation/ENGINEERING_CONSTITUTION.md`](docs/foundation/ENGINEERING_CONSTITUTION.md) — the governing law (binding)
-3. [`docs/adr/`](docs/adr/README.md) — architectural decisions already made
+3. [`docs/glossary/LEXICON.md`](docs/glossary/LEXICON.md) — the canonical vocabulary (normative)
+4. [`docs/adr/`](docs/adr/README.md) — architectural decisions already made
 
 ARGUS is **not** a CRUD app. It is a constitutional system. Every schema, migration, API, validation rule, database constraint, and test must reinforce the Engineering Constitution.
 
@@ -23,14 +24,16 @@ ARGUS is **not** a CRUD app. It is a constitutional system. Every schema, migrat
 ## Decision hygiene
 
 - Architecturally significant choices require an ADR in `docs/adr/` (use the template there) **before or with** the implementing change.
+- Every new ADR records the five Architecture Review Board outcomes — Constitutional, Domain, Systems, Operational, Reversibility — per [ADR-0008](docs/adr/0008-establish-arb-and-documentation-governance.md).
 - Cite the relevant constitutional article(s) in ADRs and in PR descriptions.
 - Changes to the Constitution itself require their own ADR.
+- Governance documents (brief, constitution, standards, ISS papers, Lexicon) are semantically versioned per the [Governance Versioning Standard](docs/standards/GOVERNANCE_VERSIONING_STANDARD.md); bump the version and append to the version history with any change. ADRs stay unversioned and immutable.
 
 ## Code style and quality
 
 - **Clarity over cleverness. Traceability over convenience. Evidence over confidence. Integrity over speed.**
 - Prefer making invalid states unrepresentable (types, constraints, non-nullable references) over runtime checks; prefer runtime checks over convention.
-- Name things after the domain model (`EvidenceArtifact`, `SourceLocator`, `Observation`, `Interpretation`, `Hypothesis`, `Contradiction`, `Unknown`, `Entity`, `Relationship`, `AuditEntry`, `Case`) — do not invent synonyms for existing concepts.
+- Name things after the domain model (`EvidenceArtifact`, `SourceLocator`, `Observation`, `Interpretation`, `Hypothesis`, `Contradiction`, `Unknown`, `Entity`, `Relationship`, `AuditEntry`, `Case`) using the canonical definitions in the [Lexicon](docs/glossary/LEXICON.md) — do not invent synonyms for existing concepts, in code, schemas, UI labels, docs, or AI prompts.
 - Tests that verify constitutional guarantees (immutability, provenance enforcement, human-only state transitions, audit coverage) are release-blocking: never delete, skip, or weaken them to make a build pass.
 - Do not optimize for feature count. Optimize for epistemic integrity.
 
