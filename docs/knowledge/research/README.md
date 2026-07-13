@@ -1,10 +1,12 @@
-# Investigation Systems Science (ISS)
+# The ARGUS Research Corpus
 
-This directory holds ARGUS's research corpus — the project's equivalent of scientific papers. ISS papers are **research, not implementation documents**: they develop the theory the software exists to serve, and they justify domain concepts before those concepts are engineered.
+This directory holds ARGUS's research — the project's equivalent of scientific papers. Research papers develop theory; they are **not implementation documents**, and they justify concepts before those concepts are engineered.
 
-ISS papers are governed documents: they carry semantic versions per the [Governance Versioning Standard](../standards/GOVERNANCE_VERSIONING_STANDARD.md) and use [Lexicon](../../glossary/LEXICON.md) vocabulary.
+Per AGC Review Session 002, the corpus contains **two independent research programs**:
 
-## Paper series
+## Investigation Systems Science (ISS)
+
+*Asks: how do investigations work?*
 
 | ID | Title | Status |
 |---|---|---|
@@ -12,6 +14,19 @@ ISS papers are governed documents: they carry semantic versions per the [Governa
 | ISS-0002 | Fragmentation Theory | Planned |
 | ISS-0003 | Epistemic Integrity | Planned |
 | ISS-0004 | The Anatomy of Evidence | Planned |
-| ISS-0005 | Ontology-Driven Engineering (ODE) | Planned (named by AGC Session 001; see ADR-0010) |
 
-Papers are numbered sequentially as `ISS-NNNN-short-title.md`.
+## Ontology-Driven Engineering (ODE)
+
+*Asks: how should complex systems be engineered?*
+
+ODE is independent of ISS: it could be applied to medicine, aviation, intelligence, finance, or scientific research. ARGUS is simply its first implementation.
+
+| ID | Title | Status |
+|---|---|---|
+| [ODE-0001](ODE-0001-ontology-driven-engineering.md) | Ontology-Driven Engineering: Axioms and Method | Draft 0.1.0 |
+
+**Registry note (append-only honesty):** ADR-0010 registered the ODE paper as "ISS-0005" before the two programs were recognized as independent (AGC Session 002). No ISS-0005 was ever drafted; the paper is allocated as ODE-0001 and the ISS-0005 number is retired unused to avoid ambiguity. The reference inside the immutable ADR-0010 resolves here.
+
+## Conventions
+
+Papers are numbered sequentially within their program as `ISS-NNNN-short-title.md` / `ODE-NNNN-short-title.md`. Research papers are governed documents: semantic versions per the [Governance Versioning Standard](../standards/GOVERNANCE_VERSIONING_STANDARD.md), [Lexicon](../../glossary/LEXICON.md) vocabulary, ontology references by stable identifier (ADR-0011).
