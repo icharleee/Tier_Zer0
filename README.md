@@ -16,7 +16,7 @@ Evidence → Context → Reasoning → Understanding → Human Judgment
 
 ## Status
 
-**Version 0.1 — Foundational Development, Phase 1.** The governance foundation is officially complete (AGC Session 002): the Constitution governs, the Governance Council decides, the Ontology defines meaning, the Derivation Specification explains translation, the Schema defines structure, the Invariant Matrix defines enforcement, the code implements, the tests verify — nothing skips a layer. Roadmap before the first production line of code: Derivation Specification → Invariant Matrix → ERD → ADR-0007 (Evidence Ingestion Protocol) → Task 001 (infrastructure scaffold) → Task 002 (domain layer) — implementation begins against a completed ontology, not a discovered one.
+**Version 0.1 — Documentation Freeze; implementation phase (ADR-0015).** The governance foundation is complete and frozen: the Constitution governs, the Governance Council decides, the Ontology defines meaning, the Derivation Specification explains translation, the Schema defines structure, the Invariant Matrix defines enforcement, the code implements, the tests verify — nothing skips a layer, and no new foundational ADR is written unless implementation discovers a gap (Founder Resolution 006). Roadmap: ADR-0007 (Evidence Ingestion Protocol) → Vertical Slice 1 (Evidence Ingestion, end to end) → review → Slice 2 (SourceLocator) → Slice 3 (Observation) → Slice 4 (Unknown). Success is defined as: a synthetic EvidenceArtifact travels the entire constitutional system without violating a single invariant.
 
 ## Start here
 

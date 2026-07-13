@@ -28,7 +28,7 @@ The matrix thereby closes the ODE verification loop: test → matrix row → ont
 
 ## Status
 
-Per AGC Review Session 002 (ADR-0014), the [Derivation Specification](DERIVATION_SPECIFICATION.md) is written and ratified first; the matrix is then populated almost mechanically — each row instantiates a derivation obligation — together with the ERD, **before** Task 001 (infrastructure scaffold), so implementation begins against a completed ontology rather than discovering one. Rows are reviewed by the Governance Council's Architecture Review Board.
+The [Derivation Specification](DERIVATION_SPECIFICATION.md) is ratified (1.0.0, AGC Session 003); the matrix instantiates its obligations **incrementally, slice by slice** (ADR-0015): the rows for a slice's entities exist before that slice's code is written. First population: Slice 1 (EvidenceArtifact and AuditEntry rows), with the corresponding ERD coverage. Rows are reviewed at slice review by the Governance Council's Architecture Review Board.
 
 ## Version history
 
@@ -37,3 +37,4 @@ Per AGC Review Session 002 (ADR-0014), the [Derivation Specification](DERIVATION
 | 0.0.1 | 2026-07-13 | Skeleton: row schema and population plan. Relocated from docs/architecture/ per ADR-0009. |
 | 0.0.2 | 2026-07-13 | Added Ontology-rule column (ADR-0011) and ODE loop-closure semantics (ADR-0010); population re-sequenced ahead of Task 001 per AGC Session 001. |
 | 0.0.3 | 2026-07-13 | Re-derived through the Derivation Specification (ADR-0014); population follows its ratification. |
+| 0.0.4 | 2026-07-13 | Population re-sequenced to slice-by-slice per ADR-0015; slice gate: rows before code. |

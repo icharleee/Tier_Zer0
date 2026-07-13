@@ -15,6 +15,7 @@ An ADR is required for any decision that:
 - ADRs are immutable once **Accepted** — like everything else in ARGUS, they are superseded, never rewritten. A replacing ADR links back with `Supersedes`/`Superseded by`.
 - Every ADR cites the constitutional article(s) it reinforces or touches.
 - Every ADR from 0009 onward records the three ARGUS Governance Council reviews (Constitutional, Domain, Architectural) and **finishes** with a Constitutional Checklist auditing all nine articles — see [ADR-0009](0009-establish-argus-governance-council.md).
+- **Documentation Freeze in effect** ([ADR-0015](0015-documentation-freeze-and-vertical-slices.md)): no new foundational ADR unless implementation discovers a genuine gap or contradiction. Slice-scoped engineering decisions and gap-triggered supersessions remain open.
 - ADRs are unversioned; governance documents elsewhere follow the [Governance Versioning Standard](../knowledge/standards/GOVERNANCE_VERSIONING_STANDARD.md).
 
 ## Index
@@ -35,3 +36,4 @@ An ADR is required for any decision that:
 | [0012](0012-consolidate-knowledge-corpus.md) | Consolidate the knowledge corpus under docs/knowledge/ | Accepted |
 | [0013](0013-implementation-must-remain-replaceable.md) | Implementation must remain replaceable | Accepted |
 | [0014](0014-establish-the-derivation-specification-layer.md) | Establish the Derivation Specification layer | Accepted |
+| [0015](0015-documentation-freeze-and-vertical-slices.md) | Documentation freeze and vertical-slice implementation | Accepted |

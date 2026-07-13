@@ -2,7 +2,12 @@
 
 This directory holds ARGUS's research — the project's equivalent of scientific papers. Research papers develop theory; they are **not implementation documents**, and they justify concepts before those concepts are engineered.
 
-Per AGC Review Session 002, the corpus contains **two independent research programs**:
+Per AGC Review Session 003 (ADR-0015), research divides into two categories:
+
+- **Foundational research** — ISS, ODE, and their core papers (epistemic integrity, fragmentation theory). Changes rarely; full governance ceremony.
+- **Applied research** — evolves with implementation and iterates rapidly: ingest performance, graph traversal, OCR evaluation, evidence clustering, retrieval quality, provenance UX. Applied studies live in `applied/` (created with the first study) and cite the slice that motivated them.
+
+Per AGC Review Session 002, the foundational category contains **two independent research programs**:
 
 ## Investigation Systems Science (ISS)
 

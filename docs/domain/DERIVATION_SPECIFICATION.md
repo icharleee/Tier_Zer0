@@ -1,6 +1,6 @@
 # ARGUS Derivation Specification
 
-- **Document version:** 0.1.0 (Draft — awaiting ARGUS Governance Council review; ratifies at 1.0.0)
+- **Document version:** 1.0.0 — **Ratified** by AGC Review Session 003, 2026-07-13
 - **Date:** 2026-07-13
 - **Established by:** [ADR-0014](../adr/0014-establish-the-derivation-specification-layer.md) (AGC Review Session 002)
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) 1.2.0
@@ -179,16 +179,15 @@ Applies to every material mutation of every object.
 
 ---
 
-## Ratification checklist (AGC)
+## Ratification record (AGC Review Session 003, 2026-07-13)
 
-- [ ] Constitutional Review — pending
-- [ ] Domain Review — pending
-- [ ] Architectural Review — pending
+- [x] Ratified to 1.0.0 by Chief Architect executive decision, with the stated rationale: *"I no longer think it needs to become more complete. I think it now needs to become tested."*
 
-Upon ratification, the [Invariant Matrix](INVARIANT_MATRIX.md) is populated by instantiating each obligation above as enforcement rows — mechanically, per ADR-0014.
+Under the vertical-slice strategy (ADR-0015), the [Invariant Matrix](INVARIANT_MATRIX.md) instantiates these obligations incrementally — the rows for a slice's entities exist before that slice's code.
 
 ## Version history
 
 | Version | Date | Change |
 |---|---|---|
 | 0.1.0 | 2026-07-13 | Initial draft per ADR-0014 (AGC Review Session 002). |
+| 1.0.0 | 2026-07-13 | Ratified by AGC Review Session 003. |

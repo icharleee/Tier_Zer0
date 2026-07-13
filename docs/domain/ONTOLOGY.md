@@ -1,6 +1,6 @@
 # The ARGUS Ontology
 
-- **Document version:** 1.2.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; 1.1.0 added stable identifiers (ADR-0011) and the Verification rung (ADR-0010); 1.2.0 adds ONT-PRN-010 and the Derivation Specification layer (ADR-0013, ADR-0014)
+- **Document version:** 1.3.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; 1.1.0 added stable identifiers (ADR-0011) and the Verification rung (ADR-0010); 1.2.0 added ONT-PRN-010 and the Derivation Specification layer (ADR-0013, ADR-0014); 1.3.0 adds ONT-PRN-011 (ADR-0015)
 - **Date:** 2026-07-13
 - **Governed by:** [Engineering Constitution](../foundation/ENGINEERING_CONSTITUTION.md) 1.0.0, [Lexicon](../glossary/LEXICON.md) 1.0.0, ADR-0009 (Founder Resolution 003)
 - **Derived from it:** the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md), [Entity Lifecycles](ENTITY_LIFECYCLES.md), the [Invariant Matrix](INVARIANT_MATRIX.md), and every implementation artifact thereafter
@@ -139,6 +139,7 @@ Cross-cutting principles carry stable identifiers alongside the object registry 
 | ONT-PRN-008 | The ontology is the source of truth for meaning (Resolution 003) | §8 |
 | ONT-PRN-009 | Verification is derived from ontology (Resolution 004) | §8 |
 | ONT-PRN-010 | Implementation must remain replaceable: no implementation artifact may become more authoritative than the ontology it derives from (Resolution 005) | §8 |
+| ONT-PRN-011 | Implementation is the primary source of architectural feedback: it discovers missing ontology; it never defines meaning (Resolution 006) | §8 |
 
 ## 10. Unresolved ontological questions
 
@@ -165,3 +166,4 @@ Ratified as one constitutional package with the [Domain Schema Specification](DO
 | 1.0.0 | 2026-07-13 | Ratified by AGC Review Session 001. |
 | 1.1.0 | 2026-07-13 | Added stable identifier registries for objects (§7) and principles (§9) per ADR-0011; extended the derivation chain through Verification and Operation and named Ontology-Driven Engineering per ADR-0010 / Founder Resolution 004. |
 | 1.2.0 | 2026-07-13 | Added ONT-PRN-010 (implementation replaceability, Resolution 005 / ADR-0013) and inserted the Derivation Specification into the derivation chain (ADR-0014), per AGC Review Session 002. |
+| 1.3.0 | 2026-07-13 | Added ONT-PRN-011 (implementation as primary architectural feedback, Resolution 006 / ADR-0015), per AGC Review Session 003. |
