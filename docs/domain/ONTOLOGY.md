@@ -1,6 +1,6 @@
 # The ARGUS Ontology
 
-- **Document version:** 0.1.0 (Draft — awaiting ARGUS Governance Council ratification; ratifies at 1.0.0)
+- **Document version:** 1.0.0 — **Ratified** by AGC Review Session 001, 2026-07-13
 - **Date:** 2026-07-13
 - **Governed by:** [Engineering Constitution](../foundation/ENGINEERING_CONSTITUTION.md) 1.0.0, [Lexicon](../glossary/LEXICON.md) 1.0.0, ADR-0009 (Founder Resolution 003)
 - **Derived from it:** the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md), [Entity Lifecycles](ENTITY_LIFECYCLES.md), the [Invariant Matrix](INVARIANT_MATRIX.md), and every implementation artifact thereafter
@@ -117,14 +117,19 @@ A conflict between an implementation artifact and this document is a defect in t
 - **Cross-case reality.** Reality is not case-shaped; evidence and people span cases. Reconciling that with authority-scoped access (Article VI) is open.
 - **Working thought.** Investigators think in drafts that are not yet claims. The ontology deliberately excludes working notes rather than model them badly; unmodeled is honest, badly modeled is dangerous.
 
-## Ratification checklist (AGC)
+## Ratification record (AGC Review Session 001, 2026-07-13)
 
-- [ ] Constitutional Review — pending
-- [ ] Domain Review — pending
-- [ ] Architectural Review — pending
+- [x] Constitutional Review — **PASS** ("no document has become more authoritative than the Constitution; the hierarchy is clean")
+- [x] Domain Review — **PASS** (Founder Resolution 003 identified as the philosophical bridge preventing database-first design)
+- [x] Architectural Review — **PASS with one new directive**: the derivation chain must extend to Verification (Founder Resolution 004 → ADR-0010)
+
+Additional function verdicts from the session: Research Review Board — PASS; Standards Committee — PASS with one request: stable ontology identifiers (→ ADR-0011).
+
+Ratified as one constitutional package with the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md) and [Entity Lifecycles](ENTITY_LIFECYCLES.md).
 
 ## Version history
 
 | Version | Date | Change |
 |---|---|---|
 | 0.1.0 | 2026-07-13 | Initial draft, extracted as the meaning layer above the Domain Schema Specification per ADR-0009 / Founder Resolution 003. |
+| 1.0.0 | 2026-07-13 | Ratified by AGC Review Session 001. |

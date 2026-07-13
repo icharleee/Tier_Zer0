@@ -1,6 +1,6 @@
 # ARGUS Domain Schema Specification
 
-- **Document version:** 0.2.0 (Draft — awaiting ARGUS Governance Council review; ratifies at 1.0.0)
+- **Document version:** 1.0.0 — **Ratified** by AGC Review Session 001, 2026-07-13
 - **Date:** 2026-07-13
 - **Governed by:** [Engineering Constitution](../foundation/ENGINEERING_CONSTITUTION.md) 1.0.0, [Lexicon](../glossary/LEXICON.md) 1.0.0, ADR-0001–0006, ADR-0009
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) — the source of truth for meaning (Founder Resolution 003)
@@ -493,15 +493,15 @@ Tracked here so no gap hides inside an entity section (the specification obeys i
 - **U4 — Ingestion protocol.** `PENDING → ACTIVE` finalization semantics reserved for ADR-0007.
 - **U5 — Working notes.** Investigators need scratch thinking that is not yet claims; v0.1 omits it deliberately rather than model it badly. Revisit after first investigator feedback.
 
-## Ratification checklist (AGC)
+## Ratification record (AGC Review Session 001, 2026-07-13)
 
-Per ADR-0009, ratification requires the three Governance Council reviews. This document ratifies together with [ONTOLOGY.md](ONTOLOGY.md) and [ENTITY_LIFECYCLES.md](ENTITY_LIFECYCLES.md).
+Ratified as one constitutional package with [ONTOLOGY.md](ONTOLOGY.md) and [ENTITY_LIFECYCLES.md](ENTITY_LIFECYCLES.md); the full verdicts are recorded in the [Ontology's ratification record](ONTOLOGY.md#ratification-record-agc-review-session-001-2026-07-13).
 
-- [ ] Constitutional Review — pending
-- [ ] Domain Review — pending
-- [ ] Architectural Review — pending
+- [x] Constitutional Review — **PASS**
+- [x] Domain Review — **PASS**
+- [x] Architectural Review — **PASS** (with the session's Verification directive → ADR-0010)
 
-Upon approval this document versions to 1.0.0, unblocking the [Invariant Matrix](INVARIANT_MATRIX.md) population and the ERD (`docs/architecture/`).
+The [Invariant Matrix](INVARIANT_MATRIX.md) population and the ERD (`docs/architecture/`) are now unblocked.
 
 ## Version history
 
@@ -509,3 +509,4 @@ Upon approval this document versions to 1.0.0, unblocking the [Invariant Matrix]
 |---|---|---|
 | 0.1.0 | 2026-07-13 | Initial draft for review. |
 | 0.2.0 | 2026-07-13 | Restructured under the Ontology-first hierarchy (ADR-0009 / Founder Resolution 003): meaning layer extracted to ONTOLOGY.md; authoritative state machines extracted to ENTITY_LIFECYCLES.md; Invariant Matrix relocated to docs/domain/; review checklist updated to AGC mechanisms. |
+| 1.0.0 | 2026-07-13 | Ratified by AGC Review Session 001. |

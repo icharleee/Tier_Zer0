@@ -1,6 +1,6 @@
 # ARGUS Entity Lifecycles
 
-- **Document version:** 0.1.0 (Draft — ratifies with the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md))
+- **Document version:** 1.0.0 — **Ratified** by AGC Review Session 001, 2026-07-13, as one package with the [Ontology](ONTOLOGY.md) and the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md)
 - **Date:** 2026-07-13
 - **Derived from:** the [Ontology](ONTOLOGY.md); structural context in the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md)
 
@@ -163,3 +163,4 @@ No lifecycle. Created only by the system as an atomic side effect of actor-attri
 | Version | Date | Change |
 |---|---|---|
 | 0.1.0 | 2026-07-13 | Initial draft, extracted from Domain Schema Specification 0.1.0 per ADR-0009 document hierarchy. |
+| 1.0.0 | 2026-07-13 | Ratified by AGC Review Session 001. |
