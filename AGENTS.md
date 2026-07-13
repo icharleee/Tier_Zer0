@@ -5,7 +5,8 @@ You are working on **ARGUS**, a cognitive infrastructure platform that helps hum
 1. [`docs/foundation/PROJECT_BRIEF.md`](docs/foundation/PROJECT_BRIEF.md) — why ARGUS exists (onboarding)
 2. [`docs/foundation/ENGINEERING_CONSTITUTION.md`](docs/foundation/ENGINEERING_CONSTITUTION.md) — the governing law (binding)
 3. [`docs/glossary/LEXICON.md`](docs/glossary/LEXICON.md) — the canonical vocabulary (normative)
-4. [`docs/adr/`](docs/adr/README.md) — architectural decisions already made
+4. [`docs/domain/ONTOLOGY.md`](docs/domain/ONTOLOGY.md) — the source of truth for meaning (normative once ratified)
+5. [`docs/adr/`](docs/adr/README.md) — architectural decisions already made
 
 ARGUS is **not** a CRUD app. It is a constitutional system. Every schema, migration, API, validation rule, database constraint, and test must reinforce the Engineering Constitution.
 
@@ -24,7 +25,8 @@ ARGUS is **not** a CRUD app. It is a constitutional system. Every schema, migrat
 ## Decision hygiene
 
 - Architecturally significant choices require an ADR in `docs/adr/` (use the template there) **before or with** the implementing change.
-- Every new ADR records the five Architecture Review Board outcomes — Constitutional, Domain, Systems, Operational, Reversibility — per [ADR-0008](docs/adr/0008-establish-arb-and-documentation-governance.md).
+- Every new ADR records the three ARGUS Governance Council reviews — Constitutional (a hard stop, no balancing test), Domain (the ladder is never collapsed), Architectural — and **finishes** with a Constitutional Checklist over all nine articles, per [ADR-0009](docs/adr/0009-establish-argus-governance-council.md).
+- The ontology is the source of truth for meaning (Founder Resolution 003): schemas, APIs, UI labels, AI prompts, tests, and docs derive from [`docs/domain/ONTOLOGY.md`](docs/domain/ONTOLOGY.md) — never define meaning independently of it. Meaning changes go to the ontology first (AGC review, MAJOR version), then propagate down.
 - Cite the relevant constitutional article(s) in ADRs and in PR descriptions.
 - Changes to the Constitution itself require their own ADR.
 - Governance documents (brief, constitution, standards, ISS papers, Lexicon) are semantically versioned per the [Governance Versioning Standard](docs/standards/GOVERNANCE_VERSIONING_STANDARD.md); bump the version and append to the version history with any change. ADRs stay unversioned and immutable.

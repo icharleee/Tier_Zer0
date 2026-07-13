@@ -14,7 +14,7 @@ An ADR is required for any decision that:
 - Use [`0000-template.md`](0000-template.md).
 - ADRs are immutable once **Accepted** — like everything else in ARGUS, they are superseded, never rewritten. A replacing ADR links back with `Supersedes`/`Superseded by`.
 - Every ADR cites the constitutional article(s) it reinforces or touches.
-- Every ADR from 0008 onward records the five Architecture Review Board outcomes (Constitutional, Domain, Systems, Operational, Reversibility) — see [ADR-0008](0008-establish-arb-and-documentation-governance.md).
+- Every ADR from 0009 onward records the three ARGUS Governance Council reviews (Constitutional, Domain, Architectural) and **finishes** with a Constitutional Checklist auditing all nine articles — see [ADR-0009](0009-establish-argus-governance-council.md).
 - ADRs are unversioned; governance documents elsewhere follow the [Governance Versioning Standard](../standards/GOVERNANCE_VERSIONING_STANDARD.md).
 
 ## Index
@@ -28,4 +28,5 @@ An ADR is required for any decision that:
 | [0005](0005-unknowns-and-contradictions-as-first-class-entities.md) | Unknowns and contradictions as first-class entities | Accepted |
 | [0006](0006-argus-core-v0.1-technology-stack.md) | ARGUS Core v0.1 technology stack | Accepted |
 | 0007 | Evidence ingestion and atomic finalization | Reserved (forward-referenced by ADR-0006; not yet drafted) |
-| [0008](0008-establish-arb-and-documentation-governance.md) | Establish the Architecture Review Board and Phase 1 documentation governance | Accepted |
+| [0008](0008-establish-arb-and-documentation-governance.md) | Establish the Architecture Review Board and Phase 1 documentation governance | Superseded by 0009 |
+| [0009](0009-establish-argus-governance-council.md) | Establish the ARGUS Governance Council | Accepted |

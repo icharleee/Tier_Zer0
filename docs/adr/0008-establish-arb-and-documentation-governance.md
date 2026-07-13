@@ -1,6 +1,6 @@
 # ADR-0008: Establish the Architecture Review Board and Phase 1 documentation governance
 
-- **Status:** Accepted (ratified by Founder Resolution 002)
+- **Status:** Superseded by [ADR-0009](0009-establish-argus-governance-council.md) (its documentation-corpus, versioning, and Lexicon decisions are reaffirmed there; the ARB is replaced by the ARGUS Governance Council)
 - **Date:** 2026-07-13
 - **Constitutional articles:** VII (Scientific integrity before convenience), VIII (Justice requires transparency); Prime Directive
 - **Supersedes:** none (extends ADR-0001)

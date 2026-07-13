@@ -1,13 +1,14 @@
 # ARGUS Domain Schema Specification
 
-- **Document version:** 0.1.0 (Draft — awaiting Architecture Review Board review; ratifies at 1.0.0)
+- **Document version:** 0.2.0 (Draft — awaiting ARGUS Governance Council review; ratifies at 1.0.0)
 - **Date:** 2026-07-13
-- **Governed by:** [Engineering Constitution](../foundation/ENGINEERING_CONSTITUTION.md) 1.0.0, [Lexicon](../glossary/LEXICON.md) 1.0.0, ADR-0001–0006, ADR-0008
-- **Consumed by:** the ERD and Domain Invariant Matrix (`docs/architecture/`), Task 001 (scaffold), Task 002 (domain implementation)
+- **Governed by:** [Engineering Constitution](../foundation/ENGINEERING_CONSTITUTION.md) 1.0.0, [Lexicon](../glossary/LEXICON.md) 1.0.0, ADR-0001–0006, ADR-0009
+- **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) — the source of truth for meaning (Founder Resolution 003)
+- **Consumed by:** [Entity Lifecycles](ENTITY_LIFECYCLES.md), the [Invariant Matrix](INVARIANT_MATRIX.md), the ERD (`docs/architecture/`), Task 001 (scaffold), Task 002 (domain implementation)
 
 ## Purpose and non-goals
 
-This document defines the **ontology of ARGUS**: the conceptual reality every implementation must faithfully represent. It is the contract that Task 002 implements.
+This document is the **structural contract** derived from the [Ontology](ONTOLOGY.md): for each first-class object, the attributes, references, invariants, actors, and provenance obligations every implementation must faithfully represent. The Ontology defines what these objects *mean*; this document defines what a faithful representation of them must *contain and enforce*. It is the contract that Task 002 implements.
 
 It deliberately contains **no** SQLAlchemy models, SQL DDL, table names, column types, or serialization formats. Those are implementation renderings of this specification, governed by ADR-0006 and verified against the Domain Invariant Matrix.
 
@@ -86,6 +87,8 @@ No entity may hold a reference that shortcuts this chain (e.g., a Hypothesis dir
 
 Each entity is specified as: Purpose · Identity · Required attributes · Optional attributes · Relationships · Lifecycle · Invariants · Permitted actors · Prohibited operations · Provenance requirements · Audit events · Unresolved questions.
 
+Lifecycle sections state the immutability class and any structurally load-bearing rules; the authoritative states, transitions, per-transition actors, and audit events live in [Entity Lifecycles](ENTITY_LIFECYCLES.md).
+
 ---
 
 ### 1. Case
@@ -100,7 +103,7 @@ Each entity is specified as: Purpose · Identity · Required attributes · Optio
 
 **Relationships.** Root container: every other entity instance belongs to exactly one Case. Has many EvidenceArtifacts, Observations, Interpretations, Hypotheses, Contradictions, Unknowns, Entities, Relationships, AuditEntries.
 
-**Lifecycle.** `OPEN → SUSPENDED → OPEN` (repeatable) `→ CLOSED`. All transitions HumanActor-only, with recorded reason. `CLOSED` freezes analytical writes but never deletes or conceals anything; reads (with authority) and AuditEntry emission continue. A closed case MAY be reopened by a HumanActor with recorded justification.
+**Lifecycle.** Class CT. All transitions HumanActor-only with recorded reason; `CLOSED` freezes analytical writes but never deletes or conceals anything. States and transitions: [Entity Lifecycles §1](ENTITY_LIFECYCLES.md#1-case-ct).
 
 **Invariants.** A Case is never deleted. Legal authority basis is required at creation and versioned (V) thereafter — authority changes are new authority records, not edits. No analytical record may exist outside a Case.
 
@@ -128,7 +131,7 @@ Each entity is specified as: Purpose · Identity · Required attributes · Optio
 
 **Relationships.** Belongs to one Case. Referenced by SourceLocators (only path by which analysis touches it, C10). May be superseded by another EvidenceArtifact (retraction pattern).
 
-**Lifecycle.** `PENDING → ACTIVE → RETRACTED | SEALED`. `PENDING`: ingested but not yet integrity-verified; invisible to analysis; no SourceLocator may reference a non-`ACTIVE` artifact. `PENDING → ACTIVE` requires passed integrity verification (protocol: ADR-0007, reserved). `SEALED`: legally restricted; existence remains visible to authorized queries, content access restricted and read-audited.
+**Lifecycle.** Content CI; operational fields CT. `PENDING` artifacts are invisible to analysis (no SourceLocator may reference a non-`ACTIVE` artifact); activation requires passed integrity verification (ADR-0007, reserved). `SEALED` restricts content access with read auditing while existence stays visible to authorized queries. States and transitions: [Entity Lifecycles §2](ENTITY_LIFECYCLES.md#2-evidenceartifact-ci-content-ct-operational-fields).
 
 **Invariants.** Content bytes and original hash: content-immutable (CI) — no mutation path exists at any layer. Ingestion record: CI. Operational fields (status, access classification, storage reference re-homing): CT. Technical metadata used in analysis MUST enter the ladder as Observations with SourceLocators, not as bare artifact attributes — metadata is evidence *about* evidence and needs the same provenance.
 
@@ -156,7 +159,7 @@ Each entity is specified as: Purpose · Identity · Required attributes · Optio
 
 **Relationships.** Belongs to exactly one EvidenceArtifact (and its Case). Referenced by one or more Observations.
 
-**Lifecycle.** `ACTIVE → RETRACTED` (V, pattern C6). Created only against an `ACTIVE` artifact.
+**Lifecycle.** Class V (pattern C6). Created only against an `ACTIVE` artifact. States and transitions: [Entity Lifecycles §3](ENTITY_LIFECYCLES.md#3-sourcelocator-v).
 
 **Invariants.** Scheme + address: immutable after creation — a wrong locator is retracted and replaced, never edited. A SourceLocator MUST resolve within the bounds of its artifact's content (validated at creation). Retracting an artifact does not delete its locators; they become flagged as referencing retracted evidence, and every claim above them surfaces that flag (Article IX — the epistemic status of downstream claims visibly degrades).
 
@@ -184,7 +187,7 @@ Each entity is specified as: Purpose · Identity · Required attributes · Optio
 
 **Relationships.** Belongs to one Case. References ≥1 SourceLocator (its only downward references — C10). Referenced upward by Interpretations. May be a ContradictionMember; may be linked by UnknownLinks.
 
-**Lifecycle.** `ACTIVE → RETRACTED` (V). AI-created: review status per C8, orthogonal to lifecycle.
+**Lifecycle.** Class V; review status per C8 orthogonal for AI proposals. States and transitions: [Entity Lifecycles §4–6](ENTITY_LIFECYCLES.md#46-observation-interpretation-hypothesis-v).
 
 **Invariants.** ≥1 SourceLocator reference at creation, non-removable, non-substitutable (corrections = retraction and replacement). The statement MUST be observational: it describes artifact content, not meaning. (Enforced by review discipline and AI prompt design; the schema enforces the reference topology.) An Observation whose every SourceLocator is retracted is automatically flagged as ungrounded and MUST be surfaced for human disposition — never auto-retracted (Article II).
 
@@ -212,7 +215,7 @@ Each entity is specified as: Purpose · Identity · Required attributes · Optio
 
 **Relationships.** Belongs to one Case. References ≥1 Observation (only downward — C10). Referenced upward by Hypotheses. May be a ContradictionMember; may be linked by UnknownLinks. May ground a Relationship (entity graph).
 
-**Lifecycle.** `ACTIVE → RETRACTED` (V). Review status per C8 for AI proposals.
+**Lifecycle.** Class V; review status per C8 orthogonal. States and transitions: [Entity Lifecycles §4–6](ENTITY_LIFECYCLES.md#46-observation-interpretation-hypothesis-v).
 
 **Invariants.** ≥1 Observation reference, immutable set after creation. Uncertainty expression non-empty — an Interpretation claiming certainty must say so explicitly and attribute why. Multiple Interpretations over the same Observations coexist without rank (Article IV); the schema has no "primary interpretation" concept.
 
@@ -240,7 +243,7 @@ Each entity is specified as: Purpose · Identity · Required attributes · Optio
 
 **Relationships.** Belongs to one Case. References ≥1 Interpretation (only downward — C10). May be a ContradictionMember; may be linked by UnknownLinks.
 
-**Lifecycle.** `ACTIVE → RETRACTED` (V). Review status per C8 for AI proposals. **There is no terminal "confirmed" or "true" state** — a Hypothesis is never system-promoted to fact; conviction lives in human Understanding, outside the schema (Article II).
+**Lifecycle.** Class V; review status per C8 orthogonal. **There is no terminal "confirmed" or "true" state** — a Hypothesis is never system-promoted to fact; conviction lives in human Understanding, outside the schema (Article II). States and transitions: [Entity Lifecycles §4–6](ENTITY_LIFECYCLES.md#46-observation-interpretation-hypothesis-v).
 
 **Invariants.** ≥1 Interpretation reference, immutable set. Competing Hypotheses coexist without structural privilege (Article IV): no "leading hypothesis" field, no exclusivity constraint, no ranking stored as fact. Testability statement non-empty.
 
@@ -268,7 +271,7 @@ Each entity is specified as: Purpose · Identity · Required attributes · Optio
 
 **Relationships.** Belongs to one Case. Composed of ContradictionMembers. May be linked by UnknownLinks (a contradiction often implies an unknown).
 
-**Lifecycle.** `OPEN → RESOLVED | WITHDRAWN` — both transitions HumanActor-only. `RESOLVED` requires a non-empty resolution rationale and, where resolution rests on evidence, references to the resolving claims. `WITHDRAWN` (raised in error) requires a rationale. Both are terminal; a recurrence is a new Contradiction referencing the old. Description corrections: V (retract/replace the description, not the Contradiction's history).
+**Lifecycle.** Disposition transitions HumanActor-only with rationale; both terminal (recurrence = new Contradiction referencing the old). Description corrections: class V (retract/replace the description, not the Contradiction's history). States and transitions: [Entity Lifecycles §7](ENTITY_LIFECYCLES.md#7-contradiction-v-description-terminal-disposition).
 
 **Invariants.** ≥2 members at all times. AI may suggest (status `OPEN`, review status `UNREVIEWED`) but no AI or system path may set `RESOLVED` or `WITHDRAWN` (Article II; ADR-0005). Resolution never deletes or retracts the conflicting claims themselves — they remain, with the resolution recorded alongside.
 
@@ -296,7 +299,7 @@ Each entity is specified as: Purpose · Identity · Required attributes · Optio
 
 **Relationships.** Belongs to exactly one Contradiction (and its Case). References exactly one claim.
 
-**Lifecycle.** CI once created; erroneous membership is handled by withdrawing/superseding the Contradiction description, never by silently deleting members (the historical fact of "these were held incompatible" is preserved).
+**Lifecycle.** Class CI once created; erroneous membership is handled by withdrawing/superseding the Contradiction description, never by silently deleting members (the historical fact of "these were held incompatible" is preserved). See [Entity Lifecycles §8](ENTITY_LIFECYCLES.md#8-contradictionmember-ci).
 
 **Invariants.** Member claim must belong to the same Case as the Contradiction. A claim may belong to many Contradictions.
 
@@ -324,7 +327,7 @@ Each entity is specified as: Purpose · Identity · Required attributes · Optio
 
 **Relationships.** Belongs to one Case. Connected to affected records via UnknownLinks. Disposed via at most one active UnknownResolution.
 
-**Lifecycle.** `OPEN → RESOLVED | WITHDRAWN | UNRESOLVABLE` — every transition HumanActor-only, effected by creating an UnknownResolution (never by a bare status flip). All terminal; a re-opened question is a new Unknown referencing the old. Question-text corrections: V.
+**Lifecycle.** Every disposition HumanActor-only, effected by creating an UnknownResolution (never a bare status flip); all terminal (a re-opened question is a new Unknown referencing the old). Question-text corrections: class V. States and transitions: [Entity Lifecycles §9](ENTITY_LIFECYCLES.md#9-unknown-v-question-text-terminal-disposition-via-unknownresolution).
 
 **Invariants.** No AI or system path may transition an Unknown (Article II; ADR-0005). Status and its UnknownResolution are always consistent (status is derived from the resolution's existence and type).
 
@@ -352,7 +355,7 @@ Each entity is specified as: Purpose · Identity · Required attributes · Optio
 
 **Relationships.** Belongs to one Unknown (and its Case); references one target record in the same Case.
 
-**Lifecycle.** `ACTIVE → RETRACTED` (V) — a link created in error is retracted with reason.
+**Lifecycle.** Class V — a link created in error is retracted with reason. States and transitions: [Entity Lifecycles §10](ENTITY_LIFECYCLES.md#10-unknownlink-v).
 
 **Invariants.** Same-case only. Duplicate links (same Unknown, same target, same nature) SHOULD be rejected.
 
@@ -380,7 +383,7 @@ Each entity is specified as: Purpose · Identity · Required attributes · Optio
 
 **Relationships.** Belongs to exactly one Unknown (and its Case); `ANSWERED` resolutions reference ≥1 claim.
 
-**Lifecycle.** CI once created. A mistaken resolution is superseded: a HumanActor creates a successor resolution that explicitly supersedes it (reopening semantics: the supersession records that the Unknown's question persists as a new Unknown — see Unknown lifecycle).
+**Lifecycle.** Class CI once created. A mistaken resolution is superseded: a HumanActor creates a successor resolution that explicitly supersedes it, and the persisting question reopens as a new Unknown. See [Entity Lifecycles §11](ENTITY_LIFECYCLES.md#11-unknownresolution-ci).
 
 **Invariants.** Author MUST be a HumanActor — no AI or system path exists (Article II; ADR-0005). `ANSWERED` without claim references MUST be rejected (an answer without evidence is not an answer — Article I).
 
@@ -408,7 +411,7 @@ Each entity is specified as: Purpose · Identity · Required attributes · Optio
 
 **Relationships.** Belongs to one Case. Referenced by claims (claims MAY reference Entities they concern, in addition to their ladder references). Connected to other Entities via Relationships. May be linked by UnknownLinks.
 
-**Lifecycle.** `ACTIVE → RETRACTED` (V) — retired when created in error (e.g., duplicate); retraction records the surviving duplicate as `superseded_by` where applicable.
+**Lifecycle.** Class V (working designation: CT) — retired when created in error (e.g., duplicate); retraction records the surviving duplicate as `superseded_by` where applicable. States and transitions: [Entity Lifecycles §12](ENTITY_LIFECYCLES.md#12-entity-v-designation-ct).
 
 **Invariants.** The working designation carries no evidentiary weight and is CT (may be refined as understanding grows, with audit). Entity class is immutable after creation (a mis-classed entity is retracted and replaced). Distinctness is a human determination: the system never auto-merges entities (Article II).
 
@@ -436,7 +439,7 @@ Each entity is specified as: Purpose · Identity · Required attributes · Optio
 
 **Relationships (meta).** Belongs to one Case; connects exactly two Entities in that Case; grounded in ladder claims; may be linked by UnknownLinks.
 
-**Lifecycle.** `ACTIVE → RETRACTED` (V). Review status per C8 for AI proposals.
+**Lifecycle.** Class V; review status per C8 orthogonal. States and transitions: [Entity Lifecycles §13](ENTITY_LIFECYCLES.md#13-relationship-v).
 
 **Invariants.** ≥1 grounding claim — an ungrounded edge is an ungrounded claim (Article I). Both endpoints in the same Case. Grounding-flag raised if supporting claims are retracted; never auto-retracted (Article II). Multiple Relationships of different types (or times) between the same pair coexist.
 
@@ -464,7 +467,7 @@ Each entity is specified as: Purpose · Identity · Required attributes · Optio
 
 **Relationships.** Belongs to one Case; references the record(s) acted upon.
 
-**Lifecycle.** None. Created once; content-immutable (CI) forever; never retracted, never superseded. A wrong audit entry is corrected by a subsequent *compensating* entry that references it.
+**Lifecycle.** None. Created once; content-immutable (CI) forever; never retracted, never superseded. A wrong audit entry is corrected by a subsequent *compensating* entry that references it. See [Entity Lifecycles §14](ENTITY_LIFECYCLES.md#14-auditentry-ci--strongest-guarantee-in-the-system).
 
 **Invariants.** Emitted atomically with the mutation it records (ADR-0006 validation criterion 2) — an unaudited material mutation must be impossible, and an AuditEntry for a mutation that did not occur equally so. Reads of sealed/restricted material emit entries. The audit history is complete per Case: ordering gaps are detectable.
 
@@ -490,18 +493,19 @@ Tracked here so no gap hides inside an entity section (the specification obeys i
 - **U4 — Ingestion protocol.** `PENDING → ACTIVE` finalization semantics reserved for ADR-0007.
 - **U5 — Working notes.** Investigators need scratch thinking that is not yet claims; v0.1 omits it deliberately rather than model it badly. Revisit after first investigator feedback.
 
-## Ratification checklist (ARB)
+## Ratification checklist (AGC)
+
+Per ADR-0009, ratification requires the three Governance Council reviews. This document ratifies together with [ONTOLOGY.md](ONTOLOGY.md) and [ENTITY_LIFECYCLES.md](ENTITY_LIFECYCLES.md).
 
 - [ ] Constitutional Review — pending
 - [ ] Domain Review — pending
-- [ ] Systems Review — pending
-- [ ] Operational Review — pending
-- [ ] Reversibility Review — pending
+- [ ] Architectural Review — pending
 
-Upon approval this document versions to 1.0.0 and the ERD + Domain Invariant Matrix (docs/architecture/) unblock.
+Upon approval this document versions to 1.0.0, unblocking the [Invariant Matrix](INVARIANT_MATRIX.md) population and the ERD (`docs/architecture/`).
 
 ## Version history
 
 | Version | Date | Change |
 |---|---|---|
-| 0.1.0 | 2026-07-13 | Initial draft for ARB review. |
+| 0.1.0 | 2026-07-13 | Initial draft for review. |
+| 0.2.0 | 2026-07-13 | Restructured under the Ontology-first hierarchy (ADR-0009 / Founder Resolution 003): meaning layer extracted to ONTOLOGY.md; authoritative state machines extracted to ENTITY_LIFECYCLES.md; Invariant Matrix relocated to docs/domain/; review checklist updated to AGC mechanisms. |

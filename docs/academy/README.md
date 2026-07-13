@@ -11,7 +11,7 @@ Lessons are written after the material they teach is ratified — the Academy do
 | 1 | What is ARGUS? | [Project Brief](../foundation/PROJECT_BRIEF.md) | Planned |
 | 2 | The Constitution | [Engineering Constitution](../foundation/ENGINEERING_CONSTITUTION.md) | Planned |
 | 3 | Investigation Systems Science | [ISS papers](../research/README.md) | Blocked on ISS-0001+ |
-| 4 | The Domain Model | [Domain Schema Specification](../domain/DOMAIN_SCHEMA_SPECIFICATION.md) | Blocked on spec ratification |
+| 4 | The Domain Model | [Ontology](../domain/ONTOLOGY.md), [Domain Schema Specification](../domain/DOMAIN_SCHEMA_SPECIFICATION.md) | Blocked on ratification |
 | 5 | How We Think | ADRs, [Lexicon](../glossary/LEXICON.md) | Planned |
 | 6 | How We Build | [Standards](../standards/README.md), AGENTS.md | Blocked on first standards |
 

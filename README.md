@@ -31,7 +31,9 @@ This project is governed through four documentation layers. Read them in order:
 
 Lower layers must comply with higher layers. Where they conflict, the Constitution prevails (see [ADR-0001](docs/adr/0001-adopt-layered-governance-documentation.md)).
 
-Supporting corpora (see [ADR-0008](docs/adr/0008-establish-arb-and-documentation-governance.md)): the [Lexicon](docs/glossary/LEXICON.md) — canonical vocabulary, normative everywhere — plus [Standards](docs/standards/README.md), [ISS research](docs/research/README.md), the [Academy](docs/academy/README.md), [Architecture artifacts](docs/architecture/README.md), and the [Domain Schema Specification](docs/domain/DOMAIN_SCHEMA_SPECIFICATION.md).
+Supporting corpora (established by ADR-0008; governed per [ADR-0009](docs/adr/0009-establish-argus-governance-council.md)): the [Lexicon](docs/glossary/LEXICON.md) — canonical vocabulary, normative everywhere — plus [Standards](docs/standards/README.md), [ISS research](docs/research/README.md), the [Academy](docs/academy/README.md), and [Architecture artifacts](docs/architecture/README.md).
+
+The domain is documented ontology-first per Founder Resolution 003 — [the ARGUS Ontology](docs/domain/ONTOLOGY.md) is the source of truth for meaning, and the [Domain Schema Specification](docs/domain/DOMAIN_SCHEMA_SPECIFICATION.md), [Entity Lifecycles](docs/domain/ENTITY_LIFECYCLES.md), and [Invariant Matrix](docs/domain/INVARIANT_MATRIX.md) derive from it. Project governance runs through the ARGUS Governance Council (ADR-0009).
 
 ## Core commitments
 
