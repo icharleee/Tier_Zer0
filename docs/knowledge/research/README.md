@@ -30,6 +30,12 @@ ODE is independent of ISS: it could be applied to medicine, aviation, intelligen
 |---|---|---|
 | [ODE-0001](ODE-0001-ontology-driven-engineering.md) | Ontology-Driven Engineering: Axioms and Method | Draft 0.1.0 |
 
+## Provenance Engineering (PE)
+
+*Asks: how is information kept trustworthy across its complete lifecycle?*
+
+Recorded as a third discipline by AGC Review Session 004 (ADR-0007 §8): the engineering discipline concerned with preserving the traceability, integrity, reproducibility, and auditability of information across its complete lifecycle. ARGUS's ingestion, audit, and provenance machinery are its first case study; no paper is yet planned.
+
 **Registry note (append-only honesty):** ADR-0010 registered the ODE paper as "ISS-0005" before the two programs were recognized as independent (AGC Session 002). No ISS-0005 was ever drafted; the paper is allocated as ODE-0001 and the ISS-0005 number is retired unused to avoid ambiguity. The reference inside the immutable ADR-0010 resolves here.
 
 ## Conventions

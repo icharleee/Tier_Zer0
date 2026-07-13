@@ -1,6 +1,6 @@
 # ARGUS Derivation Specification
 
-- **Document version:** 1.0.0 — **Ratified** by AGC Review Session 003, 2026-07-13
+- **Document version:** 1.1.0 — Ratified at 1.0.0 by AGC Review Session 003, 2026-07-13; 1.1.0 aligns ONT-EVA-001 with ADR-0007 as amended (AGC Session 004)
 - **Date:** 2026-07-13
 - **Established by:** [ADR-0014](../adr/0014-establish-the-derivation-specification-layer.md) (AGC Review Session 002)
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) 1.2.0
@@ -76,8 +76,8 @@ Applies to every material mutation of every object.
 ### ONT-EVA-001 — EvidenceArtifact
 
 - **Schema properties:** original content hash (algorithm + digest) and ingestion record, both content-immutable; status; acquisition description; storage reference explicitly non-authoritative (identity MUST NOT depend on a provider URI).
-- **Invariants:** no mutation path for content bytes or original hash at any layer, including administrative; PENDING artifacts invisible to analysis; analytically used technical metadata MUST enter as Observations, never as bare attributes.
-- **Audit events:** ingested; activated; verification-failed; retracted; sealed/unsealed; every sealed-content read; storage re-homed ([Lifecycles §2](ENTITY_LIFECYCLES.md#2-evidenceartifact-ci-content-ct-operational-fields)).
+- **Invariants:** no mutation path for content bytes or original hash at any layer, including administrative; pre-`ACTIVE` records (`PENDING_VERIFICATION`, `QUARANTINED`) invisible to analysis; analytically used technical metadata MUST enter as Observations, never as bare attributes.
+- **Audit events:** ingested; activated; quarantined; reactivated; retracted; sealed/unsealed; every sealed-content read; storage re-homed ([Lifecycles §2](ENTITY_LIFECYCLES.md#2-evidenceartifact-ci-content-ct-operational-fields)).
 - **API behavior:** content reads MUST verify against the original hash; sealed content MUST require elevated authorization and audit each read; activation is SystemProcess-only upon verification (protocol: ADR-0007).
 - **Required tests:** content/hash mutation fails at the database layer; a SourceLocator against a non-ACTIVE artifact fails; hash mismatch on read is surfaced, never silently served. Cite ONT-EVA-001, ONT-PRN-001.
 
@@ -191,3 +191,4 @@ Under the vertical-slice strategy (ADR-0015), the [Invariant Matrix](INVARIANT_M
 |---|---|---|
 | 0.1.0 | 2026-07-13 | Initial draft per ADR-0014 (AGC Review Session 002). |
 | 1.0.0 | 2026-07-13 | Ratified by AGC Review Session 003. |
+| 1.1.0 | 2026-07-13 | ONT-EVA-001 derivation aligned with the explicit lifecycle of ADR-0007 as amended by AGC Session 004. |

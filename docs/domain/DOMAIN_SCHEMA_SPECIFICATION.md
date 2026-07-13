@@ -1,6 +1,6 @@
 # ARGUS Domain Schema Specification
 
-- **Document version:** 1.0.0 — **Ratified** by AGC Review Session 001, 2026-07-13
+- **Document version:** 1.1.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; 1.1.0 aligns EvidenceArtifact states with ADR-0007 as amended (AGC Session 004)
 - **Date:** 2026-07-13
 - **Governed by:** [Engineering Constitution](../foundation/ENGINEERING_CONSTITUTION.md) 1.0.0, [Lexicon](../glossary/LEXICON.md) 1.0.0, ADR-0001–0006, ADR-0009
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) — the source of truth for meaning (Founder Resolution 003)
@@ -131,7 +131,7 @@ Lifecycle sections state the immutability class and any structurally load-bearin
 
 **Relationships.** Belongs to one Case. Referenced by SourceLocators (only path by which analysis touches it, C10). May be superseded by another EvidenceArtifact (retraction pattern).
 
-**Lifecycle.** Content CI; operational fields CT. `PENDING` artifacts are invisible to analysis (no SourceLocator may reference a non-`ACTIVE` artifact); activation requires passed integrity verification (ADR-0007, reserved). `SEALED` restricts content access with read auditing while existence stays visible to authorized queries. States and transitions: [Entity Lifecycles §2](ENTITY_LIFECYCLES.md#2-evidenceartifact-ci-content-ct-operational-fields).
+**Lifecycle.** Content CI; operational fields CT. Pre-`ACTIVE` records (`PENDING_VERIFICATION`, `QUARANTINED`) are invisible to analysis (no SourceLocator may reference a non-`ACTIVE` artifact); activation requires passed integrity verification (ADR-0007). `SEALED` restricts content access with read auditing while existence stays visible to authorized queries. States and transitions: [Entity Lifecycles §2](ENTITY_LIFECYCLES.md#2-evidenceartifact-ci-content-ct-operational-fields).
 
 **Invariants.** Content bytes and original hash: content-immutable (CI) — no mutation path exists at any layer. Ingestion record: CI. Operational fields (status, access classification, storage reference re-homing): CT. Technical metadata used in analysis MUST enter the ladder as Observations with SourceLocators, not as bare artifact attributes — metadata is evidence *about* evidence and needs the same provenance.
 
@@ -165,7 +165,7 @@ Lifecycle sections state the immutability class and any structurally load-bearin
 
 **Permitted actors.** Create: HumanActor or AIWorkflow (an AI-created locator is part of an AI proposal and shares its review status). Retract: HumanActor.
 
-**Prohibited operations.** Editing address or retargeting to a different artifact; referencing `PENDING`, `RETRACTED` (at creation time), or foreign-case artifacts; deletion.
+**Prohibited operations.** Editing address or retargeting to a different artifact; referencing any non-`ACTIVE` (at creation time) or foreign-case artifact; deletion.
 
 **Provenance requirements.** Creating actor; AI-created locators carry the full AI provenance block (C7) via their owning proposal.
 
@@ -510,3 +510,4 @@ The [Invariant Matrix](INVARIANT_MATRIX.md) population and the ERD (`docs/archit
 | 0.1.0 | 2026-07-13 | Initial draft for review. |
 | 0.2.0 | 2026-07-13 | Restructured under the Ontology-first hierarchy (ADR-0009 / Founder Resolution 003): meaning layer extracted to ONTOLOGY.md; authoritative state machines extracted to ENTITY_LIFECYCLES.md; Invariant Matrix relocated to docs/domain/; review checklist updated to AGC mechanisms. |
 | 1.0.0 | 2026-07-13 | Ratified by AGC Review Session 001. |
+| 1.1.0 | 2026-07-13 | EvidenceArtifact lifecycle references aligned with ADR-0007 as amended by AGC Session 004 (PENDING_VERIFICATION, QUARANTINED; SourceLocator prohibition restated as non-ACTIVE). |
