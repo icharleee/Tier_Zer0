@@ -28,7 +28,7 @@ An ADR is required for any decision that:
 | [0004](0004-mandatory-provenance-for-analytical-claims.md) | Mandatory provenance for all analytical claims | Accepted |
 | [0005](0005-unknowns-and-contradictions-as-first-class-entities.md) | Unknowns and contradictions as first-class entities | Accepted |
 | [0006](0006-argus-core-v0.1-technology-stack.md) | ARGUS Core v0.1 technology stack | Accepted |
-| 0007 | Evidence ingestion and atomic finalization | Reserved (forward-referenced by ADR-0006; not yet drafted) |
+| [0007](0007-evidence-ingestion-and-atomic-finalization.md) | Evidence ingestion and atomic finalization | Proposed (awaiting AGC engineering design review) |
 | [0008](0008-establish-arb-and-documentation-governance.md) | Establish the Architecture Review Board and Phase 1 documentation governance | Superseded by 0009 |
 | [0009](0009-establish-argus-governance-council.md) | Establish the ARGUS Governance Council | Accepted |
 | [0010](0010-verification-derives-from-the-ontology.md) | Verification derives from the ontology | Accepted |
