@@ -16,7 +16,7 @@ Evidence → Context → Reasoning → Understanding → Human Judgment
 
 ## Status
 
-**Version 0.1 — Foundational Development, Phase 1.** The governance foundation is complete and the domain package (Ontology, Domain Schema Specification, Entity Lifecycles) is ratified at 1.0.0 by the Governance Council. Roadmap before the first production line of code: Invariant Matrix and ERD → ADR-0007 (Evidence Ingestion Protocol) → Task 001 (infrastructure scaffold) → Task 002 (domain layer) — implementation begins against a completed ontology, not a discovered one.
+**Version 0.1 — Foundational Development, Phase 1.** The governance foundation is officially complete (AGC Session 002): the Constitution governs, the Governance Council decides, the Ontology defines meaning, the Derivation Specification explains translation, the Schema defines structure, the Invariant Matrix defines enforcement, the code implements, the tests verify — nothing skips a layer. Roadmap before the first production line of code: Derivation Specification → Invariant Matrix → ERD → ADR-0007 (Evidence Ingestion Protocol) → Task 001 (infrastructure scaffold) → Task 002 (domain layer) — implementation begins against a completed ontology, not a discovered one.
 
 ## Start here
 

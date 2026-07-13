@@ -33,3 +33,5 @@ An ADR is required for any decision that:
 | [0010](0010-verification-derives-from-the-ontology.md) | Verification derives from the ontology | Accepted |
 | [0011](0011-stable-ontology-identifiers.md) | Stable ontology identifiers | Accepted |
 | [0012](0012-consolidate-knowledge-corpus.md) | Consolidate the knowledge corpus under docs/knowledge/ | Accepted |
+| [0013](0013-implementation-must-remain-replaceable.md) | Implementation must remain replaceable | Accepted |
+| [0014](0014-establish-the-derivation-specification-layer.md) | Establish the Derivation Specification layer | Accepted |

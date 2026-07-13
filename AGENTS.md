@@ -24,9 +24,11 @@ ARGUS is **not** a CRUD app. It is a constitutional system. Every schema, migrat
 
 ## Decision hygiene
 
+- Triage every proposal with three questions (AGC Session 002): Is this a governance decision? → ADR. Is this a knowledge contribution? → `docs/knowledge/research/`. Is this an implementation detail? → code. Keep the categories separate.
 - Architecturally significant choices require an ADR in `docs/adr/` (use the template there) **before or with** the implementing change.
 - Every new ADR records the three ARGUS Governance Council reviews — Constitutional (a hard stop, no balancing test), Domain (the ladder is never collapsed), Architectural — and **finishes** with a Constitutional Checklist over all nine articles, per [ADR-0009](docs/adr/0009-establish-argus-governance-council.md).
-- The ontology is the source of truth for meaning (Founder Resolution 003): schemas, APIs, UI labels, AI prompts, tests, and docs derive from [`docs/domain/ONTOLOGY.md`](docs/domain/ONTOLOGY.md) — never define meaning independently of it. Meaning changes go to the ontology first (AGC review, MAJOR version), then propagate down.
+- The ontology is the source of truth for meaning (Founder Resolution 003): schemas, APIs, UI labels, AI prompts, tests, and docs derive from [`docs/domain/ONTOLOGY.md`](docs/domain/ONTOLOGY.md) via the [Derivation Specification](docs/domain/DERIVATION_SPECIFICATION.md) — never define meaning independently of it. Meaning changes go to the ontology first (AGC review, MAJOR version), then propagate down.
+- Implementation must remain replaceable (Founder Resolution 005 / ADR-0013, ONT-PRN-010): no model, schema, contract, prompt, fixture, or migration may become more authoritative than the ontology it derives from. When an artifact and the ontology disagree, re-derive the artifact — never amend the ontology to match it.
 - Cite the relevant constitutional article(s) in ADRs and in PR descriptions.
 - Changes to the Constitution itself require their own ADR.
 - Governance documents (brief, constitution, standards, ISS papers, Lexicon) are semantically versioned per the [Governance Versioning Standard](docs/knowledge/standards/GOVERNANCE_VERSIONING_STANDARD.md); bump the version and append to the version history with any change. ADRs stay unversioned and immutable.
