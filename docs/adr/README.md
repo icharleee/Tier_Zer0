@@ -15,7 +15,7 @@ An ADR is required for any decision that:
 - ADRs are immutable once **Accepted** — like everything else in ARGUS, they are superseded, never rewritten. A replacing ADR links back with `Supersedes`/`Superseded by`.
 - Every ADR cites the constitutional article(s) it reinforces or touches.
 - Every ADR from 0009 onward records the three ARGUS Governance Council reviews (Constitutional, Domain, Architectural) and **finishes** with a Constitutional Checklist auditing all nine articles — see [ADR-0009](0009-establish-argus-governance-council.md).
-- ADRs are unversioned; governance documents elsewhere follow the [Governance Versioning Standard](../standards/GOVERNANCE_VERSIONING_STANDARD.md).
+- ADRs are unversioned; governance documents elsewhere follow the [Governance Versioning Standard](../knowledge/standards/GOVERNANCE_VERSIONING_STANDARD.md).
 
 ## Index
 
@@ -30,3 +30,6 @@ An ADR is required for any decision that:
 | 0007 | Evidence ingestion and atomic finalization | Reserved (forward-referenced by ADR-0006; not yet drafted) |
 | [0008](0008-establish-arb-and-documentation-governance.md) | Establish the Architecture Review Board and Phase 1 documentation governance | Superseded by 0009 |
 | [0009](0009-establish-argus-governance-council.md) | Establish the ARGUS Governance Council | Accepted |
+| [0010](0010-verification-derives-from-the-ontology.md) | Verification derives from the ontology | Accepted |
+| [0011](0011-stable-ontology-identifiers.md) | Stable ontology identifiers | Accepted |
+| [0012](0012-consolidate-knowledge-corpus.md) | Consolidate the knowledge corpus under docs/knowledge/ | Accepted |

@@ -1,6 +1,6 @@
 # The ARGUS Ontology
 
-- **Document version:** 1.0.0 — **Ratified** by AGC Review Session 001, 2026-07-13
+- **Document version:** 1.1.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; 1.1.0 adds stable identifiers (ADR-0011) and the Verification rung (ADR-0010)
 - **Date:** 2026-07-13
 - **Governed by:** [Engineering Constitution](../foundation/ENGINEERING_CONSTITUTION.md) 1.0.0, [Lexicon](../glossary/LEXICON.md) 1.0.0, ADR-0009 (Founder Resolution 003)
 - **Derived from it:** the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md), [Entity Lifecycles](ENTITY_LIFECYCLES.md), the [Invariant Matrix](INVARIANT_MATRIX.md), and every implementation artifact thereafter
@@ -85,32 +85,60 @@ Three kinds of agency exist in ARGUS, and the ontology keeps them distinct:
 
 ## 7. The fourteen first-class objects
 
-The complete object vocabulary, in ontological groupings (canonical definitions in the [Lexicon](../glossary/LEXICON.md); structure in the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md)):
+The complete object vocabulary with stable identifiers (per ADR-0011; canonical definitions in the [Lexicon](../glossary/LEXICON.md); structure in the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md)). This table is the authoritative object-identifier registry:
 
-| Grouping | Objects | Ontological role |
-|---|---|---|
-| Context | Case | The bounded investigative world and its legal authority |
-| Evidence | EvidenceArtifact, SourceLocator | Preserved fragments of reality, and precise addresses into them |
-| The ladder | Observation, Interpretation, Hypothesis | Perception, inference, synthesis — never collapsed |
-| Negative space | Unknown, UnknownLink, UnknownResolution, Contradiction, ContradictionMember | Gaps and conflicts as durable, human-disposed objects |
-| World model | Entity, Relationship | Referent handles and evidence-grounded connections |
-| Accountability | AuditEntry | The witnessed history of every material act |
+| ID | Object | Grouping | Ontological role |
+|---|---|---|---|
+| ONT-CAS-001 | Case | Context | The bounded investigative world and its legal authority |
+| ONT-EVA-001 | EvidenceArtifact | Evidence | A preserved fragment of reality |
+| ONT-SRC-001 | SourceLocator | Evidence | A precise address into an artifact |
+| ONT-OBS-001 | Observation | The ladder | Perception: what the evidence shows |
+| ONT-INT-001 | Interpretation | The ladder | Inference: what it may mean |
+| ONT-HYP-001 | Hypothesis | The ladder | Synthesis: what may have happened |
+| ONT-UNK-001 | Unknown | Negative space | A recognized gap, standing as an object |
+| ONT-UNL-001 | UnknownLink | Negative space | What a gap touches |
+| ONT-UNR-001 | UnknownResolution | Negative space | The human record of a gap's disposition |
+| ONT-CON-001 | Contradiction | Negative space | A recognized conflict, standing as an object |
+| ONT-CNM-001 | ContradictionMember | Negative space | A claim's part in a conflict |
+| ONT-ENT-001 | Entity | World model | A referent handle, not a dossier |
+| ONT-REL-001 | Relationship | World model | An evidence-grounded connection |
+| ONT-AUD-001 | AuditEntry | Accountability | The witnessed history of a material act |
 
 ## 8. Derivation rule
 
-Per Founder Resolution 003, the derivation order is one-directional:
+Per Founder Resolutions 003 and 004, the derivation order is one-directional and now extends through verification:
 
 ```
 ONTOLOGY.md
   → DOMAIN_SCHEMA_SPECIFICATION.md   (structure: attributes, references, invariants)
   → ENTITY_LIFECYCLES.md             (state machines and permitted transitions)
   → INVARIANT_MATRIX.md              (per-entity enforcement specification)
-  → implementation                   (schemas, APIs, UIs, prompts, tests)
+  → implementation                   (schemas, APIs, UIs, prompts)
+  → verification                     (tests proving conformance to ontological rules)
+  → operation
 ```
 
-A conflict between an implementation artifact and this document is a defect in the artifact. A needed change of *meaning* is made here first — under Governance Council review and a MAJOR version change — and only then propagated downward.
+**Verification is derived from ontology, not from implementation** (Resolution 004 / ADR-0010): every domain-protecting test declares, by stable identifier, which ontological rule it protects. A test that cannot name its rule is either infrastructure plumbing or evidence of an undocumented rule — and undocumented rules are fixed here first.
 
-## 9. Unresolved ontological questions
+A conflict between an implementation artifact and this document is a defect in the artifact. A needed change of *meaning* is made here first — under Governance Council review and a MAJOR version change — and only then propagated downward. This methodology is named **Ontology-Driven Engineering (ODE)**: the ontology defines meaning, the schema defines structure, implementation realizes behavior, and verification proves conformance (research treatment planned as ISS-0005).
+
+## 9. Stable principle identifiers (ONT-PRN registry)
+
+Cross-cutting principles carry stable identifiers alongside the object registry in §7 (scheme and immutability rules: ADR-0011). Identifiers never change meaning and are never reused; wording may evolve under versioning, the ID does not.
+
+| ID | Principle | Anchored in |
+|---|---|---|
+| ONT-PRN-001 | The representation is not the thing | §1 |
+| ONT-PRN-002 | Every step away from evidence adds inference | §1, §2 |
+| ONT-PRN-003 | What the system does not know is part of what it knows | §1, §3 |
+| ONT-PRN-004 | The one-rung rule: ladder references climb exactly one rung | §2 |
+| ONT-PRN-005 | No provenance, no claim | §6 |
+| ONT-PRN-006 | Nothing disappears: retraction replaces deletion | §6 |
+| ONT-PRN-007 | Human judgment is final and external | §2, §5 |
+| ONT-PRN-008 | The ontology is the source of truth for meaning (Resolution 003) | §8 |
+| ONT-PRN-009 | Verification is derived from ontology (Resolution 004) | §8 |
+
+## 10. Unresolved ontological questions
 
 - **The nature of uncertainty.** Uncertainty is mandatory on inferential claims, but its representation (prose, vocabulary, scale) is unsettled; a scale invites false precision (Article IX). Requires ISS-0003 before schematization.
 - **Identity of entities.** When are two handles the same referent? Human-determined in v0.1; any future assistance must not transfer the determination to a machine.
@@ -133,3 +161,4 @@ Ratified as one constitutional package with the [Domain Schema Specification](DO
 |---|---|---|
 | 0.1.0 | 2026-07-13 | Initial draft, extracted as the meaning layer above the Domain Schema Specification per ADR-0009 / Founder Resolution 003. |
 | 1.0.0 | 2026-07-13 | Ratified by AGC Review Session 001. |
+| 1.1.0 | 2026-07-13 | Added stable identifier registries for objects (§7) and principles (§9) per ADR-0011; extended the derivation chain through Verification and Operation and named Ontology-Driven Engineering per ADR-0010 / Founder Resolution 004. |

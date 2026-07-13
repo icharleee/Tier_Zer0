@@ -16,7 +16,7 @@ Evidence → Context → Reasoning → Understanding → Human Judgment
 
 ## Status
 
-**Version 0.1 — Foundational Development.** This repository currently contains the project's governing documentation. Implementation follows from it, not the other way around.
+**Version 0.1 — Foundational Development, Phase 1.** The governance foundation is complete and the domain package (Ontology, Domain Schema Specification, Entity Lifecycles) is ratified at 1.0.0 by the Governance Council. Roadmap before the first production line of code: Invariant Matrix and ERD → ADR-0007 (Evidence Ingestion Protocol) → Task 001 (infrastructure scaffold) → Task 002 (domain layer) — implementation begins against a completed ontology, not a discovered one.
 
 ## Start here
 
@@ -31,9 +31,9 @@ This project is governed through four documentation layers. Read them in order:
 
 Lower layers must comply with higher layers. Where they conflict, the Constitution prevails (see [ADR-0001](docs/adr/0001-adopt-layered-governance-documentation.md)).
 
-Supporting corpora (established by ADR-0008; governed per [ADR-0009](docs/adr/0009-establish-argus-governance-council.md)): the [Lexicon](docs/glossary/LEXICON.md) — canonical vocabulary, normative everywhere — plus [Standards](docs/standards/README.md), [ISS research](docs/research/README.md), the [Academy](docs/academy/README.md), and [Architecture artifacts](docs/architecture/README.md).
+Supporting corpora (established by ADR-0008; governed per [ADR-0009](docs/adr/0009-establish-argus-governance-council.md)): the [Lexicon](docs/glossary/LEXICON.md) — canonical vocabulary, normative everywhere — the [knowledge corpus](docs/knowledge/README.md) ([Standards](docs/knowledge/standards/README.md), [ISS research](docs/knowledge/research/README.md), the [Academy](docs/knowledge/academy/README.md); ADR-0012), and [Architecture artifacts](docs/architecture/README.md).
 
-The domain is documented ontology-first per Founder Resolution 003 — [the ARGUS Ontology](docs/domain/ONTOLOGY.md) is the source of truth for meaning, and the [Domain Schema Specification](docs/domain/DOMAIN_SCHEMA_SPECIFICATION.md), [Entity Lifecycles](docs/domain/ENTITY_LIFECYCLES.md), and [Invariant Matrix](docs/domain/INVARIANT_MATRIX.md) derive from it. Project governance runs through the ARGUS Governance Council (ADR-0009).
+ARGUS develops by **Ontology-Driven Engineering** (ADR-0010): the ontology defines meaning, the schema defines structure, implementation realizes behavior, and verification proves conformance. [The ARGUS Ontology](docs/domain/ONTOLOGY.md) is the source of truth for meaning (Founder Resolution 003); the [Domain Schema Specification](docs/domain/DOMAIN_SCHEMA_SPECIFICATION.md), [Entity Lifecycles](docs/domain/ENTITY_LIFECYCLES.md), [Invariant Matrix](docs/domain/INVARIANT_MATRIX.md), implementation, and tests all derive from it — tests cite the stable ontology identifiers they protect (ADR-0011). Project governance runs through the ARGUS Governance Council (ADR-0009).
 
 ## Core commitments
 

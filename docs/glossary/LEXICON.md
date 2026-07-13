@@ -1,12 +1,12 @@
 # The ARGUS Lexicon
 
-- **Document version:** 1.0.0
+- **Document version:** 1.0.1
 - **Status:** Normative
 - **Established by:** [ADR-0008](../adr/0008-establish-arb-and-documentation-governance.md), Founder Resolution 002
 
 This is the canonical vocabulary of ARGUS. Words drift over time; these must not. Every ADR, API, database schema, UI label, documentation page, and AI prompt uses these terms with exactly these meanings. **One canonical definition. Always.**
 
-Semantic changes to a definition are MAJOR version changes and require Architecture Review Board review (see the [Governance Versioning Standard](../standards/GOVERNANCE_VERSIONING_STANDARD.md)). Adding a term is MINOR.
+Semantic changes to a definition are MAJOR version changes and require Architecture Review Board review (see the [Governance Versioning Standard](../knowledge/standards/GOVERNANCE_VERSIONING_STANDARD.md)). Adding a term is MINOR.
 
 ---
 
@@ -92,3 +92,4 @@ The append-only, immutable record of a single material action in the system: who
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-07-13 | Initial canonical vocabulary, ratified by Founder Resolution 002. |
+| 1.0.1 | 2026-07-13 | Link paths updated for the knowledge-corpus move (ADR-0012). No semantic change. |

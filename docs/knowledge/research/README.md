@@ -2,7 +2,7 @@
 
 This directory holds ARGUS's research corpus — the project's equivalent of scientific papers. ISS papers are **research, not implementation documents**: they develop the theory the software exists to serve, and they justify domain concepts before those concepts are engineered.
 
-ISS papers are governed documents: they carry semantic versions per the [Governance Versioning Standard](../standards/GOVERNANCE_VERSIONING_STANDARD.md) and use [Lexicon](../glossary/LEXICON.md) vocabulary.
+ISS papers are governed documents: they carry semantic versions per the [Governance Versioning Standard](../standards/GOVERNANCE_VERSIONING_STANDARD.md) and use [Lexicon](../../glossary/LEXICON.md) vocabulary.
 
 ## Paper series
 
@@ -12,5 +12,6 @@ ISS papers are governed documents: they carry semantic versions per the [Governa
 | ISS-0002 | Fragmentation Theory | Planned |
 | ISS-0003 | Epistemic Integrity | Planned |
 | ISS-0004 | The Anatomy of Evidence | Planned |
+| ISS-0005 | Ontology-Driven Engineering (ODE) | Planned (named by AGC Session 001; see ADR-0010) |
 
 Papers are numbered sequentially as `ISS-NNNN-short-title.md`.

@@ -29,7 +29,7 @@ ARGUS is **not** a CRUD app. It is a constitutional system. Every schema, migrat
 - The ontology is the source of truth for meaning (Founder Resolution 003): schemas, APIs, UI labels, AI prompts, tests, and docs derive from [`docs/domain/ONTOLOGY.md`](docs/domain/ONTOLOGY.md) — never define meaning independently of it. Meaning changes go to the ontology first (AGC review, MAJOR version), then propagate down.
 - Cite the relevant constitutional article(s) in ADRs and in PR descriptions.
 - Changes to the Constitution itself require their own ADR.
-- Governance documents (brief, constitution, standards, ISS papers, Lexicon) are semantically versioned per the [Governance Versioning Standard](docs/standards/GOVERNANCE_VERSIONING_STANDARD.md); bump the version and append to the version history with any change. ADRs stay unversioned and immutable.
+- Governance documents (brief, constitution, standards, ISS papers, Lexicon) are semantically versioned per the [Governance Versioning Standard](docs/knowledge/standards/GOVERNANCE_VERSIONING_STANDARD.md); bump the version and append to the version history with any change. ADRs stay unversioned and immutable.
 
 ## Code style and quality
 
@@ -37,6 +37,7 @@ ARGUS is **not** a CRUD app. It is a constitutional system. Every schema, migrat
 - Prefer making invalid states unrepresentable (types, constraints, non-nullable references) over runtime checks; prefer runtime checks over convention.
 - Name things after the domain model (`EvidenceArtifact`, `SourceLocator`, `Observation`, `Interpretation`, `Hypothesis`, `Contradiction`, `Unknown`, `Entity`, `Relationship`, `AuditEntry`, `Case`) using the canonical definitions in the [Lexicon](docs/glossary/LEXICON.md) — do not invent synonyms for existing concepts, in code, schemas, UI labels, docs, or AI prompts.
 - Tests that verify constitutional guarantees (immutability, provenance enforcement, human-only state transitions, audit coverage) are release-blocking: never delete, skip, or weaken them to make a build pass.
+- Verification derives from the ontology, not from implementation (ADR-0010): every domain-protecting test declares the ontological rule it protects by stable identifier (e.g., `ONT-OBS-001`, `ONT-PRN-004`; registry in [ONTOLOGY.md](docs/domain/ONTOLOGY.md)). If no rule exists for the behavior you're testing, amend the ontology first — the test suite must never be the only place a rule lives.
 - Do not optimize for feature count. Optimize for epistemic integrity.
 
 ## When uncertain

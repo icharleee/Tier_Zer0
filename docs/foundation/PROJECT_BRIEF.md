@@ -1,6 +1,6 @@
 # PROJECT: ARGUS
 
-**Document version:** 1.1.0 (per the [Governance Versioning Standard](../standards/GOVERNANCE_VERSIONING_STANDARD.md))
+**Document version:** 1.1.1 (per the [Governance Versioning Standard](../knowledge/standards/GOVERNANCE_VERSIONING_STANDARD.md))
 **ARGUS release target:** v0.1
 **Status:** Foundational Development
 
@@ -312,7 +312,7 @@ docs/adr/                   (decisions — the architectural record)
 Implementation
 ```
 
-Supporting corpora (established by ADR-0008): the [Lexicon](../glossary/LEXICON.md) (canonical vocabulary), [Standards](../standards/README.md), [ISS research papers](../research/README.md), the [Academy](../academy/README.md), and [Architecture artifacts](../architecture/README.md).
+Supporting corpora (established by ADR-0008): the [Lexicon](../glossary/LEXICON.md) (canonical vocabulary), the [knowledge corpus](../knowledge/README.md) — [Standards](../knowledge/standards/README.md), [ISS research papers](../knowledge/research/README.md), the [Academy](../knowledge/academy/README.md) — and [Architecture artifacts](../architecture/README.md).
 
 ---
 
@@ -322,3 +322,4 @@ Supporting corpora (established by ADR-0008): the [Lexicon](../glossary/LEXICON.
 |---|---|---|
 | 1.0.0 | 2026-07-13 | Ratified at repository root commit. |
 | 1.1.0 | 2026-07-13 | Added the closing augmentation principle to the North Star; added version header and supporting-corpora references (Founder Resolution 002 / ADR-0008). |
+| 1.1.1 | 2026-07-13 | Link paths updated for the knowledge-corpus move (ADR-0012). No semantic change. |
