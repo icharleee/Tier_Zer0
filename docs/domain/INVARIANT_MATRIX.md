@@ -1,9 +1,9 @@
 # ARGUS Domain Invariant Matrix
 
-- **Document version:** 0.0.2 (Skeleton — population unblocked by AGC Review Session 001; completed before Task 001 per the revised roadmap)
+- **Document version:** 0.0.3 (Skeleton — populated after the [Derivation Specification](DERIVATION_SPECIFICATION.md) ratifies, before Task 001)
 - **Date:** 2026-07-13
 - **Required by:** ADR-0006 (per-table enforcement specification and material-mutation enumeration)
-- **Derived from:** the [Ontology](ONTOLOGY.md), [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md), and [Entity Lifecycles](ENTITY_LIFECYCLES.md)
+- **Derived from:** the [Ontology](ONTOLOGY.md) via the [Derivation Specification](DERIVATION_SPECIFICATION.md) (ADR-0014), with structure from the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md) and [Entity Lifecycles](ENTITY_LIFECYCLES.md)
 
 The matrix maps every constitutional invariant to its concrete enforcement mechanism and its verifying release-blocking test. It is the bridge between doctrine and implementation: ADR-0006 forbids blanket enforcement rules ("not every table has the same immutability requirements") and requires enforcement to be specified per table, here.
 
@@ -28,7 +28,7 @@ The matrix thereby closes the ODE verification loop: test → matrix row → ont
 
 ## Status
 
-Unblocked by the domain bundle's ratification (AGC Review Session 001). Per the session's revised roadmap, the matrix is populated — together with the ERD — **before** Task 001 (infrastructure scaffold), so implementation begins against a completed ontology rather than discovering one. Rows are reviewed by the Governance Council's Architecture Review Board.
+Per AGC Review Session 002 (ADR-0014), the [Derivation Specification](DERIVATION_SPECIFICATION.md) is written and ratified first; the matrix is then populated almost mechanically — each row instantiates a derivation obligation — together with the ERD, **before** Task 001 (infrastructure scaffold), so implementation begins against a completed ontology rather than discovering one. Rows are reviewed by the Governance Council's Architecture Review Board.
 
 ## Version history
 
@@ -36,3 +36,4 @@ Unblocked by the domain bundle's ratification (AGC Review Session 001). Per the 
 |---|---|---|
 | 0.0.1 | 2026-07-13 | Skeleton: row schema and population plan. Relocated from docs/architecture/ per ADR-0009. |
 | 0.0.2 | 2026-07-13 | Added Ontology-rule column (ADR-0011) and ODE loop-closure semantics (ADR-0010); population re-sequenced ahead of Task 001 per AGC Session 001. |
+| 0.0.3 | 2026-07-13 | Re-derived through the Derivation Specification (ADR-0014); population follows its ratification. |
