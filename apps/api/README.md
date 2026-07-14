@@ -41,7 +41,10 @@ python -m pytest                                  # 29 tests incl. adversarial s
 
 Known trust-boundary limits: actor identity is asserted by the trusted Python service (authentication is Slice 1D); privileged owners can alter schema/data — detected via chain verification, not prevented.
 
-## Deliberately not here yet
+## Deliberately not here yet (roadmap per AGC Session 005 — the ontology leads; storage serves the domain)
 
-- Slice 1C: MinIO `ContentStore`, Docker Compose, reconciliation sweep (ADR-0007 §4), stalled-`PENDING_VERIFICATION` surfacing.
-- Slice 1D: FastAPI surface, authenticated actor context, the minimal UI ("visible in UI" leg of the loop), CI wiring.
+- **Slice 1C — Observation eligibility**: eligibility as a derived constitutional property ("can this artifact legally support an Observation?") checked before any Observation exists. Awaiting plan approval.
+- **Slice 1D — Observation creation**: the first ladder claim (ONT-OBS-001), with SourceLocator.
+- **Slice 1E — Storage + reconciliation**: MinIO `ContentStore`, Docker Compose, reconciliation sweep (ADR-0007 §4), stalled-`PENDING_VERIFICATION` surfacing.
+- **Slice 1F — API/UI**: FastAPI surface, authenticated actor context, the visible-UI leg, CI wiring.
+- Long-term (ADR-0017 / ONT-PRN-013): generated lifecycle renderings from a single Lifecycle Specification; until then the conformance sweep (`test_lifecycle_renderings_conformance`) is release-blocking.

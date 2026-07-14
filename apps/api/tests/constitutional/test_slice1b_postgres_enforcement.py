@@ -371,3 +371,94 @@ class TestChainIntegrity:
         result = verify_case_chain(pg_session, active_artifact.case_id)
         assert not result.valid
         assert any("seq 2" in f for f in result.findings)
+
+
+class TestLifecycleRenderingConformance:
+    """ONT-PRN-013 (ADR-0017 interim obligation): the Python registry and the
+    PostgreSQL transition functions are two renderings of Entity Lifecycles
+    §2. This sweep drives every named wrapper from every predecessor state
+    with every actor class and asserts the database's accept/reject decision
+    equals the registry's. Divergence is a constitutional failure, not a bug.
+    """
+
+    WRAPPERS = [
+        # (function, to_status, action, extra param builder)
+        ("activate_evidence_artifact", ArtifactStatus.ACTIVE, "artifact-activated",
+         lambda a: {"p5": a.hash_digest}),
+        ("quarantine_evidence_artifact", ArtifactStatus.QUARANTINED, "artifact-quarantined",
+         lambda a: {"p5": "conformance sweep"}),
+        ("reactivate_evidence_artifact", ArtifactStatus.ACTIVE, "artifact-reactivated",
+         lambda a: {"p5": a.hash_digest, "p6": "conformance sweep"}),
+        ("retract_evidence_artifact", ArtifactStatus.RETRACTED, "artifact-retracted",
+         lambda a: {"p5": "conformance sweep", "p6": None}),
+        ("seal_evidence_artifact", ArtifactStatus.SEALED, "artifact-sealed",
+         lambda a: {"p5": "court order (conformance)"}),
+        ("unseal_evidence_artifact", ArtifactStatus.ACTIVE, "artifact-unsealed",
+         lambda a: {"p5": "court order (conformance)"}),
+    ]
+
+    def test_lifecycle_renderings_conformance(
+        self, pg_session, pg_admin_engine, store, case, investigator
+    ):
+        from argus.domain.actors import ActorClass
+        from argus.domain.transitions import ALLOWED_ARTIFACT_TRANSITIONS
+
+        staged = stage_upload(store, SYNTHETIC_IMAGE)
+        artifact = create_artifact_record(
+            pg_session, staged, case=case, actor=investigator,
+            media_type="image/png",
+            acquisition_description="conformance-sweep artifact",
+        )
+        artifact_id, digest = artifact.id, artifact.hash_digest
+        divergences: list[str] = []
+        checked = 0
+
+        for fn, to_status, action, params_for in self.WRAPPERS:
+            for from_status in ArtifactStatus:
+                for actor_class in ActorClass:
+                    checked += 1
+                    key = (from_status, to_status)
+                    registry_entry = ALLOWED_ARTIFACT_TRANSITIONS.get(key)
+                    expected_allowed = (
+                        registry_entry is not None
+                        and registry_entry[0] == action
+                        and actor_class in registry_entry[1]
+                    )
+                    with pg_admin_engine.begin() as conn:  # force predecessor
+                        conn.execute(
+                            text(
+                                "UPDATE public.evidence_artifacts SET status = :s,"
+                                " retracted_at = NULL, retraction_reason = NULL,"
+                                " superseded_by = NULL WHERE id = :id"
+                            ),
+                            {"s": from_status.value, "id": artifact_id},
+                        )
+                    extra = params_for(artifact)
+                    placeholders = ", ".join(
+                        [":p1", ":p2", ":p3", ":p4"] + [f":{k}" for k in extra]
+                    )
+                    params = {
+                        "p1": artifact_id,
+                        "p2": actor_class.value,
+                        "p3": "conformance-sweeper",
+                        "p4": "m/v/w" if actor_class is ActorClass.AI else None,
+                        **extra,
+                    }
+                    try:
+                        pg_session.execute(
+                            text(f"SELECT argus_private.{fn}({placeholders})"), params
+                        )
+                        pg_session.commit()
+                        db_allowed = True
+                    except DBAPIError:
+                        pg_session.rollback()
+                        db_allowed = False
+                    if db_allowed != expected_allowed:
+                        divergences.append(
+                            f"{fn}: {from_status.value} + {actor_class.value} -> "
+                            f"db={'ALLOW' if db_allowed else 'REJECT'}, "
+                            f"registry={'ALLOW' if expected_allowed else 'REJECT'}"
+                        )
+
+        assert checked == 90
+        assert not divergences, "renderings diverged:\n" + "\n".join(divergences)
