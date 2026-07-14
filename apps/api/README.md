@@ -44,7 +44,7 @@ Known trust-boundary limits: actor identity is asserted by the trusted Python se
 ## Deliberately not here yet (roadmap per AGC Session 005 — the ontology leads; storage serves the domain)
 
 - **Slice 1C — Observation eligibility (complete)**: constitutional predicates (ADR-0018) — `argus.domain.predicates` and `argus_private.can_support_observation` independently render the [canonical matrix](../../docs/domain/CONSTITUTIONAL_PREDICATES.md); derived never stored; refusals answer with canonical reason codes; H2 conformance sweep proves identical decisions (16/16 rows). Transition-authority predicates derive from the registry (no second lifecycle rendering).
-- **Slice 1D — Observation creation**: the first ladder claim (ONT-OBS-001), with SourceLocator.
+- **Slice 1D — Observation creation (complete)**: SourceLocator as scope of constitutional support (ONT-PRN-016) and Observation, the first epistemic object — validation distinct from persistence (`argus.domain.admissibility` + `argus_private.validate_*`), creation solely via controlled functions, two identities (citation + ONT-OBS-001), `is_grounded()` derived never stored, H3 conformance across the canonical refusal matrix. Perception only: no meaning fields exist, and a test proves it.
 - **Slice 1E — Storage + reconciliation**: MinIO `ContentStore`, Docker Compose, reconciliation sweep (ADR-0007 §4), stalled-`PENDING_VERIFICATION` surfacing.
 - **Slice 1F — API/UI**: FastAPI surface, authenticated actor context, the visible-UI leg, CI wiring.
 - Long-term (ADR-0017 / ONT-PRN-013): generated lifecycle renderings from a single Lifecycle Specification; until then the conformance sweep (`test_lifecycle_renderings_conformance`) is release-blocking.

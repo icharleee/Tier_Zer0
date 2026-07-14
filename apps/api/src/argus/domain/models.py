@@ -154,6 +154,84 @@ class EvidenceArtifact(Base):
         return self.status is ArtifactStatus.ACTIVE
 
 
+class SourceLocator(Base):
+    """ONT-SRC-001 — the scope of constitutional support (ONT-PRN-016):
+    the smallest evidentiary region required to justify an Observation,
+    not merely an address. Immutable after creation (class V: corrections
+    are retract-and-replace)."""
+
+    __tablename__ = "source_locators"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=_new_id)
+    case_id: Mapped[str] = mapped_column(ForeignKey("cases.id"), nullable=False)
+    artifact_id: Mapped[str] = mapped_column(
+        ForeignKey("evidence_artifacts.id"), nullable=False
+    )
+    scheme: Mapped[str] = mapped_column(String(32))
+    payload: Mapped[dict] = mapped_column(JSON)
+    created_by_class: Mapped[str] = mapped_column(String(16))
+    created_by_id: Mapped[str] = mapped_column(String(200))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+    retracted_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    retraction_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+
+class Observation(Base):
+    """ONT-OBS-001 — the first epistemic object: a source-grounded statement
+    of what evidence shows. Perception only; this table deliberately has no
+    meaning, inference, ranking, or confidence fields — meaning enters the
+    system at Interpretation and nowhere earlier (the one-rung rule,
+    ONT-PRN-004)."""
+
+    __tablename__ = "observations"
+    __table_args__ = (UniqueConstraint("case_id", "citation", name="uq_obs_citation"),)
+
+    # Ontological class — derived, never stored (Resolution 005 pattern);
+    # citations pair it with the operational identity below (ADR-0020 §5).
+    ONTOLOGY_CLASS = "ONT-OBS-001"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=_new_id)
+    case_id: Mapped[str] = mapped_column(ForeignKey("cases.id"), nullable=False)
+    citation: Mapped[str] = mapped_column(String(16))  # OBS-000001, per case
+    statement: Mapped[str] = mapped_column(Text)
+    method_description: Mapped[str] = mapped_column(Text)
+    event_time_start: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    event_time_end: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    created_by_class: Mapped[str] = mapped_column(String(16))
+    created_by_id: Mapped[str] = mapped_column(String(200))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+    retracted_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    retraction_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+
+class ObservationGrounding(Base):
+    """The junction binding an Observation to the SourceLocators that scope
+    its constitutional support (≥ 1; heterogeneous evidence ready).
+    Content-immutable rows."""
+
+    __tablename__ = "observation_groundings"
+    __table_args__ = (
+        UniqueConstraint("observation_id", "locator_id", name="uq_grounding"),
+    )
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=_new_id)
+    observation_id: Mapped[str] = mapped_column(
+        ForeignKey("observations.id"), nullable=False
+    )
+    locator_id: Mapped[str] = mapped_column(
+        ForeignKey("source_locators.id"), nullable=False
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+
+
 class CaseAuditHead(Base):
     """The per-case audit chain root (ADR-0016): explicit aggregate for
     sequence allocation and current head hash. Locked FOR UPDATE first in the
