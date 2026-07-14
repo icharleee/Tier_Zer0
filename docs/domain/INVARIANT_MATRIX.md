@@ -1,6 +1,6 @@
 # ARGUS Domain Invariant Matrix
 
-- **Document version:** 0.1.0 (Slice 1 populated — Case, EvidenceArtifact, AuditEntry; remaining entities populate with their slices)
+- **Document version:** 0.2.0 (Slice 1B enforcement mechanisms bound to ADR-0016: head-rooted ordering, hash chain, SECURITY DEFINER transition functions)
 - **Date:** 2026-07-13
 - **Required by:** ADR-0006 (per-table enforcement specification and material-mutation enumeration)
 - **Derived from:** the [Ontology](ONTOLOGY.md) via the [Derivation Specification](DERIVATION_SPECIFICATION.md) (ADR-0014), with structure from the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md) and [Entity Lifecycles](ENTITY_LIFECYCLES.md)
@@ -57,9 +57,11 @@ Enforcement mechanisms name their PostgreSQL construct per ADR-0006; the service
 
 | Entity / field group | Ontology rule | Class | Permitted mutations | Permitted actors | Enforcing mechanism | Material mutations audited | Verifying test |
 |---|---|---|---|---|---|---|---|
-| AuditEntry: all fields | ONT-AUD-001 | CI | none — for every role including administrators | — (system-emitted only, as side effect of attributed operations) | INSERT-only privileges for the application role; no UPDATE/DELETE grants for any role; corrections are compensating entries | — | `test_audit_entry_immutable_for_all_roles` |
-| AuditEntry: atomic emission | ONT-AUD-001, D-AUD | invariant | — | — | audit INSERT in the same transaction as the mutation (controlled functions emit both) | every material mutation above | `test_mutation_and_audit_atomic_rollback` |
-| AuditEntry: per-case ordering | ONT-AUD-001 | invariant | — | — | monotonic sequence per case; unique (case, seq) constraint | — | `test_audit_ordering_gapless_per_case` |
+| AuditEntry: all fields (incl. chain fields per ADR-0016) | ONT-AUD-001 | CI | none for the application and ordinary operational roles (privileged owners remain inside the declared trust boundary; unauthorized privileged modification is detected via chain verification, migration review, and operational controls) | — (emitted only via `argus_private.append_audit_event`, as side effect of attributed operations) | SELECT-only grant for `argus_app` on `audit_entries`; inserts solely through the SECURITY DEFINER append function; no UPDATE/DELETE grants; corrections are compensating entries | — | `test_direct_audit_update_fails`, `test_direct_audit_delete_fails`, `test_direct_audit_insert_fails` |
+| AuditEntry: atomic emission | ONT-AUD-001, D-AUD | invariant | — | — | transition functions update the aggregate and append the event in one function body — one transaction, both or neither | every material mutation above | `test_transition_appends_event_atomically`, `test_failed_transition_appends_no_event` |
+| AuditEntry: per-case ordering | ONT-AUD-001 | invariant | — | — | `case_audit_heads` row locked FOR UPDATE first in the global lock order (ADR-0016); `next = last_sequence + 1`; unique (case, seq) constraint as backstop | — | `test_concurrent_appends_gapless_per_case` |
+| AuditEntry: hash chain | ONT-AUD-001 (ADR-0016) | invariant | — | — | `event_hash = sha256(canonical_text)` chain_version 1, computed in the append function from stored bytes; genesis = 64 zeros; head tracks `last_event_hash` | — | `test_chain_verification_valid`, `test_chain_verification_detects_corruption` |
+| CaseAuditHead: last_sequence / last_event_hash | ONT-AUD-001 (ADR-0016) | CT | advanced only by the append function | — (function-internal) | SELECT/INSERT-only grant for `argus_app`; UPDATE only inside `argus_private.append_audit_event` | — (bookkeeping, not a domain event) | `test_direct_head_update_fails` |
 
 ## Version history
 
@@ -70,3 +72,4 @@ Enforcement mechanisms name their PostgreSQL construct per ADR-0006; the service
 | 0.0.3 | 2026-07-13 | Re-derived through the Derivation Specification (ADR-0014); population follows its ratification. |
 | 0.0.4 | 2026-07-13 | Population re-sequenced to slice-by-slice per ADR-0015; slice gate: rows before code. |
 | 0.1.0 | 2026-07-13 | First population: Slice 1 rows (Case, EvidenceArtifact, AuditEntry) instantiating Derivation Specification obligations and ADR-0007 as amended. |
+| 0.2.0 | 2026-07-13 | Slice 1B: AuditEntry rows re-mechanized per ADR-0016 (append function, head-row lock order, hash chain, trust-boundary language per AGC amendments); CaseAuditHead row added; verifying tests renamed to the adversarial suite. |

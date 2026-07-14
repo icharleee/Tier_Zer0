@@ -1,6 +1,6 @@
 # ARGUS Derivation Specification
 
-- **Document version:** 1.1.0 — Ratified at 1.0.0 by AGC Review Session 003, 2026-07-13; 1.1.0 aligns ONT-EVA-001 with ADR-0007 as amended (AGC Session 004)
+- **Document version:** 1.2.0 — Ratified at 1.0.0 by AGC Review Session 003, 2026-07-13; 1.1.0 aligned ONT-EVA-001 with ADR-0007 as amended; 1.2.0 adds ADR-0016 chain obligations to ONT-AUD-001
 - **Date:** 2026-07-13
 - **Established by:** [ADR-0014](../adr/0014-establish-the-derivation-specification-layer.md) (AGC Review Session 002)
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) 1.2.0
@@ -171,11 +171,11 @@ Applies to every material mutation of every object.
 
 ### ONT-AUD-001 — AuditEntry
 
-- **Schema properties:** actor (with AI version fields where applicable); action type; target reference(s); outcome (rejections audited too); strictly monotonic per-case ordering.
+- **Schema properties:** actor (with AI version fields where applicable); action type; target reference(s); outcome (rejections audited too); strictly monotonic per-case ordering rooted in a per-case audit head; hash-chain fields per ADR-0016 (`chain_version`, `canonical_payload` derived exactly once at insertion, `previous_event_hash`, `event_hash`), all immutable.
 - **Invariants:** the strongest immutability in the system — no create/update/delete path for any actor including administrators; corrections are compensating entries; ordering gaps detectable.
 - **Audit events:** not applicable (compensating-entry mechanism).
-- **API behavior:** the audit trail MUST be readable end-to-end by an authorized external auditor without internal tooling (Article VIII); sealed-material reads appear in it.
-- **Required tests:** direct write/update/delete fails for every role at the database layer; the D-AUD atomicity test; gap detection works. Cite ONT-AUD-001.
+- **API behavior:** the audit trail MUST be readable end-to-end by an authorized external auditor without internal tooling (Article VIII); sealed-material reads appear in it; a chain-verification operation MUST report sequence continuity, hash linkage, and recomputed-hash validity (tamper-evident within the trust boundary — ADR-0016).
+- **Required tests:** direct write/update/delete fails for the application role at the database layer; the D-AUD atomicity test; gap detection works; chain verification passes on valid appends and identifies deliberately corrupted rows. Cite ONT-AUD-001.
 
 ---
 
@@ -192,3 +192,4 @@ Under the vertical-slice strategy (ADR-0015), the [Invariant Matrix](INVARIANT_M
 | 0.1.0 | 2026-07-13 | Initial draft per ADR-0014 (AGC Review Session 002). |
 | 1.0.0 | 2026-07-13 | Ratified by AGC Review Session 003. |
 | 1.1.0 | 2026-07-13 | ONT-EVA-001 derivation aligned with the explicit lifecycle of ADR-0007 as amended by AGC Session 004. |
+| 1.2.0 | 2026-07-13 | ONT-AUD-001 obligations extended with the ADR-0016 hash chain (head-rooted ordering, immutable chain fields, verification). |

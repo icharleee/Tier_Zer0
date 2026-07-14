@@ -1,6 +1,6 @@
 # ARGUS Domain Schema Specification
 
-- **Document version:** 1.1.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; 1.1.0 aligns EvidenceArtifact states with ADR-0007 as amended (AGC Session 004)
+- **Document version:** 1.2.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; 1.1.0 aligned EvidenceArtifact states with ADR-0007 as amended; 1.2.0 adds the ADR-0016 audit hash chain to ONT-AUD-001
 - **Date:** 2026-07-13
 - **Governed by:** [Engineering Constitution](../foundation/ENGINEERING_CONSTITUTION.md) 1.0.0, [Lexicon](../glossary/LEXICON.md) 1.0.0, ADR-0001–0006, ADR-0009
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) — the source of truth for meaning (Founder Resolution 003)
@@ -461,7 +461,7 @@ Lifecycle sections state the immutability class and any structurally load-bearin
 
 **Identity.** Opaque ID (C2), plus a strictly monotonically ordered position within its Case's audit history.
 
-**Required attributes.** Acting actor (class + identity + relevant version fields for AIWorkflow); action type (from the future Audit Event Standard; provisional enumeration = the audit events named throughout this document); target record reference(s); `occurred_at`; outcome (succeeded/rejected — constitutional rejections are themselves audited).
+**Required attributes.** Acting actor (class + identity + relevant version fields for AIWorkflow); action type (from the future Audit Event Standard; provisional enumeration = the audit events named throughout this document); target record reference(s); `occurred_at`; outcome (succeeded/rejected — constitutional rejections are themselves audited); hash-chain fields per ADR-0016: `chain_version`, `canonical_payload` (the immutable hashed text derived exactly once at insertion from the queryable payload), `previous_event_hash`, `event_hash`. Each Case's chain is rooted in a `case_audit_heads` record (`last_sequence`, `last_event_hash`) created with the Case.
 
 **Optional attributes.** Structured action detail (e.g., the retraction reason, the transition made); the authorization context under which the actor acted (Article VI).
 
@@ -479,7 +479,7 @@ Lifecycle sections state the immutability class and any structurally load-bearin
 
 **Audit events.** Not applicable (audit of audit is the compensating-entry mechanism).
 
-**Unresolved questions.** Tamper-evidence beyond database controls (hash-chaining entries) — attractive for Article VIII; decide via ADR before Task 002. Retention interaction with jurisdictional requirements — legal review flag (ADR-0006).
+**Unresolved questions.** ~~Tamper-evidence beyond database controls (hash-chaining entries)~~ — **resolved by ADR-0016** (per-case hash chain, tamper-evident within the trust boundary). Retention interaction with jurisdictional requirements — legal review flag (ADR-0006).
 
 ---
 
@@ -511,3 +511,4 @@ The [Invariant Matrix](INVARIANT_MATRIX.md) population and the ERD (`docs/archit
 | 0.2.0 | 2026-07-13 | Restructured under the Ontology-first hierarchy (ADR-0009 / Founder Resolution 003): meaning layer extracted to ONTOLOGY.md; authoritative state machines extracted to ENTITY_LIFECYCLES.md; Invariant Matrix relocated to docs/domain/; review checklist updated to AGC mechanisms. |
 | 1.0.0 | 2026-07-13 | Ratified by AGC Review Session 001. |
 | 1.1.0 | 2026-07-13 | EvidenceArtifact lifecycle references aligned with ADR-0007 as amended by AGC Session 004 (PENDING_VERIFICATION, QUARANTINED; SourceLocator prohibition restated as non-ACTIVE). |
+| 1.2.0 | 2026-07-13 | AuditEntry gains the ADR-0016 hash-chain attributes and the case_audit_heads chain root; hash-chaining unresolved question closed. |
