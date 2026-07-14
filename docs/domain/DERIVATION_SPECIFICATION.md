@@ -1,6 +1,6 @@
 # ARGUS Derivation Specification
 
-- **Document version:** 1.3.0 — Ratified at 1.0.0 by AGC Review Session 003, 2026-07-13; 1.1.0 aligned ONT-EVA-001 with ADR-0007 as amended; 1.2.0 added ADR-0016 chain obligations; 1.3.0 adds the constitutional-predicate gate to ONT-OBS-001 (ADR-0018)
+- **Document version:** 1.4.0 — Ratified at 1.0.0 by AGC Review Session 003, 2026-07-13; 1.4.0 adds the D-PRN-018 semantic contamination registry (ADR-0022; see version history)
 - **Date:** 2026-07-13
 - **Established by:** [ADR-0014](../adr/0014-establish-the-derivation-specification-layer.md) (AGC Review Session 002)
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) 1.2.0
@@ -53,6 +53,16 @@ Applies to every consequential state transition: case transitions, retractions, 
 - **Invariants:** no AIWorkflow or SystemProcess path may execute these transitions (SystemProcess exceptions are exactly those the Schema Specification enumerates as mechanical, e.g. artifact activation).
 - **API:** transition endpoints MUST require human authentication and authorization context (Article VI).
 - **Tests:** per transition, a test MUST prove the transition fails for non-human actors. Cite ONT-PRN-007 plus the object ID.
+
+### D-PRN-018 — Semantic contamination registry (from ONT-PRN-018)
+
+Applies to every epistemic layer. No layer's schema may carry the vocabulary of the layers above it; a release-blocking contamination test walks every epistemic table's columns against this registry, with its expectations transcribed from this table (ONT-PRN-015). Adding a stem is MINOR; removing one requires AGC review. Vocabulary scanning is the tripwire; reviews still judge semantics.
+
+| Layer | Forbidden column-name stems (from higher layers) |
+|---|---|
+| Observation (ONT-OBS-001) | confiden, infer, probab, interpret, hypoth, rank, suspic, intent, meaning, likelihood, predict, score |
+| Interpretation (ONT-INT-001) — pre-registered | hypoth, likelihood, predict, verdict, guilt |
+| SourceLocator (ONT-SRC-001) | all Observation stems plus: statement, claim |
 
 ### D-AUD — Atomic audit (from ONT-AUD-001 semantics)
 
@@ -194,3 +204,4 @@ Under the vertical-slice strategy (ADR-0015), the [Invariant Matrix](INVARIANT_M
 | 1.1.0 | 2026-07-13 | ONT-EVA-001 derivation aligned with the explicit lifecycle of ADR-0007 as amended by AGC Session 004. |
 | 1.2.0 | 2026-07-13 | ONT-AUD-001 obligations extended with the ADR-0016 hash chain (head-rooted ordering, immutable chain fields, verification). |
 | 1.3.0 | 2026-07-13 | ONT-OBS-001 creation gated by the can_support_observation constitutional predicate (ADR-0018 / Resolution 009). |
+| 1.4.0 | 2026-07-13 | D-PRN-018: semantic contamination registry with per-layer forbidden vocabulary and the release-blocking test obligation (Resolution 013 / ADR-0022). |

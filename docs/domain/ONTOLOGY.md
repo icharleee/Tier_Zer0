@@ -1,6 +1,6 @@
 # The ARGUS Ontology
 
-- **Document version:** 1.8.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; subsequent minor versions add stable identifiers and principles ONT-PRN-009 through ONT-PRN-016 (see version history)
+- **Document version:** 1.9.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; subsequent minor versions add stable identifiers and principles ONT-PRN-009 through ONT-PRN-018 (see version history)
 - **Date:** 2026-07-13
 - **Governed by:** [Engineering Constitution](../foundation/ENGINEERING_CONSTITUTION.md) 1.0.0, [Lexicon](../glossary/LEXICON.md) 1.0.0, ADR-0009 (Founder Resolution 003)
 - **Derived from it:** the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md), [Entity Lifecycles](ENTITY_LIFECYCLES.md), the [Invariant Matrix](INVARIANT_MATRIX.md), and every implementation artifact thereafter
@@ -145,6 +145,8 @@ Cross-cutting principles carry stable identifiers alongside the object registry 
 | ONT-PRN-014 | Eligibility determines whether an artifact may participate in reasoning; sufficiency determines what reasoning it can support — never collapsed (Resolution 009) | §2, §6 |
 | ONT-PRN-015 | Independent derivations are triangulated whenever practical: normative specification, executable implementation, independent verification — no implementation verified only against itself (Resolution 010) | §8 |
 | ONT-PRN-016 | A SourceLocator defines the exact scope of evidence upon which an Observation constitutionally depends — the smallest region required to justify it (Resolution 011) | §2, §4 |
+| ONT-PRN-017 | Persistence implements admissibility, not defines it: the ontology determines what may exist; persistence ensures those conditions cannot be bypassed (Resolution 012) | §8 |
+| ONT-PRN-018 | Epistemic layers reject semantic contamination from higher layers: no layer carries the vocabulary of the layers above it (Resolution 013) | §2 |
 
 ## 10. Unresolved ontological questions
 
@@ -177,3 +179,4 @@ Ratified as one constitutional package with the [Domain Schema Specification](DO
 | 1.6.0 | 2026-07-13 | Added ONT-PRN-014 (eligibility vs. sufficiency, Resolution 009 / ADR-0018), per the Slice 1C plan review. |
 | 1.7.0 | 2026-07-13 | Added ONT-PRN-015 (triangulated derivations, Resolution 010 / ADR-0019), per AGC Review Session 007. |
 | 1.8.0 | 2026-07-13 | Added ONT-PRN-016 and refined the ONT-SRC-001 role to scope-of-constitutional-support (Resolution 011 / ADR-0020), per the Slice 1D plan review. |
+| 1.9.0 | 2026-07-13 | Added ONT-PRN-017 (persistence implements admissibility, Resolution 012 / ADR-0021) and ONT-PRN-018 (semantic contamination, Resolution 013 / ADR-0022), per AGC Review Session 006. |

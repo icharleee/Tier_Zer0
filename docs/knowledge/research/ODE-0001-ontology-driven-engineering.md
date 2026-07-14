@@ -78,7 +78,15 @@ Slice 1B tested rule *transitions*; Slice 1C tests derived *behavior* — consti
 
 > **Hypothesis H3 (refined per AGC Session 008):** Independent implementations of epistemic admissibility converge when derived from a shared ontology and provenance model.
 
-Registered ahead of Slice 1D, which introduces the first **epistemic object** — an Observation is the first entity that makes a claim about reality. The refinement matters: Observation creation is about *admissibility* ("this claim is constitutionally allowed to exist"), not reasoning — reasoning begins at Interpretation. The experimental surface is the validator pair (Python and PostgreSQL renderings of the admissibility rules), testing SourceLocator grounding, provenance enforcement, eligibility enforcement, and audit emission as epistemic behaviors. **Status: Untested.**
+Registered ahead of Slice 1D, which introduces the first **epistemic object** — an Observation is the first entity that makes a claim about reality. The refinement matters: Observation creation is about *admissibility* ("this claim is constitutionally allowed to exist"), not reasoning — reasoning begins at Interpretation. The experimental surface is the validator pair (Python and PostgreSQL renderings of the admissibility rules), testing SourceLocator grounding, provenance enforcement, eligibility enforcement, and audit emission as epistemic behaviors.
+
+**Status: Supported (n = 1)** — Slice 1D: the canonical refusal matrix (ten scenarios) derived identically by both validators, zero divergences; verdict confirmed by AGC Session 006.
+
+> **Observation O3:** Separating admissibility from persistence reduced implementation complexity while increasing independent verifiability — validators became pure, creation became mechanical, database functions became smaller, tests became simpler (Resolution 012 / ONT-PRN-017: persistence implements admissibility, not defines it).
+
+> **Hypothesis H4:** Independent implementations preserve multiple constitutionally admissible interpretations without privileging one over another.
+
+Registered ahead of Slice 2A (*Competing Interpretations*): Article IV is not about having an interpretation but about protecting alternatives, so the experiment requires at least two admissible interpretations of the same grounded observations, neither privileged by the system. The three prior experiments each tested a different derivation category — transitions (H1), predicates (H2), admissibility (H3) — and H4 adds preservation of plurality. **Status: Untested.**
 
 > **Observation O2:** Independent verification derived directly from the ontology detected implementation divergence without sharing executable logic.
 
@@ -102,3 +110,4 @@ In Slice 1C, the test suite transcribed the canonical matrix as its own literal 
 | 0.3.0 | 2026-07-13 | Registered Hypothesis H2 (behavioral convergence via constitutional predicates), Slice 1C as its first experiment (Slice 1C plan review / ADR-0018). |
 | 0.4.0 | 2026-07-13 | H1 and H2 marked Supported (n = 1 each); Observation O2 (triangulated verification detects divergence) and Hypothesis H3 (epistemic-constraint convergence, untested) registered per AGC Review Session 007 / ADR-0019. |
 | 0.5.0 | 2026-07-13 | H3 refined to epistemic admissibility (AGC Session 008 / ADR-0020): the experiment targets the validator pair, not insertion. |
+| 0.6.0 | 2026-07-13 | H3 marked Supported (n = 1); Observation O3 (admissibility/persistence separation) and Hypothesis H4 (preservation of competing interpretations, untested) registered per AGC Review Session 006. |
