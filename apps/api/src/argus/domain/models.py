@@ -154,13 +154,28 @@ class EvidenceArtifact(Base):
         return self.status is ArtifactStatus.ACTIVE
 
 
+class CaseAuditHead(Base):
+    """The per-case audit chain root (ADR-0016): explicit aggregate for
+    sequence allocation and current head hash. Locked FOR UPDATE first in the
+    global lock order; advanced only by the append routine."""
+
+    __tablename__ = "case_audit_heads"
+
+    case_id: Mapped[str] = mapped_column(ForeignKey("cases.id"), primary_key=True)
+    last_sequence: Mapped[int] = mapped_column(Integer, default=0)
+    last_event_hash: Mapped[str] = mapped_column(String(64))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+
+
 class AuditEntry(Base):
     """ONT-AUD-001 — the witnessed history of a material act.
 
-    The strongest immutable in the system: no create path for actors (entries
-    are emitted only as side effects of attributed operations), no update or
-    delete path for anyone, including administrators. Corrections are
-    compensating entries. Per-case ordering is gapless and monotonic.
+    Append-only and hash-chained (ADR-0016): the application role and ordinary
+    operational roles cannot update or delete entries; privileged owners
+    remain inside the declared trust boundary, and unauthorized privileged
+    modifications are DETECTED through chain verification, not prevented.
+    Corrections are compensating entries. Per-case ordering is gapless and
+    monotonic, rooted in CaseAuditHead.
     """
 
     __tablename__ = "audit_entries"
@@ -180,5 +195,15 @@ class AuditEntry(Base):
     outcome: Mapped[AuditOutcome] = mapped_column(
         SAEnum(AuditOutcome, native_enum=False), default=AuditOutcome.SUCCEEDED
     )
+    # Human/queryable representation (ADR-0016 Amendment 4).
     detail: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     occurred_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+
+    # Hash-chain fields (ADR-0016): canonical_payload is the immutable exact
+    # text hashed into the chain, derived from `detail` exactly once at
+    # insertion by the append routine. The verifier hashes these stored
+    # bytes; it never re-canonicalizes from jsonb.
+    chain_version: Mapped[int] = mapped_column(Integer)
+    canonical_payload: Mapped[str | None] = mapped_column(Text, nullable=True)
+    previous_event_hash: Mapped[str] = mapped_column(String(64))
+    event_hash: Mapped[str] = mapped_column(String(64))

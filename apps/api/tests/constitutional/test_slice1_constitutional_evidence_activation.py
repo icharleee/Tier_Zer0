@@ -239,18 +239,5 @@ class TestConstitutionalEvidenceActivation:
             )
 
 
-@pytest.mark.postgres
-class TestDatabaseLayerEnforcement:
-    """Invariant Matrix rows whose enforcing mechanism is PostgreSQL itself
-    (grants, controlled functions). These run in CI against the Compose
-    stack once the Alembic migrations land; SQLite proves nothing here
-    (ADR-0006)."""
-
-    def test_artifact_hash_immutable_at_db(self):
-        pytest.skip("Requires PostgreSQL + migrations (next Slice 1 commit).")
-
-    def test_audit_entry_immutable_for_all_roles(self):
-        pytest.skip("Requires PostgreSQL + migrations (next Slice 1 commit).")
-
-    def test_mutation_and_audit_atomic_rollback(self):
-        pytest.skip("Requires PostgreSQL + migrations (next Slice 1 commit).")
+# Database-layer enforcement is proven by the Slice 1B adversarial suite:
+# tests/constitutional/test_slice1b_postgres_enforcement.py (@postgres).

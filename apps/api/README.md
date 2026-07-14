@@ -21,8 +21,27 @@ python tools/constitutional_coverage.py   # per-article coverage report
 
 Runtime policy per ADR-0006: Python 3.13 primary (`.python-version`); the suite is version-portable for development convenience.
 
-## Deliberately not here yet (remaining Slice 1 work)
+## Slice 1B — PostgreSQL enforcement (complete)
 
-- Alembic migrations carrying the **database-layer** enforcement of the [Invariant Matrix](../../docs/domain/INVARIANT_MATRIX.md) (INSERT-only grants, controlled transition functions, audit immutability for all roles) and the `@postgres` tests that prove them against the real Compose stack.
-- FastAPI surface, the minimal UI ("visible in UI" leg of the loop), MinIO `ContentStore`, Docker Compose, CI wiring.
-- Reconciliation sweep (ADR-0007 §4) and stalled-`PENDING_VERIFICATION` surfacing.
+The persistence boundary is independently hostile to unconstitutional writes (ADR-0016):
+
+- `infra/db/` provisions roles (`argus_owner`, `argus_app`, dev/CI-only `argus_test_admin`) **before** Alembic; migration 001 verifies they exist.
+- Three migrations: 001 case/authority/audit-head foundation; 002 artifact integrity (immutable-column trigger, status CHECK excluding STAGED, least-privilege grants); 003 hash-chained `audit_entries` and the `argus_private` SECURITY DEFINER transition functions (hardened search_path, PUBLIC revoked, one global lock order: head row, then artifact row).
+- The app role cannot: update constitutional columns or status, delete anything, insert audit entries directly, or call the transition core — only the six named wrappers.
+- Audit chain: per-case, head-rooted, `chain_version=1` canonical format hashed in the append function; Python verifier (`argus.domain.chain`) recomputes from stored bytes. **Tamper-evident within the declared trust boundary, not tamper-proof.**
+
+```
+# dev/CI bootstrap (requires local PostgreSQL as superuser 'postgres')
+sh ../../infra/db/provision.sh
+python -m alembic upgrade head                    # as argus_owner
+DATABASE_URL=postgresql+psycopg2://argus_app:...@127.0.0.1/argus \
+ARGUS_TEST_ADMIN_URL=postgresql+psycopg2://argus_test_admin:...@127.0.0.1/argus \
+python -m pytest                                  # 29 tests incl. adversarial suite
+```
+
+Known trust-boundary limits: actor identity is asserted by the trusted Python service (authentication is Slice 1D); privileged owners can alter schema/data — detected via chain verification, not prevented.
+
+## Deliberately not here yet
+
+- Slice 1C: MinIO `ContentStore`, Docker Compose, reconciliation sweep (ADR-0007 §4), stalled-`PENDING_VERIFICATION` surfacing.
+- Slice 1D: FastAPI surface, authenticated actor context, the minimal UI ("visible in UI" leg of the loop), CI wiring.

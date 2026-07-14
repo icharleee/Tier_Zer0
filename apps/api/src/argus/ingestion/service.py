@@ -20,7 +20,13 @@ from sqlalchemy.orm import Session
 from ..domain import audit
 from ..domain.actors import Actor, ActorClass, human
 from ..domain.exceptions import ConstitutionalViolation
-from ..domain.models import ArtifactStatus, Case, CaseAuthority, EvidenceArtifact
+from ..domain.models import (
+    ArtifactStatus,
+    Case,
+    CaseAuditHead,
+    CaseAuthority,
+    EvidenceArtifact,
+)
 from ..domain.transitions import activate_artifact, quarantine_artifact
 from .hashing import ALGORITHM, compute_digest
 from .store import ContentStore
@@ -49,6 +55,12 @@ def create_case(
             recorded_by=responsible.actor_id,
         )
     )
+    # The audit-chain root, at genesis (ADR-0016): created with the Case,
+    # advanced only by the append routine.
+    session.add(
+        CaseAuditHead(case_id=case.id, last_sequence=0, last_event_hash="0" * 64)
+    )
+    session.flush()
     audit.emit(
         session,
         case_id=case.id,

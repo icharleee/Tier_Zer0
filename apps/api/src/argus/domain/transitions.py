@@ -5,19 +5,30 @@ actor and timestamp, validates the allowed predecessor state, and emits the
 audit event in the same transaction. There are no bare status writes, no
 invisible state changes, no automatic promotion.
 
-The ALLOWED_ARTIFACT_TRANSITIONS registry is the executable rendering of the
-allowed-predecessor tables in docs/domain/ENTITY_LIFECYCLES.md §2 — the
-document is authoritative; this dict derives from it (ONT-PRN-008).
+Two renderings of Entity Lifecycles §2 exist by design (ONT-PRN-008: the
+document is authoritative; both derive from it):
+
+- ALLOWED_ARTIFACT_TRANSITIONS below — the Python orchestration registry,
+  validated BEFORE any database call so service semantics are identical on
+  every backend;
+- the SECURITY DEFINER functions in argus_private (migration 003) — the
+  PostgreSQL enforcement rendering, which re-validates independently so that
+  bypassing Python cannot corrupt constitutional state (Slice 1B).
+
+A PostgreSQL-gated conformance test asserts the two renderings accept and
+reject the same transition set.
 """
 
 from __future__ import annotations
 
 from datetime import datetime, timezone
 
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from . import audit
 from .actors import Actor, ActorClass
+from .audit import _is_postgres
 from .exceptions import ConstitutionalViolation
 from .models import ArtifactStatus, EvidenceArtifact
 
@@ -53,13 +64,9 @@ ALLOWED_ARTIFACT_TRANSITIONS: dict[
 }
 
 
-def _transition(
-    session: Session,
-    artifact: EvidenceArtifact,
-    to_status: ArtifactStatus,
-    actor: Actor,
-    detail: dict | None = None,
-) -> EvidenceArtifact:
+def _validate(
+    artifact: EvidenceArtifact, to_status: ArtifactStatus, actor: Actor
+) -> str:
     key = (artifact.status, to_status)
     if key not in ALLOWED_ARTIFACT_TRANSITIONS:
         raise ConstitutionalViolation(
@@ -75,6 +82,40 @@ def _transition(
             f"{action} (human judgment is final; permitted: "
             f"{sorted(a.value for a in allowed_actors)}).",
         )
+    return action
+
+
+def _perform(
+    session: Session,
+    artifact: EvidenceArtifact,
+    to_status: ArtifactStatus,
+    actor: Actor,
+    *,
+    pg_function: str,
+    pg_params: dict,
+    detail: dict | None = None,
+) -> EvidenceArtifact:
+    action = _validate(artifact, to_status, actor)
+
+    if _is_postgres(session):
+        # PostgreSQL enforcement path: the SECURITY DEFINER function holds the
+        # global lock order (head, then artifact row), re-validates, mutates,
+        # and appends the event — atomically, or neither.
+        params = {
+            "artifact_id": artifact.id,
+            "actor_class": actor.actor_class.value,
+            "actor_id": actor.actor_id,
+            "ai_model_version": actor.ai_model_version,
+            **pg_params,
+        }
+        placeholders = ", ".join(f":{k}" for k in params)
+        session.execute(
+            text(f"SELECT argus_private.{pg_function}({placeholders})"), params
+        )
+        session.expire(artifact)
+        return artifact
+
+    # Application path (test-only SQLite backend): same semantics in Python.
     artifact.status = to_status
     audit.emit(
         session,
@@ -96,21 +137,36 @@ def activate_artifact(
     verified_digest: str,
 ) -> EvidenceArtifact:
     """PENDING_VERIFICATION -> ACTIVE. SystemProcess only, and only with the
-    digest the verifier actually recomputed (ADR-0007 §6: no activation
-    without passed integrity verification)."""
+    digest the verifier actually recomputed (ADR-0007 §6)."""
     if verified_digest != artifact.hash_digest:
         raise ConstitutionalViolation(
             "ONT-EVA-001",
             "Activation requires the verifier's recomputed digest to match the "
             "recorded original hash.",
         )
-    return _transition(session, artifact, _A.ACTIVE, actor)
+    return _perform(
+        session,
+        artifact,
+        _A.ACTIVE,
+        actor,
+        pg_function="activate_evidence_artifact",
+        pg_params={"verified_digest": verified_digest},
+        detail=None,
+    )
 
 
 def quarantine_artifact(
     session: Session, artifact: EvidenceArtifact, actor: Actor, *, reason: str
 ) -> EvidenceArtifact:
-    return _transition(session, artifact, _A.QUARANTINED, actor, {"reason": reason})
+    return _perform(
+        session,
+        artifact,
+        _A.QUARANTINED,
+        actor,
+        pg_function="quarantine_evidence_artifact",
+        pg_params={"reason": reason},
+        detail={"reason": reason},
+    )
 
 
 def reactivate_artifact(
@@ -121,15 +177,21 @@ def reactivate_artifact(
     reverified_digest: str,
     rationale: str,
 ) -> EvidenceArtifact:
-    """QUARANTINED -> ACTIVE. Human-only disposition (ONT-PRN-007), and only
-    after verified recovery."""
+    """QUARANTINED -> ACTIVE. Human-only disposition (ONT-PRN-007), only after
+    verified recovery."""
     if reverified_digest != artifact.hash_digest:
         raise ConstitutionalViolation(
             "ONT-EVA-001",
             "Reactivation requires re-verification against the original hash.",
         )
-    return _transition(
-        session, artifact, _A.ACTIVE, actor, {"rationale": rationale}
+    return _perform(
+        session,
+        artifact,
+        _A.ACTIVE,
+        actor,
+        pg_function="reactivate_evidence_artifact",
+        pg_params={"reverified_digest": reverified_digest, "rationale": rationale},
+        detail={"rationale": rationale},
     )
 
 
@@ -147,25 +209,44 @@ def retract_artifact(
         raise ConstitutionalViolation(
             "ONT-PRN-006", "Retraction requires a non-empty reason."
         )
-    artifact.retracted_at = datetime.now(timezone.utc)
-    artifact.retraction_reason = reason
-    artifact.superseded_by = superseded_by
-    return _transition(
+    if not _is_postgres(session):
+        artifact.retracted_at = datetime.now(timezone.utc)
+        artifact.retraction_reason = reason
+        artifact.superseded_by = superseded_by
+    return _perform(
         session,
         artifact,
         _A.RETRACTED,
         actor,
-        {"reason": reason, "superseded_by": superseded_by},
+        pg_function="retract_evidence_artifact",
+        pg_params={"reason": reason, "superseded_by": superseded_by},
+        detail={"reason": reason, "superseded_by": superseded_by},
     )
 
 
 def seal_artifact(
     session: Session, artifact: EvidenceArtifact, actor: Actor, *, legal_basis: str
 ) -> EvidenceArtifact:
-    return _transition(session, artifact, _A.SEALED, actor, {"legal_basis": legal_basis})
+    return _perform(
+        session,
+        artifact,
+        _A.SEALED,
+        actor,
+        pg_function="seal_evidence_artifact",
+        pg_params={"legal_basis": legal_basis},
+        detail={"legal_basis": legal_basis},
+    )
 
 
 def unseal_artifact(
     session: Session, artifact: EvidenceArtifact, actor: Actor, *, legal_basis: str
 ) -> EvidenceArtifact:
-    return _transition(session, artifact, _A.ACTIVE, actor, {"legal_basis": legal_basis})
+    return _perform(
+        session,
+        artifact,
+        _A.ACTIVE,
+        actor,
+        pg_function="unseal_evidence_artifact",
+        pg_params={"legal_basis": legal_basis},
+        detail={"legal_basis": legal_basis},
+    )

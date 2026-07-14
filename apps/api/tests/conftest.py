@@ -38,6 +38,59 @@ def session():
         yield s
 
 
+# ---- PostgreSQL fixtures (Slice 1B adversarial suite) ----
+# DATABASE_URL: the argus_app (least-privilege) connection.
+# ARGUS_TEST_ADMIN_URL: the tampering role, dev/CI only, used to cross the
+# declared trust boundary in the corruption-detection test and to clean up
+# between tests (the app role deliberately cannot delete anything).
+
+import os
+
+from sqlalchemy import text as _text
+
+_PG_TABLES_FK_ORDER = (
+    "audit_entries",
+    "case_audit_heads",
+    "evidence_artifacts",
+    "case_authorities",
+    "cases",
+)
+
+
+def _pg_url() -> str | None:
+    return os.environ.get("DATABASE_URL")
+
+
+def _pg_admin_url() -> str | None:
+    return os.environ.get("ARGUS_TEST_ADMIN_URL")
+
+
+@pytest.fixture(scope="session")
+def pg_engine():
+    url = _pg_url()
+    if not url:
+        pytest.skip("DATABASE_URL not set: PostgreSQL enforcement suite skipped")
+    return create_engine(url, pool_pre_ping=True)
+
+
+@pytest.fixture(scope="session")
+def pg_admin_engine():
+    url = _pg_admin_url()
+    if not url:
+        pytest.skip("ARGUS_TEST_ADMIN_URL not set")
+    return create_engine(url, pool_pre_ping=True)
+
+
+@pytest.fixture()
+def pg_session(pg_engine, pg_admin_engine):
+    with pg_admin_engine.begin() as conn:  # clean slate; app role cannot delete
+        for table in _PG_TABLES_FK_ORDER:
+            conn.execute(_text(f"DELETE FROM public.{table}"))
+    with Session(pg_engine) as s:
+        yield s
+        s.rollback()
+
+
 @pytest.fixture()
 def store(tmp_path):
     return LocalContentStore(tmp_path / "content")
