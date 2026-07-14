@@ -41,3 +41,4 @@ An ADR is required for any decision that:
 | [0017](0017-single-source-lifecycle-definitions.md) | Authoritative lifecycle definitions shall exist exactly once | Accepted (freeze exemption per ONT-PRN-011) |
 | [0018](0018-constitutional-predicates.md) | Constitutional predicates, and eligibility versus sufficiency | Accepted (freeze exemption per ONT-PRN-011) |
 | [0019](0019-triangulated-derivations.md) | Independent derivations should be triangulated whenever practical | Accepted (freeze exemption per ONT-PRN-011) |
+| [0020](0020-sourcelocator-as-scope-of-constitutional-support.md) | SourceLocator is the scope of constitutional support | Accepted (freeze exemption per ONT-PRN-011) |

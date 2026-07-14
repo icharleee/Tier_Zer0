@@ -1,6 +1,6 @@
 # The ARGUS Ontology
 
-- **Document version:** 1.7.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; subsequent minor versions add stable identifiers and principles ONT-PRN-009 through ONT-PRN-015 (see version history)
+- **Document version:** 1.8.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; subsequent minor versions add stable identifiers and principles ONT-PRN-009 through ONT-PRN-016 (see version history)
 - **Date:** 2026-07-13
 - **Governed by:** [Engineering Constitution](../foundation/ENGINEERING_CONSTITUTION.md) 1.0.0, [Lexicon](../glossary/LEXICON.md) 1.0.0, ADR-0009 (Founder Resolution 003)
 - **Derived from it:** the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md), [Entity Lifecycles](ENTITY_LIFECYCLES.md), the [Invariant Matrix](INVARIANT_MATRIX.md), and every implementation artifact thereafter
@@ -91,7 +91,7 @@ The complete object vocabulary with stable identifiers (per ADR-0011; canonical 
 |---|---|---|---|
 | ONT-CAS-001 | Case | Context | The bounded investigative world and its legal authority |
 | ONT-EVA-001 | EvidenceArtifact | Evidence | A preserved fragment of reality |
-| ONT-SRC-001 | SourceLocator | Evidence | A precise address into an artifact |
+| ONT-SRC-001 | SourceLocator | Evidence | The scope of constitutional support: the smallest evidentiary region required to justify an Observation (Resolution 011) |
 | ONT-OBS-001 | Observation | The ladder | Perception: what the evidence shows |
 | ONT-INT-001 | Interpretation | The ladder | Inference: what it may mean |
 | ONT-HYP-001 | Hypothesis | The ladder | Synthesis: what may have happened |
@@ -144,6 +144,7 @@ Cross-cutting principles carry stable identifiers alongside the object registry 
 | ONT-PRN-013 | Authoritative lifecycle definitions exist exactly once: renderings in code and database derive from one specification and never diverge silently (Resolution 008) | §8 |
 | ONT-PRN-014 | Eligibility determines whether an artifact may participate in reasoning; sufficiency determines what reasoning it can support — never collapsed (Resolution 009) | §2, §6 |
 | ONT-PRN-015 | Independent derivations are triangulated whenever practical: normative specification, executable implementation, independent verification — no implementation verified only against itself (Resolution 010) | §8 |
+| ONT-PRN-016 | A SourceLocator defines the exact scope of evidence upon which an Observation constitutionally depends — the smallest region required to justify it (Resolution 011) | §2, §4 |
 
 ## 10. Unresolved ontological questions
 
@@ -175,3 +176,4 @@ Ratified as one constitutional package with the [Domain Schema Specification](DO
 | 1.5.0 | 2026-07-13 | Added ONT-PRN-013 (single-source lifecycle definitions, Resolution 008 / ADR-0017), per AGC Review Session 005. |
 | 1.6.0 | 2026-07-13 | Added ONT-PRN-014 (eligibility vs. sufficiency, Resolution 009 / ADR-0018), per the Slice 1C plan review. |
 | 1.7.0 | 2026-07-13 | Added ONT-PRN-015 (triangulated derivations, Resolution 010 / ADR-0019), per AGC Review Session 007. |
+| 1.8.0 | 2026-07-13 | Added ONT-PRN-016 and refined the ONT-SRC-001 role to scope-of-constitutional-support (Resolution 011 / ADR-0020), per the Slice 1D plan review. |

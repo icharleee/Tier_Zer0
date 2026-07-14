@@ -1,6 +1,6 @@
 # ARGUS Domain Invariant Matrix
 
-- **Document version:** 0.3.0 (Slice 1C: constitutional-predicate row added — derived, never stored, conformance-proven per ADR-0018)
+- **Document version:** 0.4.0 (Slice 1D: SourceLocator and Observation row groups per ADR-0020 — rows before code)
 - **Date:** 2026-07-13
 - **Required by:** ADR-0006 (per-table enforcement specification and material-mutation enumeration)
 - **Derived from:** the [Ontology](ONTOLOGY.md) via the [Derivation Specification](DERIVATION_SPECIFICATION.md) (ADR-0014), with structure from the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md) and [Entity Lifecycles](ENTITY_LIFECYCLES.md)
@@ -63,6 +63,16 @@ Enforcement mechanisms name their PostgreSQL construct per ADR-0006; the service
 | AuditEntry: hash chain | ONT-AUD-001 (ADR-0016) | invariant | — | — | `event_hash = sha256(canonical_text)` chain_version 1, computed in the append function from stored bytes; genesis = 64 zeros; head tracks `last_event_hash` | — | `test_chain_verification_valid`, `test_chain_verification_detects_corruption` |
 | CaseAuditHead: last_sequence / last_event_hash | ONT-AUD-001 (ADR-0016) | CT | advanced only by the append function | — (function-internal) | SELECT/INSERT-only grant for `argus_app`; UPDATE only inside `argus_private.append_audit_event` | — (bookkeeping, not a domain event) | `test_direct_head_update_fails` |
 
+### SourceLocator and Observation (Slice 1D, ADR-0020)
+
+| Entity / field group | Ontology rule | Class | Permitted mutations | Permitted actors | Enforcing mechanism | Material mutations audited | Verifying test |
+|---|---|---|---|---|---|---|---|
+| SourceLocator: scheme, payload, artifact ref | ONT-SRC-001, ONT-PRN-016 | CI after creation | none (corrections = retract and replace) | — | SELECT-only grant for `argus_app`; inserts solely via `argus_private.create_source_locator` (validates ACTIVE artifact, scheme registry, byte-range bounds) | locator-created | `test_locator_requires_active_artifact`, `test_locator_bounds_checked` |
+| SourceLocator: retraction | ONT-PRN-006 | V | retract with reason | Human | `argus_private.retract_source_locator` | locator-retracted | `test_locator_retraction_human_with_reason` |
+| Observation: statement, method, groundings, citation | ONT-OBS-001, ONT-PRN-004, ONT-PRN-005 | CI after creation | none | — | SELECT-only grant; inserts solely via `argus_private.create_observation`, which calls `validate_observation` (the canonical admissibility matrix) and refuses on any code; groundings junction rows CI; citation unique per case, allocated under the head lock | claim-created | `test_observation_admissibility_matrix`, `test_h3_validator_conformance` |
+| Observation: retraction | ONT-PRN-006, ONT-PRN-007 | V | retract with reason | Human | `argus_private.retract_observation` | claim-retracted | `test_observation_retraction_human_with_reason` |
+| `is_grounded` (derived; no storage) | ONT-OBS-001, ONT-PRN-015 | invariant | none — derived: ≥1 non-retracted locator whose artifact is ACTIVE | — | Python predicate + `argus_private.is_observation_grounded`, conformance-tested; never auto-retracts (Article II — degradation is surfaced for human disposition) | — | `test_groundedness_degrades_on_retraction` |
+
 ### Constitutional predicates (Slice 1C, ADR-0018)
 
 | Entity / field group | Ontology rule | Class | Permitted mutations | Permitted actors | Enforcing mechanism | Material mutations audited | Verifying test |
@@ -80,3 +90,4 @@ Enforcement mechanisms name their PostgreSQL construct per ADR-0006; the service
 | 0.1.0 | 2026-07-13 | First population: Slice 1 rows (Case, EvidenceArtifact, AuditEntry) instantiating Derivation Specification obligations and ADR-0007 as amended. |
 | 0.2.0 | 2026-07-13 | Slice 1B: AuditEntry rows re-mechanized per ADR-0016 (append function, head-row lock order, hash chain, trust-boundary language per AGC amendments); CaseAuditHead row added; verifying tests renamed to the adversarial suite. |
 | 0.3.0 | 2026-07-13 | Slice 1C: can_support_observation predicate row (ADR-0018) — derived never stored, dual-rendered, conformance-tested. |
+| 0.4.0 | 2026-07-13 | Slice 1D gate: SourceLocator and Observation row groups, is_grounded derived row (ADR-0020). |

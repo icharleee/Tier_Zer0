@@ -1,6 +1,6 @@
 # The ARGUS Lexicon
 
-- **Document version:** 1.0.1
+- **Document version:** 2.0.0
 - **Status:** Normative
 - **Established by:** [ADR-0008](../adr/0008-establish-arb-and-documentation-governance.md), Founder Resolution 002
 
@@ -50,7 +50,7 @@ The bounded investigative context — with its legal authority basis — within 
 A digitally represented immutable record corresponding to a collected source of information preserved for investigative purposes. ("Artifact," unqualified, always means EvidenceArtifact.)
 
 **SourceLocator**
-A precise, immutable address of a region within a single EvidenceArtifact (a page, a timestamp range, a bounding box, a byte range, a transcript span) through which Observations anchor to evidence.
+The exact scope of evidence upon which an Observation constitutionally depends: an immutable designation of the smallest region within a single EvidenceArtifact (a page, a timestamp range, a bounding box, a byte range, a transcript span) required to justify the Observation — not merely where the evidence is, but the boundary of what the claim rests on (Resolution 011).
 
 **Observation**
 A source-grounded statement directly supported by one or more SourceLocators. Observations state what evidence shows and contain no meaning-making.
@@ -93,3 +93,4 @@ The append-only, immutable record of a single material action in the system: who
 |---|---|---|
 | 1.0.0 | 2026-07-13 | Initial canonical vocabulary, ratified by Founder Resolution 002. |
 | 1.0.1 | 2026-07-13 | Link paths updated for the knowledge-corpus move (ADR-0012). No semantic change. |
+| 2.0.0 | 2026-07-13 | MAJOR: SourceLocator redefined as the scope of constitutional support (Resolution 011 / ADR-0020), under AGC review per this standard's rule 4. First semantic change to a canonical definition. |
