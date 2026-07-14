@@ -1,6 +1,6 @@
 # ARGUS Domain Invariant Matrix
 
-- **Document version:** 0.2.0 (Slice 1B enforcement mechanisms bound to ADR-0016: head-rooted ordering, hash chain, SECURITY DEFINER transition functions)
+- **Document version:** 0.3.0 (Slice 1C: constitutional-predicate row added — derived, never stored, conformance-proven per ADR-0018)
 - **Date:** 2026-07-13
 - **Required by:** ADR-0006 (per-table enforcement specification and material-mutation enumeration)
 - **Derived from:** the [Ontology](ONTOLOGY.md) via the [Derivation Specification](DERIVATION_SPECIFICATION.md) (ADR-0014), with structure from the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md) and [Entity Lifecycles](ENTITY_LIFECYCLES.md)
@@ -63,6 +63,12 @@ Enforcement mechanisms name their PostgreSQL construct per ADR-0006; the service
 | AuditEntry: hash chain | ONT-AUD-001 (ADR-0016) | invariant | — | — | `event_hash = sha256(canonical_text)` chain_version 1, computed in the append function from stored bytes; genesis = 64 zeros; head tracks `last_event_hash` | — | `test_chain_verification_valid`, `test_chain_verification_detects_corruption` |
 | CaseAuditHead: last_sequence / last_event_hash | ONT-AUD-001 (ADR-0016) | CT | advanced only by the append function | — (function-internal) | SELECT/INSERT-only grant for `argus_app`; UPDATE only inside `argus_private.append_audit_event` | — (bookkeeping, not a domain event) | `test_direct_head_update_fails` |
 
+### Constitutional predicates (Slice 1C, ADR-0018)
+
+| Entity / field group | Ontology rule | Class | Permitted mutations | Permitted actors | Enforcing mechanism | Material mutations audited | Verifying test |
+|---|---|---|---|---|---|---|---|
+| `can_support_observation` (derived; no storage) | ONT-EVA-001, ONT-CAS-001, ONT-PRN-014 | invariant | none — derived from constitutional state per the [canonical matrix](CONSTITUTIONAL_PREDICATES.md); **no persisted eligibility flag exists anywhere** | — | Python predicate module + `argus_private.can_support_observation` PostgreSQL function, independently derived; identical decisions and canonical reason codes proven by conformance sweep | — (a pure read; the gate it feeds — Observation creation — audits in Slice 1D) | `test_predicate_matrix_python`, `test_predicate_conformance_python_vs_postgres` |
+
 ## Version history
 
 | Version | Date | Change |
@@ -73,3 +79,4 @@ Enforcement mechanisms name their PostgreSQL construct per ADR-0006; the service
 | 0.0.4 | 2026-07-13 | Population re-sequenced to slice-by-slice per ADR-0015; slice gate: rows before code. |
 | 0.1.0 | 2026-07-13 | First population: Slice 1 rows (Case, EvidenceArtifact, AuditEntry) instantiating Derivation Specification obligations and ADR-0007 as amended. |
 | 0.2.0 | 2026-07-13 | Slice 1B: AuditEntry rows re-mechanized per ADR-0016 (append function, head-row lock order, hash chain, trust-boundary language per AGC amendments); CaseAuditHead row added; verifying tests renamed to the adversarial suite. |
+| 0.3.0 | 2026-07-13 | Slice 1C: can_support_observation predicate row (ADR-0018) — derived never stored, dual-rendered, conformance-tested. |

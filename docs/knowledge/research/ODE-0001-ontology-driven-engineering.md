@@ -68,6 +68,10 @@ ODE began as theory; ARGUS Slice 1B provides its first data. Recorded per AGC Re
 
 Slice 1B is the first experimental data point: the Python domain layer and the PostgreSQL persistence boundary independently enforce the same constitutional rules — the same transition registry, the same actor constraints, the same audit obligations — derived separately from Entity Lifecycles 2.0.0, with a conformance suite proving behavioral agreement. One experiment is not proof. It is evidence.
 
+> **Hypothesis H2:** Behavior derived independently from a common ontology can converge across implementations without shared executable logic.
+
+Slice 1B tested rule *transitions*; Slice 1C tests derived *behavior* — constitutional predicates (permission questions computed from constitutional state) rendered independently in Python and PostgreSQL against a canonical decision matrix. Different experiment, same methodology. H2 is a stronger claim than H1: not merely that implementations enforce the same rules, but that they independently arrive at the same *decisions*. It also suggests ODE may eventually distinguish structural derivation, behavioral derivation, and verification derivation.
+
 > **Observation O1:** During the implementation of Slice 1B, multiple architectural refinements emerged from executable constraints rather than design discussion — a real PostgreSQL syntax error caught by the live database, a lock-order inconsistency exposed by concurrency design, and a three-way lifecycle duplication identified before drift (leading to Resolution 008) — supporting the hypothesis that implementation is an effective source of ontology validation when governed by a one-directional derivation chain.
 
 ## 6. Open questions
@@ -83,3 +87,4 @@ Slice 1B is the first experimental data point: the Python domain layer and the P
 |---|---|---|
 | 0.1.0 | 2026-07-13 | Initial draft: program separation, the five axioms (AGC Session 002), derivation chain, applicability, open questions. |
 | 0.2.0 | 2026-07-13 | Added Hypothesis H1 and Observation O1 with Slice 1B as the first experimental data point (AGC Review Session 005). |
+| 0.3.0 | 2026-07-13 | Registered Hypothesis H2 (behavioral convergence via constitutional predicates), Slice 1C as its first experiment (Slice 1C plan review / ADR-0018). |

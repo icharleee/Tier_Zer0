@@ -39,3 +39,4 @@ An ADR is required for any decision that:
 | [0015](0015-documentation-freeze-and-vertical-slices.md) | Documentation freeze and vertical-slice implementation | Accepted |
 | [0016](0016-append-only-audit-hash-chain.md) | Append-only audit hash chain (tamper-evident within the trust boundary) | Accepted (freeze exemption per ONT-PRN-011) |
 | [0017](0017-single-source-lifecycle-definitions.md) | Authoritative lifecycle definitions shall exist exactly once | Accepted (freeze exemption per ONT-PRN-011) |
+| [0018](0018-constitutional-predicates.md) | Constitutional predicates, and eligibility versus sufficiency | Accepted (freeze exemption per ONT-PRN-011) |

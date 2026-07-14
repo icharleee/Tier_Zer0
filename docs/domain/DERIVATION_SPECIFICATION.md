@@ -1,6 +1,6 @@
 # ARGUS Derivation Specification
 
-- **Document version:** 1.2.0 — Ratified at 1.0.0 by AGC Review Session 003, 2026-07-13; 1.1.0 aligned ONT-EVA-001 with ADR-0007 as amended; 1.2.0 adds ADR-0016 chain obligations to ONT-AUD-001
+- **Document version:** 1.3.0 — Ratified at 1.0.0 by AGC Review Session 003, 2026-07-13; 1.1.0 aligned ONT-EVA-001 with ADR-0007 as amended; 1.2.0 added ADR-0016 chain obligations; 1.3.0 adds the constitutional-predicate gate to ONT-OBS-001 (ADR-0018)
 - **Date:** 2026-07-13
 - **Established by:** [ADR-0014](../adr/0014-establish-the-derivation-specification-layer.md) (AGC Review Session 002)
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) 1.2.0
@@ -94,7 +94,7 @@ Applies to every material mutation of every object.
 - **Schema properties:** statement; ≥1 SourceLocator reference; method description required for human and AI creators alike (Article III); event time distinct from record time (spec C4).
 - **Invariants:** an Observation whose every locator is retracted MUST be flagged ungrounded and surfaced — never auto-retracted.
 - **Audit events:** created; retracted; review transition; ungrounded-flag raised ([Lifecycles §4–6](ENTITY_LIFECYCLES.md#46-observation-interpretation-hypothesis-v)).
-- **API behavior:** creation MUST reject empty statements and missing method; unreviewed AI observations MUST be visibly marked in every representation.
+- **API behavior:** creation MUST reject empty statements and missing method; unreviewed AI observations MUST be visibly marked in every representation; creation MUST be gated by the `can_support_observation` constitutional predicate ([CONSTITUTIONAL_PREDICATES.md](CONSTITUTIONAL_PREDICATES.md), ADR-0018) — derived never stored, rendered independently in Python and PostgreSQL, refusals explained by canonical reason codes.
 - **Required tests:** `test_observation_requires_source_locator` (the canonical ADR-0010 example) and the D-PRN cross-cutting set. Cite ONT-OBS-001, ONT-PRN-004.
 
 ### ONT-INT-001 — Interpretation
@@ -193,3 +193,4 @@ Under the vertical-slice strategy (ADR-0015), the [Invariant Matrix](INVARIANT_M
 | 1.0.0 | 2026-07-13 | Ratified by AGC Review Session 003. |
 | 1.1.0 | 2026-07-13 | ONT-EVA-001 derivation aligned with the explicit lifecycle of ADR-0007 as amended by AGC Session 004. |
 | 1.2.0 | 2026-07-13 | ONT-AUD-001 obligations extended with the ADR-0016 hash chain (head-rooted ordering, immutable chain fields, verification). |
+| 1.3.0 | 2026-07-13 | ONT-OBS-001 creation gated by the can_support_observation constitutional predicate (ADR-0018 / Resolution 009). |
