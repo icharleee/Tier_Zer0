@@ -1,6 +1,6 @@
 # The ARGUS Ontology
 
-- **Document version:** 1.6.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; subsequent minor versions add stable identifiers and principles ONT-PRN-009 through ONT-PRN-014 (see version history)
+- **Document version:** 1.7.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; subsequent minor versions add stable identifiers and principles ONT-PRN-009 through ONT-PRN-015 (see version history)
 - **Date:** 2026-07-13
 - **Governed by:** [Engineering Constitution](../foundation/ENGINEERING_CONSTITUTION.md) 1.0.0, [Lexicon](../glossary/LEXICON.md) 1.0.0, ADR-0009 (Founder Resolution 003)
 - **Derived from it:** the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md), [Entity Lifecycles](ENTITY_LIFECYCLES.md), the [Invariant Matrix](INVARIANT_MATRIX.md), and every implementation artifact thereafter
@@ -143,6 +143,7 @@ Cross-cutting principles carry stable identifiers alongside the object registry 
 | ONT-PRN-012 | Every constitutional transition is explicit: an audit event, a responsible actor, a timestamp, an allowed predecessor state — no invisible state changes (Resolution 007) | §6 |
 | ONT-PRN-013 | Authoritative lifecycle definitions exist exactly once: renderings in code and database derive from one specification and never diverge silently (Resolution 008) | §8 |
 | ONT-PRN-014 | Eligibility determines whether an artifact may participate in reasoning; sufficiency determines what reasoning it can support — never collapsed (Resolution 009) | §2, §6 |
+| ONT-PRN-015 | Independent derivations are triangulated whenever practical: normative specification, executable implementation, independent verification — no implementation verified only against itself (Resolution 010) | §8 |
 
 ## 10. Unresolved ontological questions
 
@@ -173,3 +174,4 @@ Ratified as one constitutional package with the [Domain Schema Specification](DO
 | 1.4.0 | 2026-07-13 | Added ONT-PRN-012 (every constitutional transition is explicit, Resolution 007 / ADR-0007), per AGC Review Session 004. |
 | 1.5.0 | 2026-07-13 | Added ONT-PRN-013 (single-source lifecycle definitions, Resolution 008 / ADR-0017), per AGC Review Session 005. |
 | 1.6.0 | 2026-07-13 | Added ONT-PRN-014 (eligibility vs. sufficiency, Resolution 009 / ADR-0018), per the Slice 1C plan review. |
+| 1.7.0 | 2026-07-13 | Added ONT-PRN-015 (triangulated derivations, Resolution 010 / ADR-0019), per AGC Review Session 007. |

@@ -1,6 +1,6 @@
 # PROJECT: ARGUS
 
-**Document version:** 1.1.1 (per the [Governance Versioning Standard](../knowledge/standards/GOVERNANCE_VERSIONING_STANDARD.md))
+**Document version:** 1.2.0 (per the [Governance Versioning Standard](../knowledge/standards/GOVERNANCE_VERSIONING_STANDARD.md))
 **ARGUS release target:** v0.1
 **Status:** Foundational Development
 
@@ -294,6 +294,12 @@ And the principle that captures all of it:
 > **ARGUS is not designed to think instead of investigators.
 > It is designed so investigators never have to think alone.**
 
+Refined, after the first slices proved themselves, into an engineering principle:
+
+> **From fragments, structure. From structure, understanding. From understanding, truth.**
+
+ARGUS still doesn't create truth. It creates the conditions under which humans can reconstruct it faithfully.
+
 ---
 
 ## DOCUMENT LAYERS
@@ -323,3 +329,4 @@ Supporting corpora (established by ADR-0008): the [Lexicon](../glossary/LEXICON.
 | 1.0.0 | 2026-07-13 | Ratified at repository root commit. |
 | 1.1.0 | 2026-07-13 | Added the closing augmentation principle to the North Star; added version header and supporting-corpora references (Founder Resolution 002 / ADR-0008). |
 | 1.1.1 | 2026-07-13 | Link paths updated for the knowledge-corpus move (ADR-0012). No semantic change. |
+| 1.2.0 | 2026-07-13 | Added the refined engineering principle ("From fragments, structure…") to the North Star, per AGC Review Session 007. |

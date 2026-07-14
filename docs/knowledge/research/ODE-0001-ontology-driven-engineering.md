@@ -68,9 +68,21 @@ ODE began as theory; ARGUS Slice 1B provides its first data. Recorded per AGC Re
 
 Slice 1B is the first experimental data point: the Python domain layer and the PostgreSQL persistence boundary independently enforce the same constitutional rules — the same transition registry, the same actor constraints, the same audit obligations — derived separately from Entity Lifecycles 2.0.0, with a conformance suite proving behavioral agreement. One experiment is not proof. It is evidence.
 
+**Status: Supported (n = 1).** We do not claim ODE is correct; we record that the experiment has not falsified it.
+
 > **Hypothesis H2:** Behavior derived independently from a common ontology can converge across implementations without shared executable logic.
 
 Slice 1B tested rule *transitions*; Slice 1C tests derived *behavior* — constitutional predicates (permission questions computed from constitutional state) rendered independently in Python and PostgreSQL against a canonical decision matrix. Different experiment, same methodology. H2 is a stronger claim than H1: not merely that implementations enforce the same rules, but that they independently arrive at the same *decisions*. It also suggests ODE may eventually distinguish structural derivation, behavioral derivation, and verification derivation.
+
+**Status: Supported (n = 1)** — Slice 1C's conformance sweep: 16/16 canonical-matrix rows derived identically (structural verdict, contextual verdict, reason codes) by two renderings sharing no executable logic.
+
+> **Hypothesis H3:** Independent implementations of epistemic constraints converge when grounded in a shared ontology and provenance model.
+
+Registered ahead of Slice 1D, which introduces the first **epistemic object** — an Observation is the first entity that makes a claim about reality — testing observation creation, SourceLocator grounding, provenance enforcement, eligibility enforcement, and audit emission as epistemic rather than merely operational behaviors. **Status: Untested.**
+
+> **Observation O2:** Independent verification derived directly from the ontology detected implementation divergence without sharing executable logic.
+
+In Slice 1C, the test suite transcribed the canonical matrix as its own literal — a third derivation, independent of both implementations (**triangulation**, formalized as Resolution 010 / ONT-PRN-015: normative specification, executable implementation, independent verification; no implementation verified only against itself). The H2 sweep caught a real PostgreSQL parsing defect (`array || 'literal'` read as an array literal) precisely because its expectations came from the transcribed matrix rather than from the function under test.
 
 > **Observation O1:** During the implementation of Slice 1B, multiple architectural refinements emerged from executable constraints rather than design discussion — a real PostgreSQL syntax error caught by the live database, a lock-order inconsistency exposed by concurrency design, and a three-way lifecycle duplication identified before drift (leading to Resolution 008) — supporting the hypothesis that implementation is an effective source of ontology validation when governed by a one-directional derivation chain.
 
@@ -88,3 +100,4 @@ Slice 1B tested rule *transitions*; Slice 1C tests derived *behavior* — consti
 | 0.1.0 | 2026-07-13 | Initial draft: program separation, the five axioms (AGC Session 002), derivation chain, applicability, open questions. |
 | 0.2.0 | 2026-07-13 | Added Hypothesis H1 and Observation O1 with Slice 1B as the first experimental data point (AGC Review Session 005). |
 | 0.3.0 | 2026-07-13 | Registered Hypothesis H2 (behavioral convergence via constitutional predicates), Slice 1C as its first experiment (Slice 1C plan review / ADR-0018). |
+| 0.4.0 | 2026-07-13 | H1 and H2 marked Supported (n = 1 each); Observation O2 (triangulated verification detects divergence) and Hypothesis H3 (epistemic-constraint convergence, untested) registered per AGC Review Session 007 / ADR-0019. |
