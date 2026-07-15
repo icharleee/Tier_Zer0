@@ -44,3 +44,5 @@ An ADR is required for any decision that:
 | [0020](0020-sourcelocator-as-scope-of-constitutional-support.md) | SourceLocator is the scope of constitutional support | Accepted (freeze exemption per ONT-PRN-011) |
 | [0021](0021-persistence-implements-admissibility.md) | Persistence implements admissibility, not defines it | Accepted (freeze exemption per ONT-PRN-011) |
 | [0022](0022-semantic-contamination.md) | Epistemic layers reject semantic contamination from higher layers | Accepted (freeze exemption per ONT-PRN-011) |
+| [0023](0023-accumulating-epistemic-obligations.md) | The ladder accumulates obligations | Accepted (freeze exemption per ONT-PRN-011) |
+| [0024](0024-unknowns-as-epistemic-boundaries.md) | Unknowns are epistemic boundaries; boundary objects kept distinct | Accepted (freeze exemption per ONT-PRN-011) |

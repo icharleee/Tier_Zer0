@@ -86,7 +86,15 @@ Registered ahead of Slice 1D, which introduces the first **epistemic object** �
 
 > **Hypothesis H4 (refined at the Slice 2A plan review, for falsifiability):** Independent implementations can preserve multiple admissible Interpretations over the same grounded Observations without assigning epistemic priority, comparative strength, or preferred status to any Interpretation.
 
-The refinement distinguishes *technical ordering* (creation order, citation identifiers, indexes — unavoidable and non-evidentiary) from *epistemic preference* (ranking fields, preferred constraints, promotion on retraction, asymmetric exposure — forbidden). Article IV is not about having an interpretation but about protecting alternatives; the experiment requires at least two admissible interpretations of the same grounded observations, exposed symmetrically. The prior experiments each tested a different derivation category — transitions (H1), predicates (H2), admissibility (H3) — and H4 adds preservation of plurality. **Status: Untested.**
+The refinement distinguishes *technical ordering* (creation order, citation identifiers, indexes — unavoidable and non-evidentiary) from *epistemic preference* (ranking fields, preferred constraints, promotion on retraction, asymmetric exposure — forbidden). Article IV is not about having an interpretation but about protecting alternatives; the experiment requires at least two admissible interpretations of the same grounded observations, exposed symmetrically. The prior experiments each tested a different derivation category — transitions (H1), predicates (H2), admissibility (H3) — and H4 adds preservation of plurality.
+
+**Status: Supported (n = 1)** — Slice 2A: two interpretations over identical grounding; no ranking surface (schema and pg_constraint scans); retraction of one left the sibling byte-identical; verdict confirmed by AGC Session 007.
+
+> **Observation O4:** Epistemic plurality can be preserved without introducing computational preference when preference is excluded structurally rather than procedurally — not "developers remembered not to rank," but "the architecture made ranking impossible."
+
+> **Hypothesis H5 (refined per AGC Session 007):** Independent implementations preserve explicit epistemic boundaries without transforming absence into evidence, inference, or implied support for any competing interpretation.
+
+Registered ahead of Slice 2B (*Unknowns and Evidentiary Limits*) — the first explicit representation of **negative knowledge** (Resolution 015 / ONT-PRN-020). Connects directly to Article IX: representing uncertainty is not the same as representing the limits that produce it. **Status: Untested.**
 
 > **Observation O2:** Independent verification derived directly from the ontology detected implementation divergence without sharing executable logic.
 
@@ -112,3 +120,4 @@ In Slice 1C, the test suite transcribed the canonical matrix as its own literal 
 | 0.5.0 | 2026-07-13 | H3 refined to epistemic admissibility (AGC Session 008 / ADR-0020): the experiment targets the validator pair, not insertion. |
 | 0.6.0 | 2026-07-13 | H3 marked Supported (n = 1); Observation O3 (admissibility/persistence separation) and Hypothesis H4 (preservation of competing interpretations, untested) registered per AGC Review Session 006. |
 | 0.7.0 | 2026-07-13 | H4 refined for falsifiability at the Slice 2A plan review: technical ordering distinguished from epistemic preference. |
+| 0.8.0 | 2026-07-13 | H4 marked Supported (n = 1); Observation O4 (structural exclusion of preference) and Hypothesis H5 (epistemic boundaries, refined wording, untested) registered per AGC Review Session 007. |
