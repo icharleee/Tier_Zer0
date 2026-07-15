@@ -19,12 +19,14 @@ OBSERVATION_STEMS = (
     "confiden", "infer", "probab", "interpret", "hypoth", "rank",
     "suspic", "intent", "meaning", "likelihood", "predict", "score",
 )
+INTERPRETATION_STEMS = ("hypoth", "likelihood", "predict", "verdict", "guilt")
 CONTAMINATION_REGISTRY: dict[str, tuple[str, ...]] = {
     "observations": OBSERVATION_STEMS,
     "observation_groundings": OBSERVATION_STEMS,
     "source_locators": OBSERVATION_STEMS + ("statement", "claim"),
-    # Interpretation (pre-registered, ADR-0022): hypoth, likelihood, predict,
-    # verdict, guilt — enforced when the table exists (Slice 2A).
+    # Interpretation additionally forbids preference vocabulary (H4/Article IV).
+    "interpretations": INTERPRETATION_STEMS + ("rank", "preferred", "primary", "weight", "confiden", "probab", "score"),
+    "interpretation_groundings": INTERPRETATION_STEMS + ("rank", "preferred", "primary", "weight"),
 }
 
 

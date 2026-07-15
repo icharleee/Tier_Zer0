@@ -204,13 +204,17 @@ class TestExperimentH3:
         # Audit history verifiable end-to-end.
         result = verify_case_chain(pg_session, pg_case.id)
         assert result.valid, result.findings
-        # The exclusions are load-bearing: no reasoning tables exist.
+        # The exclusions are load-bearing: unauthorized reasoning tables do
+        # not exist. (Interpretation was excluded when this slice shipped and
+        # this assertion fired red the moment Slice 2A created the table —
+        # the tripwire working as designed. It was narrowed under the Slice
+        # 2A authorization; Hypothesis remains NOT AUTHORIZED.)
         tables = {
             r for r in pg_session.execute(
                 text("SELECT tablename FROM pg_tables WHERE schemaname = 'public'")
             ).scalars()
         }
-        assert not any("interpret" in t or "hypoth" in t for t in tables)
+        assert not any("hypoth" in t for t in tables)
 
     def test_h3_validator_conformance(
         self, pg_session, pg_admin_engine, store, pg_case, investigator, verifier

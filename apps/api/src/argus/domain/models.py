@@ -232,6 +232,87 @@ class ObservationGrounding(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
 
 
+class UncertaintyStatus(enum.Enum):
+    """The structured uncertainty envelope (Slice 2A, Amendment 2).
+    Not a confidence scale; must never imply probability. Deliberately no
+    'certain' status — ARGUS preserves the distinction between 'none
+    identified' and 'none exists' (Article IX)."""
+
+    ACKNOWLEDGED = "ACKNOWLEDGED"
+    MATERIAL = "MATERIAL"
+    LIMITING = "LIMITING"
+    UNRESOLVED = "UNRESOLVED"
+
+
+class GroundingRole(enum.Enum):
+    """How an Interpretation relies on an Observation (Amendment 3). No
+    CONTRADICTING while Contradiction remains out of scope — a limiting
+    observation is not a formal contradiction."""
+
+    SUPPORTING = "SUPPORTING"
+    LIMITING = "LIMITING"
+    CONTEXTUAL = "CONTEXTUAL"
+
+
+class Interpretation(Base):
+    """ONT-INT-001 — a derived meaning inferred from grounded Observations.
+
+    A valid Interpretation means only: this human-authored meaning is
+    constitutionally admissible and traceable. NOT correct, preferred,
+    complete, likely, accepted, or endorsed. No epistemic-ranking surface
+    exists on this table (Article IV; contamination registry); citation
+    order is technical, non-evidentiary ordering only.
+    """
+
+    __tablename__ = "interpretations"
+    __table_args__ = (UniqueConstraint("case_id", "citation", name="uq_int_citation"),)
+
+    ONTOLOGY_CLASS = "ONT-INT-001"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=_new_id)
+    case_id: Mapped[str] = mapped_column(ForeignKey("cases.id"), nullable=False)
+    citation: Mapped[str] = mapped_column(String(16))  # INT-000001, per case
+    meaning_statement: Mapped[str] = mapped_column(Text)
+    reasoning_description: Mapped[str] = mapped_column(Text)
+    uncertainty_status: Mapped[UncertaintyStatus] = mapped_column(
+        SAEnum(UncertaintyStatus, native_enum=False)
+    )
+    uncertainty_explanation: Mapped[str] = mapped_column(Text)
+    created_by_class: Mapped[str] = mapped_column(String(16))
+    created_by_id: Mapped[str] = mapped_column(String(200))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+    retracted_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    retraction_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+
+class InterpretationGrounding(Base):
+    """The grounding snapshot (Amendment 3): exactly what the Interpretation
+    relied upon at creation — observation id plus statement fingerprint
+    (observations are immutable, so id + sha256 is the revision), role, and
+    link time. Content-immutable; survives every retraction so historical
+    reasoning stays inspectable."""
+
+    __tablename__ = "interpretation_groundings"
+    __table_args__ = (
+        UniqueConstraint("interpretation_id", "observation_id", name="uq_int_grounding"),
+    )
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=_new_id)
+    interpretation_id: Mapped[str] = mapped_column(
+        ForeignKey("interpretations.id"), nullable=False
+    )
+    observation_id: Mapped[str] = mapped_column(
+        ForeignKey("observations.id"), nullable=False
+    )
+    statement_fingerprint: Mapped[str] = mapped_column(String(64))
+    grounding_role: Mapped[GroundingRole] = mapped_column(
+        SAEnum(GroundingRole, native_enum=False)
+    )
+    linked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+
+
 class CaseAuditHead(Base):
     """The per-case audit chain root (ADR-0016): explicit aggregate for
     sequence allocation and current head hash. Locked FOR UPDATE first in the

@@ -112,6 +112,111 @@ def validate_observation(
     return tuple(sorted(codes))
 
 
+# ---- Interpretation admissibility (Slice 2A; ONT-INT-001) ----
+
+MEANING_REQUIRED = "ONT-INT-001:meaning-required"
+REASONING_REQUIRED = "ONT-INT-001:reasoning-required"
+UNCERTAINTY_STATUS_REQUIRED = "ONT-INT-001:uncertainty-status-required"
+UNCERTAINTY_EXPLANATION_REQUIRED = "ONT-INT-001:uncertainty-explanation-required"
+UNSUPPORTED_ACTOR = "ONT-INT-001:unsupported-actor"
+NO_GROUNDED_OBSERVATIONS = "ONT-INT-001:no-grounded-observations"
+UNKNOWN_OBSERVATION = "ONT-INT-001:unknown-observation"
+OBSERVATION_RETRACTED = "ONT-INT-001:observation-retracted"
+OBSERVATION_UNGROUNDED = "ONT-INT-001:observation-ungrounded"
+INT_CROSS_CASE = "ONT-INT-001:cross-case-grounding"
+COMPARATIVE_RANKING = "ONT-INT-001:comparative-ranking-not-yet-modeled"
+INVALID_GROUNDING_ROLE = "ONT-INT-001:invalid-grounding-role"
+
+# Conservative lexical guard (Amendment 1): a heuristic tripwire, not a claim
+# that semantic ranking is reliably detectable. Transcribed from the
+# normative matrix (CONSTITUTIONAL_PREDICATES.md 0.3.0).
+COMPARATIVE_GUARD_TERMS = (
+    "more likely", "most likely", "more probable", "most probable",
+    "stronger", "strongest", "weaker", "preferred",
+    "primary explanation", "best explanation",
+)
+
+VALID_UNCERTAINTY_STATUSES = frozenset(
+    {"ACKNOWLEDGED", "MATERIAL", "LIMITING", "UNRESOLVED"}
+)
+VALID_GROUNDING_ROLES = frozenset({"SUPPORTING", "LIMITING", "CONTEXTUAL"})
+
+
+@dataclass(frozen=True)
+class ObservationGroundingState:
+    """The constitutional state of one observation an Interpretation would
+    rely on, as assembled by the caller."""
+
+    exists: bool
+    retracted: bool = False
+    grounded: bool = False  # is_grounded() at evaluation time
+    same_case: bool = True
+    role: str = "SUPPORTING"
+
+
+def validate_interpretation(
+    *,
+    meaning_statement: str,
+    reasoning_description: str,
+    uncertainty_status: str | None,
+    uncertainty_explanation: str,
+    actor_class: ActorClass,
+    groundings: tuple[ObservationGroundingState, ...],
+) -> tuple[str, ...]:
+    """The canonical interpretation refusal matrix, rendered in Python.
+    Admissible iff empty. A valid Interpretation means only: this
+    human-authored meaning is constitutionally admissible and traceable."""
+    codes: set[str] = set()
+
+    if not meaning_statement or not meaning_statement.strip():
+        codes.add(MEANING_REQUIRED)
+    if not reasoning_description or not reasoning_description.strip():
+        codes.add(REASONING_REQUIRED)
+    if uncertainty_status not in VALID_UNCERTAINTY_STATUSES:
+        codes.add(UNCERTAINTY_STATUS_REQUIRED)
+    if not uncertainty_explanation or not uncertainty_explanation.strip():
+        codes.add(UNCERTAINTY_EXPLANATION_REQUIRED)
+    if actor_class is not ActorClass.HUMAN:
+        codes.add(UNSUPPORTED_ACTOR)
+
+    prose = f"{meaning_statement or ''} {reasoning_description or ''}".lower()
+    if any(term in prose for term in COMPARATIVE_GUARD_TERMS):
+        codes.add(COMPARATIVE_RANKING)
+
+    if not groundings:
+        codes.add(NO_GROUNDED_OBSERVATIONS)
+    for g in groundings:
+        if g.role not in VALID_GROUNDING_ROLES:
+            codes.add(INVALID_GROUNDING_ROLE)
+        if not g.exists:
+            codes.add(UNKNOWN_OBSERVATION)
+            continue
+        if g.retracted:
+            codes.add(OBSERVATION_RETRACTED)
+            continue
+        if not g.same_case:
+            codes.add(INT_CROSS_CASE)
+            continue
+        if not g.grounded:
+            codes.add(OBSERVATION_UNGROUNDED)
+
+    return tuple(sorted(codes))
+
+
+def interpretation_grounding_health(
+    groundings: tuple[ObservationGroundingState, ...],
+) -> str:
+    """Derived, never stored (Amendment 3): GROUNDED iff at least one
+    grounding references an unretracted, grounded Observation; else DEGRADED.
+    The system surfaces degradation; it never retracts or rewrites the
+    Interpretation (Article II)."""
+    return (
+        "GROUNDED"
+        if any(g.exists and not g.retracted and g.grounded for g in groundings)
+        else "DEGRADED"
+    )
+
+
 def is_grounded(groundings: tuple[GroundingState, ...]) -> bool:
     """The only groundedness predicate (ADR-0020 §6): at least one
     constitutionally valid SourceLocator exists — not retracted, artifact

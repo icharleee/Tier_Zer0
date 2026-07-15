@@ -41,6 +41,8 @@ python -m pytest                                  # 29 tests incl. adversarial s
 
 Known trust-boundary limits: actor identity is asserted by the trusted Python service (authentication is Slice 1D); privileged owners can alter schema/data — detected via chain verification, not prevented.
 
+- **Slice 2A — Competing Interpretations (complete)**: rung two of the ladder. Structured uncertainty envelope (no "certain" status — Article IX), grounding snapshots (fingerprint + role + linked_at), comparative-vocabulary lexical guard, derived `grounding_health`, and the H4 property: competing interpretations over identical grounding with no epistemic-ranking surface, symmetric exposure, and no promotion on retraction. Citation order is technical and non-evidentiary.
+
 ## Deliberately not here yet (roadmap per AGC Session 005 — the ontology leads; storage serves the domain)
 
 - **Slice 1C — Observation eligibility (complete)**: constitutional predicates (ADR-0018) — `argus.domain.predicates` and `argus_private.can_support_observation` independently render the [canonical matrix](../../docs/domain/CONSTITUTIONAL_PREDICATES.md); derived never stored; refusals answer with canonical reason codes; H2 conformance sweep proves identical decisions (16/16 rows). Transition-authority predicates derive from the registry (no second lifecycle rendering).
