@@ -84,9 +84,9 @@ Registered ahead of Slice 1D, which introduces the first **epistemic object** �
 
 > **Observation O3:** Separating admissibility from persistence reduced implementation complexity while increasing independent verifiability — validators became pure, creation became mechanical, database functions became smaller, tests became simpler (Resolution 012 / ONT-PRN-017: persistence implements admissibility, not defines it).
 
-> **Hypothesis H4:** Independent implementations preserve multiple constitutionally admissible interpretations without privileging one over another.
+> **Hypothesis H4 (refined at the Slice 2A plan review, for falsifiability):** Independent implementations can preserve multiple admissible Interpretations over the same grounded Observations without assigning epistemic priority, comparative strength, or preferred status to any Interpretation.
 
-Registered ahead of Slice 2A (*Competing Interpretations*): Article IV is not about having an interpretation but about protecting alternatives, so the experiment requires at least two admissible interpretations of the same grounded observations, neither privileged by the system. The three prior experiments each tested a different derivation category — transitions (H1), predicates (H2), admissibility (H3) — and H4 adds preservation of plurality. **Status: Untested.**
+The refinement distinguishes *technical ordering* (creation order, citation identifiers, indexes — unavoidable and non-evidentiary) from *epistemic preference* (ranking fields, preferred constraints, promotion on retraction, asymmetric exposure — forbidden). Article IV is not about having an interpretation but about protecting alternatives; the experiment requires at least two admissible interpretations of the same grounded observations, exposed symmetrically. The prior experiments each tested a different derivation category — transitions (H1), predicates (H2), admissibility (H3) — and H4 adds preservation of plurality. **Status: Untested.**
 
 > **Observation O2:** Independent verification derived directly from the ontology detected implementation divergence without sharing executable logic.
 
@@ -111,3 +111,4 @@ In Slice 1C, the test suite transcribed the canonical matrix as its own literal 
 | 0.4.0 | 2026-07-13 | H1 and H2 marked Supported (n = 1 each); Observation O2 (triangulated verification detects divergence) and Hypothesis H3 (epistemic-constraint convergence, untested) registered per AGC Review Session 007 / ADR-0019. |
 | 0.5.0 | 2026-07-13 | H3 refined to epistemic admissibility (AGC Session 008 / ADR-0020): the experiment targets the validator pair, not insertion. |
 | 0.6.0 | 2026-07-13 | H3 marked Supported (n = 1); Observation O3 (admissibility/persistence separation) and Hypothesis H4 (preservation of competing interpretations, untested) registered per AGC Review Session 006. |
+| 0.7.0 | 2026-07-13 | H4 refined for falsifiability at the Slice 2A plan review: technical ordering distinguished from epistemic preference. |

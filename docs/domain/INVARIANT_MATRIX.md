@@ -1,6 +1,6 @@
 # ARGUS Domain Invariant Matrix
 
-- **Document version:** 0.4.0 (Slice 1D: SourceLocator and Observation row groups per ADR-0020 — rows before code)
+- **Document version:** 0.5.0 (Slice 2A: Interpretation row group with the four plan-review amendments — rows before code)
 - **Date:** 2026-07-13
 - **Required by:** ADR-0006 (per-table enforcement specification and material-mutation enumeration)
 - **Derived from:** the [Ontology](ONTOLOGY.md) via the [Derivation Specification](DERIVATION_SPECIFICATION.md) (ADR-0014), with structure from the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md) and [Entity Lifecycles](ENTITY_LIFECYCLES.md)
@@ -73,6 +73,16 @@ Enforcement mechanisms name their PostgreSQL construct per ADR-0006; the service
 | Observation: retraction | ONT-PRN-006, ONT-PRN-007 | V | retract with reason | Human | `argus_private.retract_observation` | claim-retracted | `test_observation_retraction_human_with_reason` |
 | `is_grounded` (derived; no storage) | ONT-OBS-001, ONT-PRN-015 | invariant | none — derived: ≥1 non-retracted locator whose artifact is ACTIVE | — | Python predicate + `argus_private.is_observation_grounded`, conformance-tested; never auto-retracts (Article II — degradation is surfaced for human disposition) | — | `test_groundedness_degrades_on_retraction` |
 
+### Interpretation (Slice 2A)
+
+| Entity / field group | Ontology rule | Class | Permitted mutations | Permitted actors | Enforcing mechanism | Material mutations audited | Verifying test |
+|---|---|---|---|---|---|---|---|
+| Interpretation: meaning, reasoning, uncertainty envelope, citation | ONT-INT-001, ONT-PRN-002, ONT-PRN-005 | CI after creation | none | — | SELECT-only grant; inserts solely via `argus_private.create_interpretation`, which calls `validate_interpretation` (canonical matrix incl. the comparative-vocabulary guard and the structured uncertainty envelope — CHECK constraints back the envelope) | claim-created | `test_interpretation_admissibility_matrix`, `test_h4_validator_conformance` |
+| Interpretation: no-preference surface | ONT-PRN-018 (Article IV) | invariant | — | — | contamination registry forbids rank/preferred/primary/weight vocabulary; no uniqueness constraint prevents siblings over identical grounding; citation order documented non-evidentiary | — | `test_h4_no_epistemic_priority` |
+| InterpretationGrounding: observation ref, statement_fingerprint, role, linked_at | ONT-INT-001, ONT-PRN-004 | CI | none (snapshot rows survive retraction of anything) | — | inserted only inside `create_interpretation`; fingerprint computed in-function from the observation statement | — (part of claim-created) | `test_grounding_snapshot_preserved` |
+| Interpretation: retraction | ONT-PRN-006, ONT-PRN-007 | V | retract with reason | Human | `argus_private.retract_interpretation`; no effect on siblings, groundings, or observations | claim-retracted | `test_interpretation_retraction_no_promotion` |
+| `grounding_health` (derived; no storage) | ONT-INT-001, ONT-PRN-015 | invariant | none — GROUNDED iff ≥1 grounding references an unretracted, grounded Observation; else DEGRADED | — | Python predicate + `argus_private.interpretation_grounding_health`, conformance-tested; surfaces, never auto-retracts (Article II) | — | `test_grounding_health_degrades_both_renderings` |
+
 ### Constitutional predicates (Slice 1C, ADR-0018)
 
 | Entity / field group | Ontology rule | Class | Permitted mutations | Permitted actors | Enforcing mechanism | Material mutations audited | Verifying test |
@@ -91,3 +101,4 @@ Enforcement mechanisms name their PostgreSQL construct per ADR-0006; the service
 | 0.2.0 | 2026-07-13 | Slice 1B: AuditEntry rows re-mechanized per ADR-0016 (append function, head-row lock order, hash chain, trust-boundary language per AGC amendments); CaseAuditHead row added; verifying tests renamed to the adversarial suite. |
 | 0.3.0 | 2026-07-13 | Slice 1C: can_support_observation predicate row (ADR-0018) — derived never stored, dual-rendered, conformance-tested. |
 | 0.4.0 | 2026-07-13 | Slice 1D gate: SourceLocator and Observation row groups, is_grounded derived row (ADR-0020). |
+| 0.5.0 | 2026-07-13 | Slice 2A gate: Interpretation rows — uncertainty envelope, grounding snapshot, no-preference invariant, derived grounding_health. |

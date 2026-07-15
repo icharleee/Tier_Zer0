@@ -1,6 +1,6 @@
 # ARGUS Derivation Specification
 
-- **Document version:** 1.4.0 — Ratified at 1.0.0 by AGC Review Session 003, 2026-07-13; 1.4.0 adds the D-PRN-018 semantic contamination registry (ADR-0022; see version history)
+- **Document version:** 1.5.0 — Ratified at 1.0.0 by AGC Review Session 003, 2026-07-13; 1.5.0 refines ONT-INT-001 obligations per the Slice 2A amendments (see version history)
 - **Date:** 2026-07-13
 - **Established by:** [ADR-0014](../adr/0014-establish-the-derivation-specification-layer.md) (AGC Review Session 002)
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) 1.2.0
@@ -109,7 +109,7 @@ Applies to every material mutation of every object.
 
 ### ONT-INT-001 — Interpretation
 
-- **Schema properties:** meaning statement; ≥1 Observation reference; reasoning description; **mandatory** uncertainty expression (Article IX).
+- **Schema properties:** meaning statement; ≥1 grounded Observation reference, each grounding snapshotting the observation revision (statement fingerprint), role (SUPPORTING/LIMITING/CONTEXTUAL), and link time; reasoning description; the **structured uncertainty envelope** — status (ACKNOWLEDGED/MATERIAL/LIMITING/UNRESOLVED, no "certain") + mandatory explanation (Article IX). Meaning/reasoning prose passes the comparative-vocabulary lexical guard; `grounding_health` (GROUNDED/DEGRADED) is derived, never stored.
 - **Invariants:** no "primary interpretation" concept anywhere — schema, API, or UI (ONT-PRN-002; Article IV); competing interpretations coexist without rank.
 - **Audit events:** created; retracted; review transition; grounding-flag raised.
 - **API behavior:** creation MUST reject empty uncertainty expressions; listings MUST NOT order by any stored preference.
@@ -205,3 +205,4 @@ Under the vertical-slice strategy (ADR-0015), the [Invariant Matrix](INVARIANT_M
 | 1.2.0 | 2026-07-13 | ONT-AUD-001 obligations extended with the ADR-0016 hash chain (head-rooted ordering, immutable chain fields, verification). |
 | 1.3.0 | 2026-07-13 | ONT-OBS-001 creation gated by the can_support_observation constitutional predicate (ADR-0018 / Resolution 009). |
 | 1.4.0 | 2026-07-13 | D-PRN-018: semantic contamination registry with per-layer forbidden vocabulary and the release-blocking test obligation (Resolution 013 / ADR-0022). |
+| 1.5.0 | 2026-07-13 | ONT-INT-001 obligations refined per Slice 2A amendments: uncertainty envelope, grounding snapshot/roles, comparative guard, derived grounding_health. |

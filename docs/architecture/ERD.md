@@ -1,6 +1,6 @@
 # ARGUS Entity-Relationship Diagram
 
-- **Document version:** 0.2.0 (Slice 1D coverage added: SourceLocator, Observation, groundings)
+- **Document version:** 0.3.0 (Slice 2A coverage added: Interpretation with uncertainty envelope, grounding snapshots)
 - **Derived from:** [Domain Schema Specification](../domain/DOMAIN_SCHEMA_SPECIFICATION.md) 1.1.0, [Entity Lifecycles](../domain/ENTITY_LIFECYCLES.md) 2.0.0, ADR-0007
 
 ## Slice 1 — Constitutional Evidence Activation
@@ -15,6 +15,31 @@ erDiagram
     SOURCE_LOCATOR ||--o{ OBSERVATION_GROUNDING : "supports"
     OBSERVATION ||--|{ OBSERVATION_GROUNDING : "grounded by (>= 1)"
     CASE ||--o{ OBSERVATION : "scopes"
+    OBSERVATION ||--o{ INTERPRETATION_GROUNDING : "relied upon by (snapshot)"
+    INTERPRETATION ||--|{ INTERPRETATION_GROUNDING : "grounded by (>= 1)"
+    CASE ||--o{ INTERPRETATION : "scopes"
+
+    INTERPRETATION {
+        string id PK
+        string case_id FK
+        string citation "INT-NNNNNN, unique per case; order non-evidentiary"
+        string meaning_statement "no comparative-strength claims (lexical guard)"
+        string reasoning_description "required (Article III)"
+        string uncertainty_status "ACKNOWLEDGED | MATERIAL | LIMITING | UNRESOLVED"
+        string uncertainty_explanation "required; not a confidence scale (Article IX)"
+        string created_by "HUMAN only in Slice 2A"
+        datetime created_at
+        datetime retracted_at "nullable (class V); siblings unaffected"
+        string retraction_reason
+    }
+    INTERPRETATION_GROUNDING {
+        string id PK
+        string interpretation_id FK
+        string observation_id FK
+        string statement_fingerprint "sha256 of the statement relied upon (revision snapshot)"
+        string grounding_role "SUPPORTING | LIMITING | CONTEXTUAL"
+        datetime linked_at "CI rows; survive all retractions"
+    }
 
     SOURCE_LOCATOR {
         string id PK
@@ -106,3 +131,4 @@ Notes:
 |---|---|---|
 | 0.1.0 | 2026-07-13 | Slice 1 coverage: Case (+ append-only authority), EvidenceArtifact with the ADR-0007 explicit lifecycle, AuditEntry with per-case ordering. |
 | 0.2.0 | 2026-07-13 | Slice 1D gate: SourceLocator (scope of constitutional support), Observation (first epistemic object, no meaning fields), groundings junction (heterogeneous evidence ready). |
+| 0.3.0 | 2026-07-13 | Slice 2A gate: Interpretation (uncertainty envelope, no preference surface) and grounding snapshots (fingerprint + role + linked_at). |

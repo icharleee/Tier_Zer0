@@ -1,6 +1,6 @@
 # ARGUS Constitutional Predicates
 
-- **Document version:** 0.2.0 (0.1.0 ratified with Slice 1C, AGC Session 007; 0.2.0 adds the Slice 1D admissibility matrix, ADR-0020)
+- **Document version:** 0.3.0 (0.2.0 ratified with Slice 1D; 0.3.0 adds the Slice 2A interpretation admissibility matrix with the four AGC amendments)
 - **Date:** 2026-07-13
 - **Established by:** [ADR-0018](../adr/0018-constitutional-predicates.md) (Founder Resolution 009, ONT-PRN-014)
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) 1.6.0, [Entity Lifecycles](ENTITY_LIFECYCLES.md) 2.0.0, ADR-0007
@@ -94,6 +94,31 @@ Validation is distinct from persistence (ADR-0020 Amendment 2): `validate_*` pro
 
 **Gold-standard fixture:** the first Observation is *"Blue sedan visible."* — nothing about intent, identity, or speed; nothing inferred; only what can be directly observed.
 
+## Canonical admissibility matrix — `validate_interpretation` (normative, Slice 2A)
+
+**What a valid Interpretation means:** *this human-authored meaning is constitutionally admissible and traceable.* It does **not** mean correct, preferred, complete, likely, accepted by the investigation, or endorsed by ARGUS. (This disclaimer eventually reaches the UI.)
+
+**Structured uncertainty envelope (Amendment 2 — not a confidence scale, never probability):** `uncertainty_status` ∈ `ACKNOWLEDGED` (uncertainty exists but does not prevent stating the interpretation) | `MATERIAL` (meaningfully affects how it should be understood) | `LIMITING` (available observations constrain it substantially) | `UNRESOLVED` (a named unresolved issue prevents stronger expression) — plus mandatory `uncertainty_explanation`. There is deliberately no "certain" status: ARGUS preserves the distinction between *none identified* and *none exists* (Article IX). Canonical minimum-uncertainty wording: status `ACKNOWLEDGED`, explanation "No material uncertainty has been identified from the cited observations, but the interpretation remains provisional."
+
+**Grounding snapshot (Amendment 3):** each grounding records the observation, its `statement_fingerprint` (SHA-256 of the statement relied upon — observations are immutable, so id + fingerprint is the revision snapshot), a `grounding_role` ∈ `SUPPORTING` | `LIMITING` | `CONTEXTUAL` (no CONTRADICTING while Contradiction is out of scope — a limiting observation is not a formal contradiction), and `linked_at`. **`grounding_health`** is derived, never stored: `GROUNDED` iff ≥ 1 grounding references an unretracted, grounded Observation; else `DEGRADED` — surfaced for human disposition, never auto-retracted.
+
+**Comparative-vocabulary guard (Amendment 1 — a conservative lexical heuristic, not a claim that semantic ranking is reliably detectable):** meaning and reasoning text may describe, distinguish, and identify evidence bearing on alternatives, but may not make quantified or ordinal comparative-strength claims. Guarded terms (case-insensitive substrings): `more likely`, `most likely`, `more probable`, `most probable`, `stronger`, `strongest`, `weaker`, `preferred`, `primary explanation`, `best explanation`. Safe fixture: *"This interpretation differs from INT-000001 because it treats the visible vehicle as stationary rather than arriving."* Comparative assessment later becomes its own governed object, never unrestricted prose.
+
+| Condition | Codes emitted |
+|---|---|
+| Meaning statement empty | `ONT-INT-001:meaning-required` |
+| Reasoning description empty | `ONT-INT-001:reasoning-required` |
+| Uncertainty status absent/invalid | `ONT-INT-001:uncertainty-status-required` |
+| Uncertainty explanation empty | `ONT-INT-001:uncertainty-explanation-required` |
+| Actor class ≠ HUMAN | `ONT-INT-001:unsupported-actor` |
+| Zero grounding observations | `ONT-INT-001:no-grounded-observations` |
+| Referenced observation nonexistent | `ONT-INT-001:unknown-observation` |
+| Referenced observation retracted | `ONT-INT-001:observation-retracted` |
+| Referenced observation ungrounded | `ONT-INT-001:observation-ungrounded` |
+| Grounding from another case | `ONT-INT-001:cross-case-grounding` |
+| Guarded comparative vocabulary present | `ONT-INT-001:comparative-ranking-not-yet-modeled` |
+| Invalid grounding role | `ONT-INT-001:invalid-grounding-role` |
+
 ## Acceptance test (per ADR-0018)
 
 > **Can every constitutional predicate be derived identically by independent implementations?**
@@ -105,4 +130,5 @@ Experiment One: `can_support_observation`, every matrix row, Python decision vs.
 | Version | Date | Change |
 |---|---|---|
 | 0.1.0 | 2026-07-13 | Initial normative artifact: predicate family, canonical reason codes, eligibility matrix (ADR-0018, Slice 1C plan review). Ratified with Slice 1C (AGC Session 007). |
-| 0.2.0 | 2026-07-13 | Slice 1D: admissibility codes and the canonical validate_observation refusal matrix; is_grounded definition; locator validation rules; gold-standard fixture (ADR-0020). |
+| 0.2.0 | 2026-07-13 | Slice 1D: admissibility codes and the canonical validate_observation refusal matrix; is_grounded definition; locator validation rules; gold-standard fixture (ADR-0020). Ratified with Slice 1D (AGC Session 006). |
+| 0.3.0 | 2026-07-13 | Slice 2A: interpretation admissibility matrix, structured uncertainty envelope, grounding snapshot + roles + derived grounding_health, comparative-vocabulary guard, the admissibility disclaimer (Slice 2A plan review amendments). |

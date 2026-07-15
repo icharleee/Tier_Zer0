@@ -1,6 +1,6 @@
 # ARGUS Domain Schema Specification
 
-- **Document version:** 1.2.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; 1.1.0 aligned EvidenceArtifact states with ADR-0007 as amended; 1.2.0 adds the ADR-0016 audit hash chain to ONT-AUD-001
+- **Document version:** 1.3.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; 1.3.0 refines ONT-INT-001 per the Slice 2A amendments (see version history)
 - **Date:** 2026-07-13
 - **Governed by:** [Engineering Constitution](../foundation/ENGINEERING_CONSTITUTION.md) 1.0.0, [Lexicon](../glossary/LEXICON.md) 1.0.0, ADR-0001–0006, ADR-0009
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) — the source of truth for meaning (Founder Resolution 003)
@@ -209,7 +209,7 @@ Lifecycle sections state the immutability class and any structurally load-bearin
 
 **Identity.** Opaque ID (C2).
 
-**Required attributes.** Meaning statement; references to ≥1 Observation; reasoning description (why these observations support this meaning — Article III); creating actor; `created_at`; uncertainty expression (mandatory — Article IX); AI provenance block if applicable.
+**Required attributes.** Meaning statement; references to ≥1 grounded Observation, each grounding carrying a revision snapshot (statement fingerprint), a grounding role (SUPPORTING/LIMITING/CONTEXTUAL), and link time; reasoning description (why these observations support this meaning — Article III); creating actor; `created_at`; the structured uncertainty envelope — `uncertainty_status` (ACKNOWLEDGED/MATERIAL/LIMITING/UNRESOLVED; deliberately no "certain") plus mandatory `uncertainty_explanation` (Article IX; not a confidence scale); AI provenance block if applicable. A valid Interpretation means only: *this human-authored meaning is constitutionally admissible and traceable* — not correct, preferred, complete, likely, or endorsed.
 
 **Optional attributes.** Explicit assumptions relied upon; references to competing Interpretations of the same Observations (cross-links, not exclusions).
 
@@ -512,3 +512,4 @@ The [Invariant Matrix](INVARIANT_MATRIX.md) population and the ERD (`docs/archit
 | 1.0.0 | 2026-07-13 | Ratified by AGC Review Session 001. |
 | 1.1.0 | 2026-07-13 | EvidenceArtifact lifecycle references aligned with ADR-0007 as amended by AGC Session 004 (PENDING_VERIFICATION, QUARANTINED; SourceLocator prohibition restated as non-ACTIVE). |
 | 1.2.0 | 2026-07-13 | AuditEntry gains the ADR-0016 hash-chain attributes and the case_audit_heads chain root; hash-chaining unresolved question closed. |
+| 1.3.0 | 2026-07-13 | ONT-INT-001 refined per Slice 2A amendments: structured uncertainty envelope, grounding revision snapshot with roles, admissibility disclaimer (U2 remains open — the envelope is not a confidence scale). |
