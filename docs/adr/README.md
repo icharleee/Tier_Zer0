@@ -49,3 +49,4 @@ An ADR is required for any decision that:
 | [0025](0025-existence-versus-validity-relationships.md) | Existence relationships are distinct from validity-boundary relationships | Accepted (freeze exemption per ONT-PRN-011) |
 | [0026](0026-dimensions-over-objects.md) | Epistemic layers expand dimensions, not merely object counts | Accepted (freeze exemption per ONT-PRN-011) |
 | [0027](0027-contradiction-disposition.md) | ContradictionDisposition as a first-class object | Accepted (freeze exemption per ONT-PRN-011) |
+| [0028](0028-explanations-must-state-their-conditions.md) | An explanation must state what supports, limits, challenges, and escapes it | Accepted (freeze exemption per ONT-PRN-011) |

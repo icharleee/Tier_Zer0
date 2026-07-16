@@ -1,6 +1,6 @@
 # ODE-0001: Ontology-Driven Engineering — Axioms and Method
 
-- **Document version:** 0.1.0 (Draft)
+- **Document version:** 0.12.0 (Draft)
 - **Program:** Ontology-Driven Engineering (ODE)
 - **Date:** 2026-07-13
 - **Origin:** Named by AGC Review Session 001 (ADR-0010); axioms established by AGC Review Session 002; first implementation: ARGUS
@@ -106,7 +106,15 @@ Registered ahead of Slice 2B (*Unknowns and Evidentiary Limits*) — the first e
 
 > **Hypothesis H6 (refined at the Slice 2C plan review):** Independent implementations can preserve a formally scoped incompatibility among multiple constitutionally admissible claims without changing their admissibility, assigning epistemic priority, or adjudicating which claim survives.
 
-The dimension added (ONT-PRN-022): joint incompatibility becomes representable — coexistence concerns what the ledger may preserve; incompatibility concerns what reality may permit. The decisive rule: a Contradiction may state that claims cannot all fit the same reality; it may never decide which claim reality favors. **Status: Untested.**
+The dimension added (ONT-PRN-022): joint incompatibility becomes representable — coexistence concerns what the ledger may preserve; incompatibility concerns what reality may permit. The decisive rule: a Contradiction may state that claims cannot all fit the same reality; it may never decide which claim reality favors.
+
+**Status: Supported (n = 1)** — Slice 2C: the canonical contradiction matrix transcribed independently and derived identically by both renderings; both member Interpretations byte-identical through creation, review, and human disposition; no adjudicative surface (schema and pg_constraint scans); verdict confirmed by AGC Session 011.
+
+> **Observation O7:** Formal incompatibility can be represented as a durable boundary without converting conflict into computational adjudication when scope, membership, health, and disposition are modeled separately.
+
+> **Hypothesis H7 (registered at AGC Session 011, ahead of Slice 2D):** Independent implementations can admit provisional explanatory structures while preserving falsifiability, explicit limitations, competing alternatives, and non-preference.
+
+Registered ahead of Slice 2D (*Hypotheses*) — the first object that attempts to *explain* reality, governed by ONT-PRN-023 (Resolution 018 / ADR-0028): an explanation is admissible only when the system can state what supports it, what limits it, what could challenge it, and what remains unknown. The decisive rule: ARGUS may preserve explanations for examination; it may never convert explanation into verdict. **Status: Untested.**
 
 *Candidate observation 1 (first repetition recorded, AGC Session 009):* the ladder alternates between positive structures and negative boundaries. One full cycle now exists (Evidence/Observation/Interpretation positive → Unknown negative, built to constrain Interpretation). If Slice 2C–2D produce the Hypothesis-positive/Contradiction-negative pairing, two complete cycles exist — only then does this elevate to a principle.
 
@@ -140,3 +148,4 @@ In Slice 1C, the test suite transcribed the canonical matrix as its own literal 
 | 0.9.0 | 2026-07-13 | H5 finally refined (knowledge changes; the system does not); Observation O5 (explicit negative knowledge) registered; positive/negative alternation recorded as a candidate observation (AGC Session 008). |
 | 0.10.0 | 2026-07-13 | H5 marked Supported (n = 1); Observation O6 (explicit ignorance is computationally stable — empirical); rhythm candidate's first repetition recorded; trustworthiness-via-constraint registered as candidate observation 2 (AGC Session 009 / ADR-0026). |
 | 0.11.0 | 2026-07-13 | Hypothesis H6 registered as refined at the Slice 2C plan review (scoped incompatibility without adjudication), untested. |
+| 0.12.0 | 2026-07-13 | H6 marked Supported (n = 1); Observation O7 (incompatibility as durable boundary without adjudication) registered; Hypothesis H7 (provisional explanatory structures, untested) registered per AGC Review Session 011 / ADR-0028. Header version corrected (had lagged at 0.1.0 since the initial draft). |
