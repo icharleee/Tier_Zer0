@@ -1,6 +1,6 @@
 # ARGUS Domain Invariant Matrix
 
-- **Document version:** 0.6.0 (Slice 2B: Unknown family rows — operational/epistemic separation, boundary family, H5 negative obligations)
+- **Document version:** 0.7.0 (Slice 2C: Contradiction family rows per ADR-0027 and the Session 010 amendments)
 - **Date:** 2026-07-13
 - **Required by:** ADR-0006 (per-table enforcement specification and material-mutation enumeration)
 - **Derived from:** the [Ontology](ONTOLOGY.md) via the [Derivation Specification](DERIVATION_SPECIFICATION.md) (ADR-0014), with structure from the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md) and [Entity Lifecycles](ENTITY_LIFECYCLES.md)
@@ -94,6 +94,18 @@ Enforcement mechanisms name their PostgreSQL construct per ADR-0006; the service
 | UnknownResolution: type, rationale, claim refs | ONT-UNR-001, ONT-PRN-007 | CI | none | **Human only** | `argus_private.resolve_unknown`: ANSWERED/PARTIALLY_ANSWERED require ≥1 claim reference; rationale required; terminal | unknown-resolved / -partially-resolved / -withdrawn / -marked-unresolvable | `test_answer_requires_evidence`, `test_disposition_human_only_at_db` |
 | H5 negative obligations | ONT-PRN-020 | invariant | — | — | no trigger, function, or validator mutates bounded records on link or resolution; verified by byte-identity tests | — | `test_resolution_alters_no_linked_record`, `test_open_unknown_changes_nothing` |
 
+### Contradiction, ContradictionMember, ContradictionDisposition (Slice 2C, ADR-0027)
+
+| Entity / field group | Ontology rule | Class | Permitted mutations | Permitted actors | Enforcing mechanism | Material mutations audited | Verifying test |
+|---|---|---|---|---|---|---|---|
+| Contradiction: description, type, scope, basis, citation | ONT-CON-001 | CI after creation | none | — | SELECT-only grant; inserts solely via `argus_private.create_contradiction` (basis matrix + adjudicative-language guard) | contradiction-created | `test_contradiction_admissibility_matrix` |
+| Contradiction: operational_state | ONT-PRN-012 | CT | OPEN ⇄ UNDER_REVIEW only; refused after disposition | Human | named transition function; epistemic disposition NOT writable | contradiction-review-started / -paused | `test_contradiction_review_operational_only` |
+| Contradiction: epistemic disposition | ONT-CDP-001, ONT-PRN-007 | derived | none — derived from the ContradictionDisposition record | — | no disposition column exists to flip | (via disposition) | `test_contradiction_disposition_derived` |
+| ContradictionMember: type, id, fingerprint, role, linked_at | ONT-CNM-001 | CI | none — members survive every retraction and disposition | — | inserted only inside `create_contradiction`; role CHECK = INCOMPATIBLE_CLAIM | (part of contradiction-created) | `test_members_immutable_and_symmetric` |
+| ContradictionDisposition: outcome, rationale, informing refs | ONT-CDP-001, ONT-PRN-007 | CI | none | **Human only** | `argus_private.dispose_contradiction`: five non-adjudicating outcomes; rationale required; terminal; alters no member | contradiction-disposed | `test_disposition_human_only_no_survivor` |
+| `contradiction_health` (derived; no storage) | ONT-CON-001, ONT-PRN-015 | invariant | none — CURRENT iff all members unretracted and available; else DEGRADED | — | Python predicate + `argus_private.contradiction_health`, conformance-tested; surfaces, never auto-disposes | — | `test_health_degrades_without_autodisposition` |
+| H6 negative obligations | ONT-CON-001 (Article IV) | invariant | — | — | no survivor/winner/preference surface (contamination registry); creation and disposition leave every member byte-identical; existing validators unchanged | — | `test_h6_no_adjudication`, existing conformance sweeps |
+
 ### Constitutional predicates (Slice 1C, ADR-0018)
 
 | Entity / field group | Ontology rule | Class | Permitted mutations | Permitted actors | Enforcing mechanism | Material mutations audited | Verifying test |
@@ -114,3 +126,4 @@ Enforcement mechanisms name their PostgreSQL construct per ADR-0006; the service
 | 0.4.0 | 2026-07-13 | Slice 1D gate: SourceLocator and Observation row groups, is_grounded derived row (ADR-0020). |
 | 0.5.0 | 2026-07-13 | Slice 2A gate: Interpretation rows — uncertainty envelope, grounding snapshot, no-preference invariant, derived grounding_health. |
 | 0.6.0 | 2026-07-13 | Slice 2B gate: Unknown/UnknownLink/UnknownResolution rows per ADR-0024/0025 and the Session 008 amendments. |
+| 0.7.0 | 2026-07-13 | Slice 2C gate: Contradiction/ContradictionMember/ContradictionDisposition rows (ADR-0027, Session 010 amendments). |

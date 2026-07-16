@@ -104,6 +104,10 @@ Registered ahead of Slice 2B (*Unknowns and Evidentiary Limits*) — the first e
 
 > **Observation O5:** Negative knowledge becomes computationally useful only after it is represented explicitly rather than implicitly through missing data. NULL is not Unknown; missing rows are not Unknown; Unknown is a deliberate epistemic object.
 
+> **Hypothesis H6 (refined at the Slice 2C plan review):** Independent implementations can preserve a formally scoped incompatibility among multiple constitutionally admissible claims without changing their admissibility, assigning epistemic priority, or adjudicating which claim survives.
+
+The dimension added (ONT-PRN-022): joint incompatibility becomes representable — coexistence concerns what the ledger may preserve; incompatibility concerns what reality may permit. The decisive rule: a Contradiction may state that claims cannot all fit the same reality; it may never decide which claim reality favors. **Status: Untested.**
+
 *Candidate observation 1 (first repetition recorded, AGC Session 009):* the ladder alternates between positive structures and negative boundaries. One full cycle now exists (Evidence/Observation/Interpretation positive → Unknown negative, built to constrain Interpretation). If Slice 2C–2D produce the Hypothesis-positive/Contradiction-negative pairing, two complete cycles exist — only then does this elevate to a principle.
 
 *Candidate observation 2 (AGC Session 009):* complex systems become trustworthy when every increase in expressive power is preceded by an increase in structural constraint — provenance before Observation; grounding before Interpretation; admissibility before Unknown; Unknown and Contradiction before Hypothesis. Recorded as candidate (ADR-0026 §3); elevate if the pattern holds through Slice 2D.
@@ -135,3 +139,4 @@ In Slice 1C, the test suite transcribed the canonical matrix as its own literal 
 | 0.8.0 | 2026-07-13 | H4 marked Supported (n = 1); Observation O4 (structural exclusion of preference) and Hypothesis H5 (epistemic boundaries, refined wording, untested) registered per AGC Review Session 007. |
 | 0.9.0 | 2026-07-13 | H5 finally refined (knowledge changes; the system does not); Observation O5 (explicit negative knowledge) registered; positive/negative alternation recorded as a candidate observation (AGC Session 008). |
 | 0.10.0 | 2026-07-13 | H5 marked Supported (n = 1); Observation O6 (explicit ignorance is computationally stable — empirical); rhythm candidate's first repetition recorded; trustworthiness-via-constraint registered as candidate observation 2 (AGC Session 009 / ADR-0026). |
+| 0.11.0 | 2026-07-13 | Hypothesis H6 registered as refined at the Slice 2C plan review (scoped incompatibility without adjudication), untested. |

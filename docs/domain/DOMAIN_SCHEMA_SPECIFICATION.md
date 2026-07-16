@@ -1,6 +1,6 @@
 # ARGUS Domain Schema Specification
 
-- **Document version:** 1.4.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; 1.4.0 refines ONT-UNK-001/ONT-UNR-001 per the Slice 2B amendments (see version history)
+- **Document version:** 1.5.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; 1.5.0 refines ONT-CON-001/ONT-CNM-001 and adds ONT-CDP-001 per the Slice 2C amendments (see version history)
 - **Date:** 2026-07-13
 - **Governed by:** [Engineering Constitution](../foundation/ENGINEERING_CONSTITUTION.md) 1.0.0, [Lexicon](../glossary/LEXICON.md) 1.0.0, ADR-0001–0006, ADR-0009
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) — the source of truth for meaning (Founder Resolution 003)
@@ -265,7 +265,7 @@ Lifecycle sections state the immutability class and any structurally load-bearin
 
 **Identity.** Opaque ID (C2).
 
-**Required attributes.** Description of the incompatibility; ≥2 ContradictionMembers; status; creating actor; `created_at`; AI provenance block if AI-suggested.
+**Required attributes.** Description of the incompatibility; `contradiction_type` (TEMPORAL/SPATIAL/IDENTITY/CAUSAL/DESCRIPTIVE/NUMERIC/PROCEDURAL/PROVENANCE/CUSTODY/LOGICAL); `scope_definition` (the shared conditions under which the claims conflict); `incompatibility_basis` (why simultaneous truth is impossible under that scope — mere disagreement never becomes formal contradiction); ≥2 ContradictionMembers (each an `INCOMPATIBLE_CLAIM` with a recognition-time snapshot); operational state; creating actor; `created_at`; AI provenance block if AI-suggested. A Contradiction is admissible — not necessarily true; `contradiction_health` (CURRENT/DEGRADED) is derived, never stored.
 
 **Optional attributes.** Severity/priority annotation (triage aid, not truth signal).
 
@@ -312,6 +312,34 @@ Lifecycle sections state the immutability class and any structurally load-bearin
 **Audit events.** Created (as "member added" on the Contradiction).
 
 **Unresolved questions.** Whether Entities/Relationships (not just ladder claims) can be contradiction members — excluded in v0.1; conflicting entity data should surface as conflicting *claims about* entities.
+
+---
+
+### 8b. ContradictionDisposition (ADR-0027 — the fifteenth first-class object)
+
+**Purpose.** The human record of how a conflict was disposed — never of which claim reality favors (ONT-CDP-001).
+
+**Identity.** Opaque ID (C2).
+
+**Required attributes.** Owning Contradiction (at most one active disposition); outcome ∈ {`EXPLAINED`, `NO_LONGER_APPLICABLE`, `WITHDRAWN`, `UNRESOLVED`, `SUPERSEDED`}; rationale (non-empty); disposing HumanActor; `created_at`. **No outcome exists, or may ever be added, that implies a member was proven correct.**
+
+**Optional attributes.** Informing provenance references (claims/artifacts that informed — never vindicated — the disposition); for `SUPERSEDED`: the replacing Contradiction.
+
+**Relationships.** Belongs to exactly one Contradiction (and its Case).
+
+**Lifecycle.** Content-immutable once created; terminal; a mistaken disposition is superseded by a successor (Lifecycles §7).
+
+**Invariants.** Author structurally HumanActor-only (Article II); disposition alters no member, retracts nothing, promotes nothing.
+
+**Permitted actors.** Create/supersede: HumanActor only.
+
+**Prohibited operations.** AI/system authorship; editing; deletion; any adjudicative outcome.
+
+**Provenance requirements.** Disposing actor, rationale, informing references.
+
+**Audit events.** contradiction-disposed (outcome in detail); disposition-superseded.
+
+**Unresolved questions.** None currently.
 
 ---
 
@@ -514,3 +542,4 @@ The [Invariant Matrix](INVARIANT_MATRIX.md) population and the ERD (`docs/archit
 | 1.2.0 | 2026-07-13 | AuditEntry gains the ADR-0016 hash-chain attributes and the case_audit_heads chain root; hash-chaining unresolved question closed. |
 | 1.3.0 | 2026-07-13 | ONT-INT-001 refined per Slice 2A amendments: structured uncertainty envelope, grounding revision snapshot with roles, admissibility disclaimer (U2 remains open — the envelope is not a confidence scale). |
 | 1.4.0 | 2026-07-13 | ONT-UNK-001: operational state (UNDER_REVIEW) separated from derived epistemic disposition; ONT-UNR-001 gains PARTIALLY_ANSWERED with mandatory claim references (AGC Session 008, Amendment 1). |
+| 1.5.0 | 2026-07-13 | ONT-CON-001 gains the explicit incompatibility basis (type/scope/basis) and derived health; ONT-CNM-001 becomes INCOMPATIBLE_CLAIM with recognition-time snapshots; ONT-CDP-001 added as §8b (ADR-0027, AGC Session 010). |

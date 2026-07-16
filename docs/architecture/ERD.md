@@ -1,6 +1,6 @@
 # ARGUS Entity-Relationship Diagram
 
-- **Document version:** 0.4.0 (Slice 2B coverage added: the Unknown boundary family)
+- **Document version:** 0.5.0 (Slice 2C coverage added: the Contradiction boundary family)
 - **Derived from:** [Domain Schema Specification](../domain/DOMAIN_SCHEMA_SPECIFICATION.md) 1.1.0, [Entity Lifecycles](../domain/ENTITY_LIFECYCLES.md) 2.0.0, ADR-0007
 
 ## Slice 1 — Constitutional Evidence Activation
@@ -21,6 +21,40 @@ erDiagram
     CASE ||--o{ UNKNOWN : "scopes"
     UNKNOWN ||--o{ UNKNOWN_LINK : "bounds (validity family, ONT-PRN-021)"
     UNKNOWN ||--o| UNKNOWN_RESOLUTION : "disposed by (human-only, terminal)"
+    CASE ||--o{ CONTRADICTION : "scopes"
+    CONTRADICTION ||--|{ CONTRADICTION_MEMBER : "binds (>= 2 INCOMPATIBLE_CLAIMs, snapshots)"
+    CONTRADICTION ||--o| CONTRADICTION_DISPOSITION : "disposed by (human-only, non-adjudicating)"
+
+    CONTRADICTION {
+        string id PK
+        string case_id FK
+        string citation "CON-NNNNNN"
+        string description
+        string contradiction_type "TEMPORAL|SPATIAL|IDENTITY|CAUSAL|DESCRIPTIVE|NUMERIC|PROCEDURAL|PROVENANCE|CUSTODY|LOGICAL"
+        string scope_definition "shared conditions under which claims conflict"
+        string incompatibility_basis "why simultaneous truth is impossible"
+        string operational_state "OPEN | UNDER_REVIEW"
+        string created_by "HUMAN only in Slice 2C"
+        datetime created_at
+    }
+    CONTRADICTION_MEMBER {
+        string id PK
+        string contradiction_id FK
+        string member_type "Observation | Interpretation"
+        string member_id "same case; CI, survives everything"
+        string member_fingerprint "sha256 of statement/meaning at recognition"
+        string member_role "INCOMPATIBLE_CLAIM (no directional roles, ever)"
+        datetime linked_at
+    }
+    CONTRADICTION_DISPOSITION {
+        string id PK
+        string contradiction_id FK "unique: at most one"
+        string outcome "EXPLAINED|NO_LONGER_APPLICABLE|WITHDRAWN|UNRESOLVED|SUPERSEDED"
+        string rationale "required; never names a survivor"
+        json   informing_refs "nullable; informs, never vindicates"
+        string disposed_by "HUMAN only"
+        datetime created_at "CI; terminal"
+    }
 
     UNKNOWN {
         string id PK
@@ -166,3 +200,4 @@ Notes:
 | 0.2.0 | 2026-07-13 | Slice 1D gate: SourceLocator (scope of constitutional support), Observation (first epistemic object, no meaning fields), groundings junction (heterogeneous evidence ready). |
 | 0.3.0 | 2026-07-13 | Slice 2A gate: Interpretation (uncertainty envelope, no preference surface) and grounding snapshots (fingerprint + role + linked_at). |
 | 0.4.0 | 2026-07-13 | Slice 2B gate: Unknown (operational vs. epistemic state), UnknownLink (validity-boundary family), UnknownResolution (human-only, evidence-requiring). |
+| 0.5.0 | 2026-07-13 | Slice 2C gate: Contradiction (typed, scoped, based), members as snapshot-bearing INCOMPATIBLE_CLAIMs, non-adjudicating disposition (ADR-0027). |

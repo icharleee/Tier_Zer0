@@ -1,6 +1,6 @@
 # ARGUS Constitutional Predicates
 
-- **Document version:** 0.4.0 (0.3.0 ratified with Slice 2A; 0.4.0 adds the Slice 2B unknown admissibility matrix, the question-form guard, and the UNRESOLVED-names-its-Unknown obligation)
+- **Document version:** 0.5.0 (0.4.0 ratified with Slice 2B; 0.5.0 adds the Slice 2C contradiction admissibility matrix with the four Session 010 amendments)
 - **Date:** 2026-07-13
 - **Established by:** [ADR-0018](../adr/0018-constitutional-predicates.md) (Founder Resolution 009, ONT-PRN-014)
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) 1.6.0, [Entity Lifecycles](ENTITY_LIFECYCLES.md) 2.0.0, ADR-0007
@@ -142,6 +142,38 @@ An Unknown says exactly one thing: *this question currently has no constitutiona
 
 **The H5 negative obligations:** an open Unknown changes nothing it bounds; no validator consumes Unknown state except the named-unknown rule above (which demands a *reference*, not a *conclusion*); resolving an Unknown alters no linked record — newly acquired knowledge never propagates as automated reasoning; linked Interpretations change only through explicit human reconsideration.
 
+## Canonical admissibility matrix — `validate_contradiction` (normative, Slice 2C)
+
+**The decisive rule:** a Contradiction may state that claims cannot all fit the same reality. It may never decide which claim reality favors. Coexistence concerns what the ledger may preserve; incompatibility concerns what reality may permit.
+
+**Explicit incompatibility basis (Amendment 1):** two different Interpretations are not automatically contradictory — differing descriptions may concern different times, scopes, or definitions. Every Contradiction requires: `contradiction_type` ∈ {`TEMPORAL`, `SPATIAL`, `IDENTITY`, `CAUSAL`, `DESCRIPTIVE`, `NUMERIC`, `PROCEDURAL`, `PROVENANCE`, `CUSTODY`, `LOGICAL`}; `scope_definition` (the shared conditions under which the claims conflict — same vehicle, same camera, same interval, same meaning of "moving"); `incompatibility_basis` (why simultaneous truth is impossible under that scope). Mere disagreement never becomes formal contradiction.
+
+**Member roles (Amendment 4):** every ContradictionMember in v0.1 is an `INCOMPATIBLE_CLAIM` — participation without direction. Contextual material is cited as provenance for the incompatibility basis, not as members. Directional vocabulary (supporting, refuting, prevailing, challenged, correct, false) is prohibited permanently.
+
+**Member snapshots:** each member records `member_type`, `member_id`, the statement/meaning fingerprint at recognition time, and `linked_at` — proving which versions were judged incompatible.
+
+**`contradiction_health` (Amendment 3 — derived, never stored):** `CURRENT` iff all members remain unretracted and grounded/available; else `DEGRADED`. Degradation is surfaced; it never auto-disposes, removes a member, promotes a claim, or alters any member's admissibility. Boundary degradation is surfaced; disposition remains human.
+
+**Disposition (ADR-0027):** derived from the ContradictionDisposition record — `EXPLAINED`, `NO_LONGER_APPLICABLE`, `WITHDRAWN`, `UNRESOLVED`, `SUPERSEDED` — human-only, rationale required, terminal, and **no outcome implies a member was proven correct**. Operational state (`OPEN ⇄ UNDER_REVIEW`) is stewardship only.
+
+| Condition | Codes emitted |
+|---|---|
+| Description empty | `ONT-CON-001:description-required` |
+| Type absent/invalid | `ONT-CON-001:type-required` |
+| Scope definition empty | `ONT-CON-001:scope-required` |
+| Incompatibility basis empty | `ONT-CON-001:basis-required` |
+| Fewer than 2 distinct members | `ONT-CON-001:insufficient-members` |
+| Duplicate members | `ONT-CON-001:duplicate-members` |
+| Actor class ≠ HUMAN | `ONT-CON-001:unsupported-actor` |
+| Adjudicative language in description/basis (guard: "is wrong", "is false", "refuted", "prevails", "is correct", "should be preferred", "winner") | `ONT-CON-001:adjudicative-language` |
+| Member nonexistent / retracted / cross-case | `ONT-CNM-001:unknown-member` / `ONT-CNM-001:member-retracted` / `ONT-CNM-001:cross-case-member` |
+| Invalid member role | `ONT-CNM-001:invalid-member-role` |
+| Disposition outcome absent/invalid | `ONT-CDP-001:outcome-required` |
+| Disposition rationale empty | `ONT-CDP-001:rationale-required` |
+| Disposition by non-human | `ONT-PRN-007:actor-not-permitted` |
+
+**Gold fixture (mutually exclusive under shared scope):** A: *"The visible vehicle is stationary throughout 19:42:00–19:42:10."* B: *"The visible vehicle changes position during 19:42:00–19:42:10."* Scope: same vehicle, camera, coordinate frame, and interval.
+
 ## Acceptance test (per ADR-0018)
 
 > **Can every constitutional predicate be derived identically by independent implementations?**
@@ -155,4 +187,5 @@ Experiment One: `can_support_observation`, every matrix row, Python decision vs.
 | 0.1.0 | 2026-07-13 | Initial normative artifact: predicate family, canonical reason codes, eligibility matrix (ADR-0018, Slice 1C plan review). Ratified with Slice 1C (AGC Session 007). |
 | 0.2.0 | 2026-07-13 | Slice 1D: admissibility codes and the canonical validate_observation refusal matrix; is_grounded definition; locator validation rules; gold-standard fixture (ADR-0020). Ratified with Slice 1D (AGC Session 006). |
 | 0.3.0 | 2026-07-13 | Slice 2A: interpretation admissibility matrix, structured uncertainty envelope, grounding snapshot + roles + derived grounding_health, comparative-vocabulary guard, the admissibility disclaimer (Slice 2A plan review amendments). Ratified with Slice 2A (AGC Session 007). |
-| 0.4.0 | 2026-07-13 | Slice 2B: unknown admissibility matrix, question-form/anti-TODO guard, resolution evidence requirements, derived unknown scope (deferred), UNRESOLVED-names-its-Unknown accumulated obligation, H5 negative obligations (AGC Session 008 amendments). |
+| 0.4.0 | 2026-07-13 | Slice 2B: unknown admissibility matrix, question-form/anti-TODO guard, resolution evidence requirements, derived unknown scope (deferred), UNRESOLVED-names-its-Unknown accumulated obligation, H5 negative obligations (AGC Session 008 amendments). Ratified with Slice 2B (AGC Session 009). |
+| 0.5.0 | 2026-07-13 | Slice 2C: contradiction admissibility matrix — explicit incompatibility basis (type/scope/basis), INCOMPATIBLE_CLAIM member role, member snapshots, derived contradiction_health, ADR-0027 disposition outcomes, adjudicative-language guard (AGC Session 010 amendments). |

@@ -48,3 +48,4 @@ An ADR is required for any decision that:
 | [0024](0024-unknowns-as-epistemic-boundaries.md) | Unknowns are epistemic boundaries; boundary objects kept distinct | Accepted (freeze exemption per ONT-PRN-011) |
 | [0025](0025-existence-versus-validity-relationships.md) | Existence relationships are distinct from validity-boundary relationships | Accepted (freeze exemption per ONT-PRN-011) |
 | [0026](0026-dimensions-over-objects.md) | Epistemic layers expand dimensions, not merely object counts | Accepted (freeze exemption per ONT-PRN-011) |
+| [0027](0027-contradiction-disposition.md) | ContradictionDisposition as a first-class object | Accepted (freeze exemption per ONT-PRN-011) |

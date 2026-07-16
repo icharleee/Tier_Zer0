@@ -1,6 +1,6 @@
 # ARGUS Entity Lifecycles
 
-- **Document version:** 2.1.0 — Ratified at 1.0.0 by AGC Review Session 001; 2.0.0 applied the ADR-0007 explicit EvidenceArtifact lifecycle; 2.1.0 adds the Unknown operational/epistemic state separation (AGC Session 008, Amendment 1)
+- **Document version:** 2.2.0 — Ratified at 1.0.0 by AGC Review Session 001; 2.1.0 added the Unknown operational/epistemic separation; 2.2.0 applies the same separation to Contradiction via ContradictionDisposition (ADR-0027, AGC Session 010)
 - **Date:** 2026-07-13
 - **Derived from:** the [Ontology](ONTOLOGY.md); structural context in the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md)
 
@@ -83,21 +83,22 @@ ACTIVE → RETRACTED        (review status orthogonal, per C8)
 
 Flags are surfaced states, not transitions: a degraded claim awaits **human** disposition and is never auto-retracted (Article II). **Hypothesis has no `CONFIRMED`, `TRUE`, or any terminal success state** — conviction lives in human Understanding, outside the system.
 
-## 7. Contradiction (V description; terminal disposition)
+## 7. Contradiction (V description; operational state CT; terminal disposition via ContradictionDisposition)
+
+Two independent families (AGC Session 010 / ADR-0027, mirroring §9):
 
 ```
-OPEN → RESOLVED
-   └─→ WITHDRAWN
+Operational (CT, human-only, reversible):        OPEN ⇄ UNDER_REVIEW
+Epistemic (derived from ContradictionDisposition): EXPLAINED | NO_LONGER_APPLICABLE | WITHDRAWN | UNRESOLVED | SUPERSEDED
 ```
 
 | Transition | Actor | Preconditions | Audit event |
 |---|---|---|---|
-| create → OPEN | Human or AI (suggestion) | ≥2 ContradictionMembers | contradiction-created |
-| member added | Human or AI (suggestion) | Member claim in same Case | contradiction-member-added |
-| OPEN → RESOLVED | **Human only** | Non-empty rationale; resolving-evidence references where resolution rests on evidence | contradiction-resolved |
-| OPEN → WITHDRAWN | **Human only** | Non-empty rationale (raised in error) | contradiction-withdrawn |
+| create → OPEN | Human (AI suggestion deferred) | ≥2 distinct same-case unretracted members; type + scope definition + incompatibility basis; adjudicative-language guard | contradiction-created |
+| OPEN ⇄ UNDER_REVIEW | **Human only** | No disposition exists (operational stewardship; implies nothing about strength or proof) | contradiction-review-started / -paused |
+| open/under-review → any disposition | **Human only** | ContradictionDisposition with outcome + rationale; optional informing provenance refs; **no outcome implies a member was proven correct** | contradiction-disposed (outcome in detail) |
 
-Both terminal; recurrence = new Contradiction referencing the old. Resolution never retracts the conflicting claims. Retraction of a member raises a flag for human disposition — no auto-resolution.
+All dispositions terminal; recurrence or re-scoping = new Contradiction (`SUPERSEDED` links it). Disposition never retracts, modifies, or promotes any member. Member retraction degrades derived `contradiction_health` (CURRENT → DEGRADED) and is surfaced — never auto-disposed (Article II).
 
 ## 8. ContradictionMember (CI)
 
@@ -181,3 +182,4 @@ No lifecycle. Created only by the system as an atomic side effect of actor-attri
 | 1.0.0 | 2026-07-13 | Ratified by AGC Review Session 001. |
 | 2.0.0 | 2026-07-13 | EvidenceArtifact lifecycle made explicit per ADR-0007 / AGC Session 004: STAGED recognized as pre-constitutional; PENDING renamed PENDING_VERIFICATION; QUARANTINED introduced with human-only disposition; ONT-PRN-012 conventions added. MAJOR: 1.0.0 state names would mislead an implementer. |
 | 2.1.0 | 2026-07-13 | Unknown §9: UNDER_REVIEW operational state (reversible, no conclusion) separated from derived epistemic disposition; PARTIALLY_ANSWERED added with the remaining-gap-as-new-Unknown rule (AGC Session 008, Amendment 1). |
+| 2.2.0 | 2026-07-13 | Contradiction §7: operational/epistemic separation via ContradictionDisposition with the five non-adjudicating outcomes; incompatibility basis preconditions; derived contradiction_health (ADR-0027, AGC Session 010). |

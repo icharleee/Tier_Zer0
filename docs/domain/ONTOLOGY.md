@@ -1,6 +1,6 @@
 # The ARGUS Ontology
 
-- **Document version:** 1.12.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; subsequent minor versions add stable identifiers and principles ONT-PRN-009 through ONT-PRN-022 (see version history)
+- **Document version:** 1.13.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; subsequent minor versions add stable identifiers and principles through ONT-PRN-022 and the fifteenth object ONT-CDP-001 (see version history)
 - **Date:** 2026-07-13
 - **Governed by:** [Engineering Constitution](../foundation/ENGINEERING_CONSTITUTION.md) 1.0.0, [Lexicon](../glossary/LEXICON.md) 1.0.0, ADR-0009 (Founder Resolution 003)
 - **Derived from it:** the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md), [Entity Lifecycles](ENTITY_LIFECYCLES.md), the [Invariant Matrix](INVARIANT_MATRIX.md), and every implementation artifact thereafter
@@ -107,8 +107,9 @@ The complete object vocabulary with stable identifiers (per ADR-0011; canonical 
 | ONT-UNK-001 | Unknown | Negative space | A recognized gap, standing as an object |
 | ONT-UNL-001 | UnknownLink | Negative space | What a gap touches |
 | ONT-UNR-001 | UnknownResolution | Negative space | The human record of a gap's disposition |
-| ONT-CON-001 | Contradiction | Negative space | A recognized conflict, standing as an object |
-| ONT-CNM-001 | ContradictionMember | Negative space | A claim's part in a conflict |
+| ONT-CON-001 | Contradiction | Negative space | A formally scoped joint incompatibility, standing as an object |
+| ONT-CNM-001 | ContradictionMember | Negative space | A claim's part in a conflict (snapshot at recognition) |
+| ONT-CDP-001 | ContradictionDisposition | Negative space | The human record of how a conflict was disposed — never of which claim reality favors (ADR-0027) |
 | ONT-ENT-001 | Entity | World model | A referent handle, not a dossier |
 | ONT-REL-001 | Relationship | World model | An evidence-grounded connection |
 | ONT-AUD-001 | AuditEntry | Accountability | The witnessed history of a material act |
@@ -196,3 +197,4 @@ Ratified as one constitutional package with the [Domain Schema Specification](DO
 | 1.10.0 | 2026-07-13 | Added ONT-PRN-019 (accumulating obligations, Resolution 014 / ADR-0023) and ONT-PRN-020 (Unknowns as epistemic boundaries, Resolution 015 / ADR-0024); boundary-object symmetry recorded in §3, per AGC Review Session 007. |
 | 1.11.0 | 2026-07-13 | Added ONT-PRN-021 (existence vs. validity-boundary relationships, Resolution 016 / ADR-0025), per AGC Review Session 008. |
 | 1.12.0 | 2026-07-13 | Added ONT-PRN-022 (dimensions over objects, Resolution 017 / ADR-0026) and the normative boundary taxonomy with the never-alters invariant, per AGC Review Session 009. |
+| 1.13.0 | 2026-07-13 | Added ONT-CDP-001 (ContradictionDisposition, the fifteenth first-class object, ADR-0027); Contradiction's role refined to formally scoped joint incompatibility, per AGC Review Session 010. |

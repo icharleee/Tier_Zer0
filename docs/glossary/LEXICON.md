@@ -1,6 +1,6 @@
 # The ARGUS Lexicon
 
-- **Document version:** 2.0.0
+- **Document version:** 2.1.0
 - **Status:** Normative
 - **Established by:** [ADR-0008](../adr/0008-establish-arb-and-documentation-governance.md), Founder Resolution 002
 
@@ -74,7 +74,10 @@ The human-authored record of how an Unknown was resolved, withdrawn, or determin
 A formally recognized incompatibility between two or more analytical claims.
 
 **ContradictionMember**
-The explicit link binding one analytical claim into a Contradiction.
+The explicit link binding one analytical claim into a Contradiction, with a snapshot of the claim as judged incompatible at recognition time.
+
+**ContradictionDisposition**
+The human-authored, terminal record of how a Contradiction was disposed — explained, no longer applicable, withdrawn, formally left unresolved, or superseded — never a record of which claim reality favors (ADR-0027).
 
 **Entity**
 An investigatively significant actor or object in the world of the case — a person, organization, vehicle, location, object, or account — as represented in the system, distinct from the reality it denotes.
@@ -94,3 +97,4 @@ The append-only, immutable record of a single material action in the system: who
 | 1.0.0 | 2026-07-13 | Initial canonical vocabulary, ratified by Founder Resolution 002. |
 | 1.0.1 | 2026-07-13 | Link paths updated for the knowledge-corpus move (ADR-0012). No semantic change. |
 | 2.0.0 | 2026-07-13 | MAJOR: SourceLocator redefined as the scope of constitutional support (Resolution 011 / ADR-0020), under AGC review per this standard's rule 4. First semantic change to a canonical definition. |
+| 2.1.0 | 2026-07-13 | Added ContradictionDisposition (ADR-0027); ContradictionMember gains the recognition-time snapshot clause. |
