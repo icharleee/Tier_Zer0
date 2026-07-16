@@ -1,6 +1,6 @@
 # ARGUS Entity Lifecycles
 
-- **Document version:** 2.0.0 — Ratified at 1.0.0 by AGC Review Session 001; 2.0.0 applies the explicit EvidenceArtifact lifecycle of ADR-0007 as amended by AGC Session 004 (state renames are MAJOR: a reader of 1.0.0 would implement the wrong states)
+- **Document version:** 2.1.0 — Ratified at 1.0.0 by AGC Review Session 001; 2.0.0 applied the ADR-0007 explicit EvidenceArtifact lifecycle; 2.1.0 adds the Unknown operational/epistemic state separation (AGC Session 008, Amendment 1)
 - **Date:** 2026-07-13
 - **Derived from:** the [Ontology](ONTOLOGY.md); structural context in the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md)
 
@@ -103,22 +103,28 @@ Both terminal; recurrence = new Contradiction referencing the old. Resolution ne
 
 No lifecycle. Created with (or added to) its Contradiction; never removed, retargeted, or deleted. Erroneous membership is handled by withdrawing/superseding the Contradiction, preserving the historical fact that the claims were held incompatible.
 
-## 9. Unknown (V question text; terminal disposition via UnknownResolution)
+## 9. Unknown (V question text; operational state CT; terminal disposition via UnknownResolution)
+
+Two independent state families (AGC Session 008, Amendment 1 — operational activity is not epistemic resolution):
 
 ```
-OPEN → RESOLVED
-   ├─→ WITHDRAWN
-   └─→ UNRESOLVABLE
+Operational (CT, human-only, reversible):   OPEN ⇄ UNDER_REVIEW
+Epistemic (derived from UnknownResolution): ANSWERED | PARTIALLY_ANSWERED | UNRESOLVABLE | WITHDRAWN
 ```
+
+`UNDER_REVIEW` records only that a Steward is actively evaluating the Unknown — it carries no conclusion. Epistemic status is derived from the resolution record; a bare epistemic flip without an UnknownResolution is impossible.
 
 | Transition | Actor | Preconditions | Audit event |
 |---|---|---|---|
-| create → OPEN | Human or AI (suggestion) | Question stated as a question | unknown-created |
-| OPEN → RESOLVED | **Human only** | Via `ANSWERED` UnknownResolution with ≥1 answering claim reference | unknown-resolved |
-| OPEN → WITHDRAWN | **Human only** | Via `WITHDRAWN` UnknownResolution with rationale | unknown-withdrawn |
-| OPEN → UNRESOLVABLE | **Human only** | Via `UNRESOLVABLE` UnknownResolution with rationale | unknown-marked-unresolvable |
+| create → OPEN | Human (AI suggestion deferred) | Question stated as a question (guard: interrogative form, no task vocabulary) | unknown-created |
+| OPEN → UNDER_REVIEW | **Human only** | — (operational marker) | unknown-review-started |
+| UNDER_REVIEW → OPEN | **Human only** | — (review paused; nothing concluded) | unknown-review-paused |
+| open/under-review → ANSWERED | **Human only** | `ANSWERED` UnknownResolution with ≥1 answering claim reference | unknown-resolved |
+| open/under-review → PARTIALLY_ANSWERED | **Human only** | `PARTIALLY_ANSWERED` UnknownResolution with ≥1 claim reference; the remaining gap is re-stated as a **new** Unknown referencing this one | unknown-partially-resolved |
+| open/under-review → WITHDRAWN | **Human only** | `WITHDRAWN` UnknownResolution with rationale | unknown-withdrawn |
+| open/under-review → UNRESOLVABLE | **Human only** | `UNRESOLVABLE` UnknownResolution with rationale | unknown-marked-unresolvable |
 
-Status is derived from the resolution record — a bare status flip without an UnknownResolution is impossible. All terminal; a reopened question is a new Unknown referencing the old.
+All dispositions terminal; a reopened question is a new Unknown referencing the old. Resolving an Unknown alters **no** linked record — knowing more ≠ changing meaning; linked Interpretations change only through explicit human reconsideration (ONT-PRN-020).
 
 ## 10. UnknownLink (V)
 
@@ -174,3 +180,4 @@ No lifecycle. Created only by the system as an atomic side effect of actor-attri
 | 0.1.0 | 2026-07-13 | Initial draft, extracted from Domain Schema Specification 0.1.0 per ADR-0009 document hierarchy. |
 | 1.0.0 | 2026-07-13 | Ratified by AGC Review Session 001. |
 | 2.0.0 | 2026-07-13 | EvidenceArtifact lifecycle made explicit per ADR-0007 / AGC Session 004: STAGED recognized as pre-constitutional; PENDING renamed PENDING_VERIFICATION; QUARANTINED introduced with human-only disposition; ONT-PRN-012 conventions added. MAJOR: 1.0.0 state names would mislead an implementer. |
+| 2.1.0 | 2026-07-13 | Unknown §9: UNDER_REVIEW operational state (reversible, no conclusion) separated from derived epistemic disposition; PARTIALLY_ANSWERED added with the remaining-gap-as-new-Unknown rule (AGC Session 008, Amendment 1). |

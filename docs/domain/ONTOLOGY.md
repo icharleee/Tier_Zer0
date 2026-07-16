@@ -1,6 +1,6 @@
 # The ARGUS Ontology
 
-- **Document version:** 1.10.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; subsequent minor versions add stable identifiers and principles ONT-PRN-009 through ONT-PRN-020 (see version history)
+- **Document version:** 1.11.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; subsequent minor versions add stable identifiers and principles ONT-PRN-009 through ONT-PRN-021 (see version history)
 - **Date:** 2026-07-13
 - **Governed by:** [Engineering Constitution](../foundation/ENGINEERING_CONSTITUTION.md) 1.0.0, [Lexicon](../glossary/LEXICON.md) 1.0.0, ADR-0009 (Founder Resolution 003)
 - **Derived from it:** the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md), [Entity Lifecycles](ENTITY_LIFECYCLES.md), the [Invariant Matrix](INVARIANT_MATRIX.md), and every implementation artifact thereafter
@@ -149,6 +149,7 @@ Cross-cutting principles carry stable identifiers alongside the object registry 
 | ONT-PRN-018 | Epistemic layers reject semantic contamination from higher layers: no layer carries the vocabulary of the layers above it (Resolution 013) | §2 |
 | ONT-PRN-019 | Higher epistemic layers may introduce new obligations but may never weaken the obligations inherited from lower layers — the ladder only accumulates (Resolution 014) | §2 |
 | ONT-PRN-020 | Unknowns represent the boundaries of current knowledge, never placeholders for future assumptions — absence is never transformed into evidence, inference, or implied support (Resolution 015) | §3 |
+| ONT-PRN-021 | Every epistemic object distinguishes the relationships that justify its existence from the relationships that limit its validity — the two families never merge or convert (Resolution 016) | §2, §3 |
 
 ## 10. Unresolved ontological questions
 
@@ -183,3 +184,4 @@ Ratified as one constitutional package with the [Domain Schema Specification](DO
 | 1.8.0 | 2026-07-13 | Added ONT-PRN-016 and refined the ONT-SRC-001 role to scope-of-constitutional-support (Resolution 011 / ADR-0020), per the Slice 1D plan review. |
 | 1.9.0 | 2026-07-13 | Added ONT-PRN-017 (persistence implements admissibility, Resolution 012 / ADR-0021) and ONT-PRN-018 (semantic contamination, Resolution 013 / ADR-0022), per AGC Review Session 006. |
 | 1.10.0 | 2026-07-13 | Added ONT-PRN-019 (accumulating obligations, Resolution 014 / ADR-0023) and ONT-PRN-020 (Unknowns as epistemic boundaries, Resolution 015 / ADR-0024); boundary-object symmetry recorded in §3, per AGC Review Session 007. |
+| 1.11.0 | 2026-07-13 | Added ONT-PRN-021 (existence vs. validity-boundary relationships, Resolution 016 / ADR-0025), per AGC Review Session 008. |

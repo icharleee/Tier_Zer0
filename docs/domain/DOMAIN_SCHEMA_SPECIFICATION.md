@@ -1,6 +1,6 @@
 # ARGUS Domain Schema Specification
 
-- **Document version:** 1.3.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; 1.3.0 refines ONT-INT-001 per the Slice 2A amendments (see version history)
+- **Document version:** 1.4.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; 1.4.0 refines ONT-UNK-001/ONT-UNR-001 per the Slice 2B amendments (see version history)
 - **Date:** 2026-07-13
 - **Governed by:** [Engineering Constitution](../foundation/ENGINEERING_CONSTITUTION.md) 1.0.0, [Lexicon](../glossary/LEXICON.md) 1.0.0, ADR-0001–0006, ADR-0009
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) — the source of truth for meaning (Founder Resolution 003)
@@ -327,7 +327,7 @@ Lifecycle sections state the immutability class and any structurally load-bearin
 
 **Relationships.** Belongs to one Case. Connected to affected records via UnknownLinks. Disposed via at most one active UnknownResolution.
 
-**Lifecycle.** Every disposition HumanActor-only, effected by creating an UnknownResolution (never a bare status flip); all terminal (a re-opened question is a new Unknown referencing the old). Question-text corrections: class V. States and transitions: [Entity Lifecycles §9](ENTITY_LIFECYCLES.md#9-unknown-v-question-text-terminal-disposition-via-unknownresolution).
+**Lifecycle.** Two independent families (AGC Session 008): the operational state (`OPEN ⇄ UNDER_REVIEW`, human-only, reversible, carrying no conclusion) and the epistemic disposition (derived solely from the UnknownResolution record — `ANSWERED`, `PARTIALLY_ANSWERED`, `UNRESOLVABLE`, `WITHDRAWN`; never a bare status flip; all terminal, with a partially answered question's remaining gap re-stated as a new Unknown). Question-text corrections: class V. States and transitions: [Entity Lifecycles §9](ENTITY_LIFECYCLES.md#9-unknown-v-question-text-operational-state-ct-terminal-disposition-via-unknownresolution).
 
 **Invariants.** No AI or system path may transition an Unknown (Article II; ADR-0005). Status and its UnknownResolution are always consistent (status is derived from the resolution's existence and type).
 
@@ -377,7 +377,7 @@ Lifecycle sections state the immutability class and any structurally load-bearin
 
 **Identity.** Opaque ID (C2).
 
-**Required attributes.** Owning Unknown; resolution type ∈ {`ANSWERED`, `WITHDRAWN`, `UNRESOLVABLE`}; rationale (non-empty); resolving HumanActor; `created_at`; for `ANSWERED`: references to the claims (Observations/Interpretations) that answer the question.
+**Required attributes.** Owning Unknown; resolution type ∈ {`ANSWERED`, `PARTIALLY_ANSWERED`, `WITHDRAWN`, `UNRESOLVABLE`}; rationale (non-empty); resolving HumanActor; `created_at`; for `ANSWERED` and `PARTIALLY_ANSWERED`: references to the claims (Observations/Interpretations) that answer the question — an answer without evidence is not an answer (Article I).
 
 **Optional attributes.** For `UNRESOLVABLE`: what would have been required to answer it.
 
@@ -513,3 +513,4 @@ The [Invariant Matrix](INVARIANT_MATRIX.md) population and the ERD (`docs/archit
 | 1.1.0 | 2026-07-13 | EvidenceArtifact lifecycle references aligned with ADR-0007 as amended by AGC Session 004 (PENDING_VERIFICATION, QUARANTINED; SourceLocator prohibition restated as non-ACTIVE). |
 | 1.2.0 | 2026-07-13 | AuditEntry gains the ADR-0016 hash-chain attributes and the case_audit_heads chain root; hash-chaining unresolved question closed. |
 | 1.3.0 | 2026-07-13 | ONT-INT-001 refined per Slice 2A amendments: structured uncertainty envelope, grounding revision snapshot with roles, admissibility disclaimer (U2 remains open — the envelope is not a confidence scale). |
+| 1.4.0 | 2026-07-13 | ONT-UNK-001: operational state (UNDER_REVIEW) separated from derived epistemic disposition; ONT-UNR-001 gains PARTIALLY_ANSWERED with mandatory claim references (AGC Session 008, Amendment 1). |

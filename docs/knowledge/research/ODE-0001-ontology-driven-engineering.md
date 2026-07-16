@@ -94,7 +94,13 @@ The refinement distinguishes *technical ordering* (creation order, citation iden
 
 > **Hypothesis H5 (refined per AGC Session 007):** Independent implementations preserve explicit epistemic boundaries without transforming absence into evidence, inference, or implied support for any competing interpretation.
 
-Registered ahead of Slice 2B (*Unknowns and Evidentiary Limits*) — the first explicit representation of **negative knowledge** (Resolution 015 / ONT-PRN-020). Connects directly to Article IX: representing uncertainty is not the same as representing the limits that produce it. **Status: Untested.**
+Registered ahead of Slice 2B (*Unknowns and Evidentiary Limits*) — the first explicit representation of **negative knowledge** (Resolution 015 / ONT-PRN-020). Connects directly to Article IX: representing uncertainty is not the same as representing the limits that produce it.
+
+**Final refinement (AGC Session 008):** *Independent implementations preserve explicit epistemic boundaries while ensuring that neither absence nor newly acquired knowledge automatically changes previously admitted reasoning.* Knowledge changes; the system does not; humans decide what to do next. **Status: Untested.**
+
+> **Observation O5:** Negative knowledge becomes computationally useful only after it is represented explicitly rather than implicitly through missing data. NULL is not Unknown; missing rows are not Unknown; Unknown is a deliberate epistemic object.
+
+*Candidate observation (not yet numbered — record if repeated):* the ladder appears to alternate between positive structures (Evidence, Observation, Interpretation, Hypothesis) and negative boundaries (Unknown bounding meaning, Contradiction bounding explanation). This may be the natural rhythm of investigative cognition — positive assertions, negative boundaries, positive explanations, negative constraints. Not elevated to ontology; watch whether Contradiction (Slice 2C) exhibits the same pairing.
 
 > **Observation O2:** Independent verification derived directly from the ontology detected implementation divergence without sharing executable logic.
 
@@ -121,3 +127,4 @@ In Slice 1C, the test suite transcribed the canonical matrix as its own literal 
 | 0.6.0 | 2026-07-13 | H3 marked Supported (n = 1); Observation O3 (admissibility/persistence separation) and Hypothesis H4 (preservation of competing interpretations, untested) registered per AGC Review Session 006. |
 | 0.7.0 | 2026-07-13 | H4 refined for falsifiability at the Slice 2A plan review: technical ordering distinguished from epistemic preference. |
 | 0.8.0 | 2026-07-13 | H4 marked Supported (n = 1); Observation O4 (structural exclusion of preference) and Hypothesis H5 (epistemic boundaries, refined wording, untested) registered per AGC Review Session 007. |
+| 0.9.0 | 2026-07-13 | H5 finally refined (knowledge changes; the system does not); Observation O5 (explicit negative knowledge) registered; positive/negative alternation recorded as a candidate observation (AGC Session 008). |

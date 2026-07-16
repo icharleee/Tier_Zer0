@@ -1,6 +1,6 @@
 # ARGUS Entity-Relationship Diagram
 
-- **Document version:** 0.3.0 (Slice 2A coverage added: Interpretation with uncertainty envelope, grounding snapshots)
+- **Document version:** 0.4.0 (Slice 2B coverage added: the Unknown boundary family)
 - **Derived from:** [Domain Schema Specification](../domain/DOMAIN_SCHEMA_SPECIFICATION.md) 1.1.0, [Entity Lifecycles](../domain/ENTITY_LIFECYCLES.md) 2.0.0, ADR-0007
 
 ## Slice 1 — Constitutional Evidence Activation
@@ -18,6 +18,39 @@ erDiagram
     OBSERVATION ||--o{ INTERPRETATION_GROUNDING : "relied upon by (snapshot)"
     INTERPRETATION ||--|{ INTERPRETATION_GROUNDING : "grounded by (>= 1)"
     CASE ||--o{ INTERPRETATION : "scopes"
+    CASE ||--o{ UNKNOWN : "scopes"
+    UNKNOWN ||--o{ UNKNOWN_LINK : "bounds (validity family, ONT-PRN-021)"
+    UNKNOWN ||--o| UNKNOWN_RESOLUTION : "disposed by (human-only, terminal)"
+
+    UNKNOWN {
+        string id PK
+        string case_id FK
+        string citation "UNK-NNNNNN"
+        string question "interrogative form; anti-TODO guard (ONT-PRN-020)"
+        string impact_statement "nullable"
+        string operational_state "OPEN | UNDER_REVIEW (CT; no conclusion)"
+        string created_by "HUMAN only in Slice 2B"
+        datetime created_at
+    }
+    UNKNOWN_LINK {
+        string id PK
+        string unknown_id FK
+        string target_type "Observation | Interpretation | EvidenceArtifact"
+        string target_id "same case; boundary, never grounds"
+        string nature "how the gap bounds the target"
+        datetime linked_at
+        datetime retracted_at "nullable (class V)"
+        string retraction_reason
+    }
+    UNKNOWN_RESOLUTION {
+        string id PK
+        string unknown_id FK "unique: at most one"
+        string resolution_type "ANSWERED | PARTIALLY_ANSWERED | UNRESOLVABLE | WITHDRAWN"
+        string rationale "required"
+        json   answering_claims "required for (PARTIALLY_)ANSWERED"
+        string resolved_by "HUMAN only"
+        datetime created_at "CI; terminal"
+    }
 
     INTERPRETATION {
         string id PK
@@ -132,3 +165,4 @@ Notes:
 | 0.1.0 | 2026-07-13 | Slice 1 coverage: Case (+ append-only authority), EvidenceArtifact with the ADR-0007 explicit lifecycle, AuditEntry with per-case ordering. |
 | 0.2.0 | 2026-07-13 | Slice 1D gate: SourceLocator (scope of constitutional support), Observation (first epistemic object, no meaning fields), groundings junction (heterogeneous evidence ready). |
 | 0.3.0 | 2026-07-13 | Slice 2A gate: Interpretation (uncertainty envelope, no preference surface) and grounding snapshots (fingerprint + role + linked_at). |
+| 0.4.0 | 2026-07-13 | Slice 2B gate: Unknown (operational vs. epistemic state), UnknownLink (validity-boundary family), UnknownResolution (human-only, evidence-requiring). |

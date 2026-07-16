@@ -1,6 +1,6 @@
 # ARGUS Constitutional Predicates
 
-- **Document version:** 0.3.0 (0.2.0 ratified with Slice 1D; 0.3.0 adds the Slice 2A interpretation admissibility matrix with the four AGC amendments)
+- **Document version:** 0.4.0 (0.3.0 ratified with Slice 2A; 0.4.0 adds the Slice 2B unknown admissibility matrix, the question-form guard, and the UNRESOLVED-names-its-Unknown obligation)
 - **Date:** 2026-07-13
 - **Established by:** [ADR-0018](../adr/0018-constitutional-predicates.md) (Founder Resolution 009, ONT-PRN-014)
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) 1.6.0, [Entity Lifecycles](ENTITY_LIFECYCLES.md) 2.0.0, ADR-0007
@@ -119,6 +119,29 @@ Validation is distinct from persistence (ADR-0020 Amendment 2): `validate_*` pro
 | Guarded comparative vocabulary present | `ONT-INT-001:comparative-ranking-not-yet-modeled` |
 | Invalid grounding role | `ONT-INT-001:invalid-grounding-role` |
 
+## Canonical admissibility matrix — `validate_unknown` (normative, Slice 2B)
+
+An Unknown says exactly one thing: *this question currently has no constitutionally admissible answer* (ONT-PRN-020). It is never a task, reminder, or hypothesis-in-waiting. NULL is not Unknown; missing rows are not Unknown — negative knowledge is a deliberate epistemic object.
+
+**Question-form guard (conservative lexical heuristic, like the comparative guard):** the question must be non-empty, interrogative in form (ends with `?`), and free of task vocabulary. Anti-TODO stems (case-insensitive): `todo`, `follow up`, `assign`, `remind`, `need to`, and leading action verbs `interview `, `collect `, `obtain `, `request `. Admissible gold fixture: *"Who possessed the device between 19:42 and 20:15?"* — investigative actions are refused; investigative questions are exactly what Unknown represents.
+
+| Condition | Codes emitted |
+|---|---|
+| Question empty/whitespace | `ONT-UNK-001:question-required` |
+| Not interrogative form (no `?`) | `ONT-UNK-001:not-a-question` |
+| Task vocabulary present | `ONT-UNK-001:task-shaped-not-question` |
+| Actor class ≠ HUMAN (AI suggestion deferred) | `ONT-UNK-001:unsupported-actor` |
+| Link target nonexistent / cross-case | `ONT-UNK-001:unknown-target` / `ONT-UNK-001:cross-case-link` |
+| Resolution `ANSWERED`/`PARTIALLY_ANSWERED` without ≥1 claim reference | `ONT-UNR-001:answer-requires-evidence` |
+| Resolution rationale empty | `ONT-UNR-001:rationale-required` |
+| Resolution by non-human actor | `ONT-PRN-007:actor-not-permitted` |
+
+**The accumulated Interpretation obligation (ONT-PRN-019):** when `uncertainty_status = UNRESOLVED`, the Interpretation MUST name its Unknown — code `ONT-INT-001:unresolved-requires-named-unknown`. This is the first admissibility rule that reads the negative space: uncertainty relates to the specific evidentiary limit that produces it (Article IX). Nothing inherited is weakened; one obligation is added.
+
+**Unknown scope (derived, never stored — recorded for the ontology, implementation deferred beyond v0.1):** an Unknown linking only Observations is *observational*; linking Interpretations, *interpretive*; later linking Hypotheses, *explanatory*. Computed from `unknown_links` targets per ONT-PRN-013.
+
+**The H5 negative obligations:** an open Unknown changes nothing it bounds; no validator consumes Unknown state except the named-unknown rule above (which demands a *reference*, not a *conclusion*); resolving an Unknown alters no linked record — newly acquired knowledge never propagates as automated reasoning; linked Interpretations change only through explicit human reconsideration.
+
 ## Acceptance test (per ADR-0018)
 
 > **Can every constitutional predicate be derived identically by independent implementations?**
@@ -131,4 +154,5 @@ Experiment One: `can_support_observation`, every matrix row, Python decision vs.
 |---|---|---|
 | 0.1.0 | 2026-07-13 | Initial normative artifact: predicate family, canonical reason codes, eligibility matrix (ADR-0018, Slice 1C plan review). Ratified with Slice 1C (AGC Session 007). |
 | 0.2.0 | 2026-07-13 | Slice 1D: admissibility codes and the canonical validate_observation refusal matrix; is_grounded definition; locator validation rules; gold-standard fixture (ADR-0020). Ratified with Slice 1D (AGC Session 006). |
-| 0.3.0 | 2026-07-13 | Slice 2A: interpretation admissibility matrix, structured uncertainty envelope, grounding snapshot + roles + derived grounding_health, comparative-vocabulary guard, the admissibility disclaimer (Slice 2A plan review amendments). |
+| 0.3.0 | 2026-07-13 | Slice 2A: interpretation admissibility matrix, structured uncertainty envelope, grounding snapshot + roles + derived grounding_health, comparative-vocabulary guard, the admissibility disclaimer (Slice 2A plan review amendments). Ratified with Slice 2A (AGC Session 007). |
+| 0.4.0 | 2026-07-13 | Slice 2B: unknown admissibility matrix, question-form/anti-TODO guard, resolution evidence requirements, derived unknown scope (deferred), UNRESOLVED-names-its-Unknown accumulated obligation, H5 negative obligations (AGC Session 008 amendments). |

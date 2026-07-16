@@ -1,6 +1,6 @@
 # ARGUS Domain Invariant Matrix
 
-- **Document version:** 0.5.0 (Slice 2A: Interpretation row group with the four plan-review amendments — rows before code)
+- **Document version:** 0.6.0 (Slice 2B: Unknown family rows — operational/epistemic separation, boundary family, H5 negative obligations)
 - **Date:** 2026-07-13
 - **Required by:** ADR-0006 (per-table enforcement specification and material-mutation enumeration)
 - **Derived from:** the [Ontology](ONTOLOGY.md) via the [Derivation Specification](DERIVATION_SPECIFICATION.md) (ADR-0014), with structure from the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md) and [Entity Lifecycles](ENTITY_LIFECYCLES.md)
@@ -83,6 +83,17 @@ Enforcement mechanisms name their PostgreSQL construct per ADR-0006; the service
 | Interpretation: retraction | ONT-PRN-006, ONT-PRN-007 | V | retract with reason | Human | `argus_private.retract_interpretation`; no effect on siblings, groundings, or observations | claim-retracted | `test_interpretation_retraction_no_promotion` |
 | `grounding_health` (derived; no storage) | ONT-INT-001, ONT-PRN-015 | invariant | none — GROUNDED iff ≥1 grounding references an unretracted, grounded Observation; else DEGRADED | — | Python predicate + `argus_private.interpretation_grounding_health`, conformance-tested; surfaces, never auto-retracts (Article II) | — | `test_grounding_health_degrades_both_renderings` |
 
+### Unknown, UnknownLink, UnknownResolution (Slice 2B, ADR-0024/0025)
+
+| Entity / field group | Ontology rule | Class | Permitted mutations | Permitted actors | Enforcing mechanism | Material mutations audited | Verifying test |
+|---|---|---|---|---|---|---|---|
+| Unknown: question, impact, citation | ONT-UNK-001, ONT-PRN-020 | CI after creation | none (question corrections = retract/replace pattern deferred with AI suggestions) | — | SELECT-only grant; inserts solely via `argus_private.create_unknown` (question-form + anti-TODO guard) | unknown-created | `test_unknown_admissibility_matrix` |
+| Unknown: operational_state | ONT-PRN-012 | CT | OPEN ⇄ UNDER_REVIEW only | Human | named transition functions; epistemic disposition NOT writable here | unknown-review-started / -paused | `test_under_review_is_operational_not_epistemic` |
+| Unknown: epistemic disposition | ONT-UNK-001, ONT-PRN-007 | derived | none — derived from the UnknownResolution record | — | no disposition column exists to write; status computed | (via resolution) | `test_disposition_derived_never_stored` |
+| UnknownLink: target, nature | ONT-PRN-021 | CI (validity-boundary family — may never gain grounding semantics) | none (link errors: retract pattern, V) | Human create | inserted via `create_unknown` / `link_unknown`; same-case CHECK in function | unknown-linked | `test_links_are_boundaries_not_grounds` |
+| UnknownResolution: type, rationale, claim refs | ONT-UNR-001, ONT-PRN-007 | CI | none | **Human only** | `argus_private.resolve_unknown`: ANSWERED/PARTIALLY_ANSWERED require ≥1 claim reference; rationale required; terminal | unknown-resolved / -partially-resolved / -withdrawn / -marked-unresolvable | `test_answer_requires_evidence`, `test_disposition_human_only_at_db` |
+| H5 negative obligations | ONT-PRN-020 | invariant | — | — | no trigger, function, or validator mutates bounded records on link or resolution; verified by byte-identity tests | — | `test_resolution_alters_no_linked_record`, `test_open_unknown_changes_nothing` |
+
 ### Constitutional predicates (Slice 1C, ADR-0018)
 
 | Entity / field group | Ontology rule | Class | Permitted mutations | Permitted actors | Enforcing mechanism | Material mutations audited | Verifying test |
@@ -102,3 +113,4 @@ Enforcement mechanisms name their PostgreSQL construct per ADR-0006; the service
 | 0.3.0 | 2026-07-13 | Slice 1C: can_support_observation predicate row (ADR-0018) — derived never stored, dual-rendered, conformance-tested. |
 | 0.4.0 | 2026-07-13 | Slice 1D gate: SourceLocator and Observation row groups, is_grounded derived row (ADR-0020). |
 | 0.5.0 | 2026-07-13 | Slice 2A gate: Interpretation rows — uncertainty envelope, grounding snapshot, no-preference invariant, derived grounding_health. |
+| 0.6.0 | 2026-07-13 | Slice 2B gate: Unknown/UnknownLink/UnknownResolution rows per ADR-0024/0025 and the Session 008 amendments. |
