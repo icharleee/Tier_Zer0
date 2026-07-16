@@ -269,6 +269,121 @@ def validate_unknown_resolution(
     return tuple(sorted(codes))
 
 
+# ---- Contradiction admissibility (Slice 2C; ONT-CON/CNM/CDP-001) ----
+
+CON_DESCRIPTION_REQUIRED = "ONT-CON-001:description-required"
+CON_TYPE_REQUIRED = "ONT-CON-001:type-required"
+CON_SCOPE_REQUIRED = "ONT-CON-001:scope-required"
+CON_BASIS_REQUIRED = "ONT-CON-001:basis-required"
+CON_INSUFFICIENT_MEMBERS = "ONT-CON-001:insufficient-members"
+CON_DUPLICATE_MEMBERS = "ONT-CON-001:duplicate-members"
+CON_UNSUPPORTED_ACTOR = "ONT-CON-001:unsupported-actor"
+CON_ADJUDICATIVE_LANGUAGE = "ONT-CON-001:adjudicative-language"
+CNM_UNKNOWN_MEMBER = "ONT-CNM-001:unknown-member"
+CNM_MEMBER_RETRACTED = "ONT-CNM-001:member-retracted"
+CNM_CROSS_CASE_MEMBER = "ONT-CNM-001:cross-case-member"
+CNM_INVALID_ROLE = "ONT-CNM-001:invalid-member-role"
+CDP_OUTCOME_REQUIRED = "ONT-CDP-001:outcome-required"
+CDP_RATIONALE_REQUIRED = "ONT-CDP-001:rationale-required"
+
+CONTRADICTION_TYPES = frozenset({
+    "TEMPORAL", "SPATIAL", "IDENTITY", "CAUSAL", "DESCRIPTIVE",
+    "NUMERIC", "PROCEDURAL", "PROVENANCE", "CUSTODY", "LOGICAL",
+})
+DISPOSITION_OUTCOMES = frozenset({
+    "EXPLAINED", "NO_LONGER_APPLICABLE", "WITHDRAWN", "UNRESOLVED", "SUPERSEDED",
+})
+# Conservative adjudicative-language guard (heuristic tripwire): a
+# Contradiction states joint impossibility; it never says who is right.
+ADJUDICATIVE_GUARD_TERMS = (
+    "is wrong", "is false", "refuted", "prevails", "is correct",
+    "should be preferred", "winner",
+)
+
+
+@dataclass(frozen=True)
+class MemberState:
+    """The constitutional state of one proposed contradiction member."""
+
+    exists: bool
+    retracted: bool = False
+    same_case: bool = True
+    role: str = "INCOMPATIBLE_CLAIM"
+
+
+def validate_contradiction(
+    *,
+    description: str,
+    contradiction_type: str | None,
+    scope_definition: str,
+    incompatibility_basis: str,
+    actor_class: ActorClass,
+    members: tuple[MemberState, ...],
+    distinct_member_count: int | None = None,
+) -> tuple[str, ...]:
+    """The canonical contradiction refusal matrix: at least two claims plus
+    an explicit account of the shared scope and incompatibility that prevents
+    their simultaneous truth. Mere disagreement never becomes formal
+    contradiction."""
+    codes: set[str] = set()
+    if not description or not description.strip():
+        codes.add(CON_DESCRIPTION_REQUIRED)
+    if contradiction_type not in CONTRADICTION_TYPES:
+        codes.add(CON_TYPE_REQUIRED)
+    if not scope_definition or not scope_definition.strip():
+        codes.add(CON_SCOPE_REQUIRED)
+    if not incompatibility_basis or not incompatibility_basis.strip():
+        codes.add(CON_BASIS_REQUIRED)
+    if actor_class is not ActorClass.HUMAN:
+        codes.add(CON_UNSUPPORTED_ACTOR)
+
+    prose = f"{description or ''} {incompatibility_basis or ''}".lower()
+    if any(t in prose for t in ADJUDICATIVE_GUARD_TERMS):
+        codes.add(CON_ADJUDICATIVE_LANGUAGE)
+
+    n_distinct = distinct_member_count if distinct_member_count is not None else len(members)
+    if n_distinct < 2:
+        codes.add(CON_INSUFFICIENT_MEMBERS)
+    if distinct_member_count is not None and distinct_member_count < len(members):
+        codes.add(CON_DUPLICATE_MEMBERS)
+    for m in members:
+        if m.role != "INCOMPATIBLE_CLAIM":
+            codes.add(CNM_INVALID_ROLE)
+        if not m.exists:
+            codes.add(CNM_UNKNOWN_MEMBER)
+            continue
+        if m.retracted:
+            codes.add(CNM_MEMBER_RETRACTED)
+        if not m.same_case:
+            codes.add(CNM_CROSS_CASE_MEMBER)
+    return tuple(sorted(codes))
+
+
+def validate_contradiction_disposition(
+    outcome: str | None, rationale: str, actor_class: ActorClass
+) -> tuple[str, ...]:
+    codes: set[str] = set()
+    if actor_class is not ActorClass.HUMAN:
+        codes.add(ACTOR_NOT_PERMITTED)
+    if outcome not in DISPOSITION_OUTCOMES:
+        codes.add(CDP_OUTCOME_REQUIRED)
+    if not rationale or not rationale.strip():
+        codes.add(CDP_RATIONALE_REQUIRED)
+    return tuple(sorted(codes))
+
+
+def contradiction_health(members: tuple[MemberState, ...]) -> str:
+    """Derived, never stored (Amendment 3): CURRENT iff all members remain
+    unretracted and available; else DEGRADED. Degradation is surfaced;
+    disposition remains human — no auto-disposition, no member removal,
+    no promotion, no admissibility change."""
+    return (
+        "CURRENT"
+        if members and all(m.exists and not m.retracted for m in members)
+        else "DEGRADED"
+    )
+
+
 def interpretation_grounding_health(
     groundings: tuple[ObservationGroundingState, ...],
 ) -> str:

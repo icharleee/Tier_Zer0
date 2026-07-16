@@ -32,6 +32,11 @@ CONTAMINATION_REGISTRY: dict[str, tuple[str, ...]] = {
     "unknowns": ("answer", "conclusion", "priorit", "deadline", "task", "hypoth", "likelihood", "predict"),
     "unknown_links": ("answer", "conclusion", "priorit", "deadline", "task", "ground", "support"),
     "unknown_resolutions": ("priorit", "deadline", "task", "hypoth", "likelihood", "predict"),
+    # Contradiction may never carry adjudicative vocabulary (ADR-0027: no
+    # survivor, winner, correctness, or preference surface — ever).
+    "contradictions": ("winner", "prevail", "surviv", "adjudicat", "correct", "refut", "rank", "preferred", "weight", "score", "hypoth"),
+    "contradiction_members": ("winner", "prevail", "surviv", "adjudicat", "correct", "refut", "rank", "preferred", "support", "challeng"),
+    "contradiction_dispositions": ("winner", "prevail", "surviv", "adjudicat", "correct", "refut", "rank", "preferred"),
 }
 
 

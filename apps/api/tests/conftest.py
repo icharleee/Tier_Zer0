@@ -51,6 +51,9 @@ from sqlalchemy import text as _text
 _PG_TABLES_FK_ORDER = (
     "audit_entries",
     "case_audit_heads",
+    "contradiction_dispositions",
+    "contradiction_members",
+    "contradictions",
     "unknown_resolutions",
     "unknown_links",
     "unknowns",

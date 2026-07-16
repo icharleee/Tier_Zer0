@@ -393,6 +393,104 @@ class UnknownResolution(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
 
 
+class ContradictionType(enum.Enum):
+    TEMPORAL = "TEMPORAL"
+    SPATIAL = "SPATIAL"
+    IDENTITY = "IDENTITY"
+    CAUSAL = "CAUSAL"
+    DESCRIPTIVE = "DESCRIPTIVE"
+    NUMERIC = "NUMERIC"
+    PROCEDURAL = "PROCEDURAL"
+    PROVENANCE = "PROVENANCE"
+    CUSTODY = "CUSTODY"
+    LOGICAL = "LOGICAL"
+
+
+class DispositionOutcome(enum.Enum):
+    """ADR-0027: no outcome exists, or may ever be added, that implies a
+    member was proven correct."""
+
+    EXPLAINED = "EXPLAINED"
+    NO_LONGER_APPLICABLE = "NO_LONGER_APPLICABLE"
+    WITHDRAWN = "WITHDRAWN"
+    UNRESOLVED = "UNRESOLVED"
+    SUPERSEDED = "SUPERSEDED"
+
+
+class Contradiction(Base):
+    """ONT-CON-001 — a formally scoped joint incompatibility: these
+    admissible claims cannot all fit the same reality under the stated
+    scope. It never decides which claim reality favors. Admissible — not
+    necessarily true."""
+
+    __tablename__ = "contradictions"
+    __table_args__ = (UniqueConstraint("case_id", "citation", name="uq_con_citation"),)
+
+    ONTOLOGY_CLASS = "ONT-CON-001"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=_new_id)
+    case_id: Mapped[str] = mapped_column(ForeignKey("cases.id"), nullable=False)
+    citation: Mapped[str] = mapped_column(String(16))  # CON-000001, per case
+    description: Mapped[str] = mapped_column(Text)
+    contradiction_type: Mapped[ContradictionType] = mapped_column(
+        SAEnum(ContradictionType, native_enum=False)
+    )
+    scope_definition: Mapped[str] = mapped_column(Text)
+    incompatibility_basis: Mapped[str] = mapped_column(Text)
+    operational_state: Mapped[UnknownOperationalState] = mapped_column(
+        SAEnum(UnknownOperationalState, native_enum=False),
+        default=UnknownOperationalState.OPEN,
+    )
+    created_by_class: Mapped[str] = mapped_column(String(16))
+    created_by_id: Mapped[str] = mapped_column(String(200))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+
+
+class ContradictionMember(Base):
+    """ONT-CNM-001 — an INCOMPATIBLE_CLAIM's part in a conflict, with the
+    recognition-time fingerprint proving which version was judged
+    incompatible. Content-immutable; survives every retraction and
+    disposition. Directional roles are prohibited permanently."""
+
+    __tablename__ = "contradiction_members"
+    __table_args__ = (
+        UniqueConstraint("contradiction_id", "member_id", name="uq_con_member"),
+    )
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=_new_id)
+    contradiction_id: Mapped[str] = mapped_column(
+        ForeignKey("contradictions.id"), nullable=False
+    )
+    member_type: Mapped[str] = mapped_column(String(32))
+    member_id: Mapped[str] = mapped_column(String(32))
+    member_fingerprint: Mapped[str] = mapped_column(String(64))
+    member_role: Mapped[str] = mapped_column(String(24), default="INCOMPATIBLE_CLAIM")
+    linked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+
+
+class ContradictionDisposition(Base):
+    """ONT-CDP-001 (ADR-0027) — the human record of how a conflict was
+    disposed, never of which claim reality favors. Human-only,
+    content-immutable, terminal; alters no member."""
+
+    __tablename__ = "contradiction_dispositions"
+    __table_args__ = (
+        UniqueConstraint("contradiction_id", name="uq_con_disposition"),
+    )
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=_new_id)
+    contradiction_id: Mapped[str] = mapped_column(
+        ForeignKey("contradictions.id"), nullable=False
+    )
+    outcome: Mapped[DispositionOutcome] = mapped_column(
+        SAEnum(DispositionOutcome, native_enum=False)
+    )
+    rationale: Mapped[str] = mapped_column(Text)
+    informing_refs: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    disposed_by: Mapped[str] = mapped_column(String(200))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+
+
 class CaseAuditHead(Base):
     """The per-case audit chain root (ADR-0016): explicit aggregate for
     sequence allocation and current head hash. Locked FOR UPDATE first in the
