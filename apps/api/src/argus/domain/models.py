@@ -313,6 +313,86 @@ class InterpretationGrounding(Base):
     linked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
 
 
+class UnknownOperationalState(enum.Enum):
+    """Operational, not epistemic (AGC Session 008, Amendment 1):
+    UNDER_REVIEW records only that a Steward is actively evaluating the
+    Unknown — it carries no conclusion."""
+
+    OPEN = "OPEN"
+    UNDER_REVIEW = "UNDER_REVIEW"
+
+
+class ResolutionType(enum.Enum):
+    ANSWERED = "ANSWERED"
+    PARTIALLY_ANSWERED = "PARTIALLY_ANSWERED"
+    UNRESOLVABLE = "UNRESOLVABLE"
+    WITHDRAWN = "WITHDRAWN"
+
+
+class Unknown(Base):
+    """ONT-UNK-001 / ONT-PRN-020 — the boundary of current knowledge, never a
+    placeholder for future assumptions. Says exactly one thing: this question
+    currently has no constitutionally admissible answer. Epistemic
+    disposition is DERIVED from the UnknownResolution record; only the
+    operational state lives here."""
+
+    __tablename__ = "unknowns"
+    __table_args__ = (UniqueConstraint("case_id", "citation", name="uq_unk_citation"),)
+
+    ONTOLOGY_CLASS = "ONT-UNK-001"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=_new_id)
+    case_id: Mapped[str] = mapped_column(ForeignKey("cases.id"), nullable=False)
+    citation: Mapped[str] = mapped_column(String(16))  # UNK-000001, per case
+    question: Mapped[str] = mapped_column(Text)
+    impact_statement: Mapped[str | None] = mapped_column(Text, nullable=True)
+    operational_state: Mapped[UnknownOperationalState] = mapped_column(
+        SAEnum(UnknownOperationalState, native_enum=False),
+        default=UnknownOperationalState.OPEN,
+    )
+    created_by_class: Mapped[str] = mapped_column(String(16))
+    created_by_id: Mapped[str] = mapped_column(String(200))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+
+
+class UnknownLink(Base):
+    """The validity-boundary family (ONT-PRN-021): what an Unknown bounds.
+    Never grounds — a boundary can never become support."""
+
+    __tablename__ = "unknown_links"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=_new_id)
+    unknown_id: Mapped[str] = mapped_column(ForeignKey("unknowns.id"), nullable=False)
+    target_type: Mapped[str] = mapped_column(String(32))
+    target_id: Mapped[str] = mapped_column(String(32))
+    nature: Mapped[str] = mapped_column(Text)
+    linked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+    retracted_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    retraction_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+
+class UnknownResolution(Base):
+    """ONT-UNR-001 — how knowing resumed. Human-only, content-immutable,
+    terminal; (PARTIALLY_)ANSWERED requires claim references — an answer
+    without evidence is not an answer (Article I). Resolving alters NO
+    linked record: knowledge changes, the system does not."""
+
+    __tablename__ = "unknown_resolutions"
+    __table_args__ = (UniqueConstraint("unknown_id", name="uq_unk_resolution"),)
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=_new_id)
+    unknown_id: Mapped[str] = mapped_column(ForeignKey("unknowns.id"), nullable=False)
+    resolution_type: Mapped[ResolutionType] = mapped_column(
+        SAEnum(ResolutionType, native_enum=False)
+    )
+    rationale: Mapped[str] = mapped_column(Text)
+    answering_claims: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    resolved_by: Mapped[str] = mapped_column(String(200))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+
+
 class CaseAuditHead(Base):
     """The per-case audit chain root (ADR-0016): explicit aggregate for
     sequence allocation and current head hash. Locked FOR UPDATE first in the

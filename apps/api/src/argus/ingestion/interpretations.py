@@ -62,7 +62,16 @@ def create_interpretation(
     uncertainty_status: str,
     uncertainty_explanation: str,
     actor: Actor,
+    unresolved_unknown_id: str | None = None,
 ) -> Interpretation:
+    # Accumulated obligation (ONT-PRN-019 / Slice 2B): UNRESOLVED names the
+    # specific evidentiary limit that produces it (Article IX).
+    from ..domain.models import Unknown
+
+    named: bool | None = None
+    if unresolved_unknown_id is not None:
+        unk = session.get(Unknown, unresolved_unknown_id)
+        named = unk is not None and unk.case_id == case.id
     codes = adm.validate_interpretation(
         meaning_statement=meaning_statement,
         reasoning_description=reasoning_description,
@@ -70,6 +79,7 @@ def create_interpretation(
         uncertainty_explanation=uncertainty_explanation,
         actor_class=actor.actor_class,
         groundings=_observation_states(session, case.id, groundings),
+        unresolved_unknown_named=named,
     )
     if codes:
         raise ConstitutionalViolation(
@@ -83,7 +93,7 @@ def create_interpretation(
                 "SELECT argus_private.create_interpretation("
                 ":id, :case_id, CAST(:obs AS text[]), CAST(:roles AS text[]), "
                 ":meaning, :reasoning, :unc_status, :unc_expl, "
-                ":actor_class, :actor_id, :ai_ver)"
+                ":actor_class, :actor_id, :ai_ver, :unresolved_unknown)"
             ),
             {
                 "id": int_id,
@@ -97,6 +107,7 @@ def create_interpretation(
                 "actor_class": actor.actor_class.value,
                 "actor_id": actor.actor_id,
                 "ai_ver": actor.ai_model_version,
+                "unresolved_unknown": unresolved_unknown_id,
             },
         )
         session.commit()
@@ -137,6 +148,14 @@ def create_interpretation(
                 grounding_role=GroundingRole(role),
             )
         )
+    if unresolved_unknown_id is not None:
+        from ..domain.models import UnknownLink
+
+        session.add(UnknownLink(
+            unknown_id=unresolved_unknown_id, target_type="Interpretation",
+            target_id=int_id,
+            nature="Named evidentiary limit for UNRESOLVED uncertainty (Article IX)",
+        ))
     audit.emit(
         session,
         case_id=case.id,

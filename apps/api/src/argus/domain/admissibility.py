@@ -162,6 +162,7 @@ def validate_interpretation(
     uncertainty_explanation: str,
     actor_class: ActorClass,
     groundings: tuple[ObservationGroundingState, ...],
+    unresolved_unknown_named: bool | None = None,
 ) -> tuple[str, ...]:
     """The canonical interpretation refusal matrix, rendered in Python.
     Admissible iff empty. A valid Interpretation means only: this
@@ -183,6 +184,13 @@ def validate_interpretation(
     if any(term in prose for term in COMPARATIVE_GUARD_TERMS):
         codes.add(COMPARATIVE_RANKING)
 
+    # Accumulated obligation (ONT-PRN-019 / Slice 2B): UNRESOLVED uncertainty
+    # must name the specific evidentiary limit that produces it (Article IX).
+    # unresolved_unknown_named: None = no unknown supplied; False = supplied
+    # but nonexistent/cross-case; True = a valid same-case Unknown is named.
+    if uncertainty_status == "UNRESOLVED" and unresolved_unknown_named is not True:
+        codes.add(UNRESOLVED_REQUIRES_UNKNOWN)
+
     if not groundings:
         codes.add(NO_GROUNDED_OBSERVATIONS)
     for g in groundings:
@@ -200,6 +208,64 @@ def validate_interpretation(
         if not g.grounded:
             codes.add(OBSERVATION_UNGROUNDED)
 
+    return tuple(sorted(codes))
+
+
+# ---- Unknown admissibility (Slice 2B; ONT-UNK-001, ONT-PRN-020) ----
+
+QUESTION_REQUIRED = "ONT-UNK-001:question-required"
+NOT_A_QUESTION = "ONT-UNK-001:not-a-question"
+TASK_SHAPED = "ONT-UNK-001:task-shaped-not-question"
+UNK_UNSUPPORTED_ACTOR = "ONT-UNK-001:unsupported-actor"
+UNKNOWN_TARGET = "ONT-UNK-001:unknown-target"
+CROSS_CASE_LINK = "ONT-UNK-001:cross-case-link"
+ANSWER_REQUIRES_EVIDENCE = "ONT-UNR-001:answer-requires-evidence"
+RATIONALE_REQUIRED = "ONT-UNR-001:rationale-required"
+UNRESOLVED_REQUIRES_UNKNOWN = "ONT-INT-001:unresolved-requires-named-unknown"
+
+# Anti-TODO guard (conservative lexical heuristic, ADR-0024): Unknown is a
+# question, never an investigative task. Transcribed from the normative
+# matrix (CONSTITUTIONAL_PREDICATES.md 0.4.0).
+TASK_STEMS = ("todo", "follow up", "assign", "remind", "need to")
+TASK_LEADING_VERBS = ("interview ", "collect ", "obtain ", "request ")
+
+
+def validate_unknown(question: str, actor_class: ActorClass) -> tuple[str, ...]:
+    """Question-form admissibility: non-empty, interrogative, no task
+    vocabulary. 'Who possessed the device between 19:42 and 20:15?' is
+    exactly what Unknown represents; 'Interview the neighbor.' is not."""
+    codes: set[str] = set()
+    q = (question or "").strip()
+    if not q:
+        codes.add(QUESTION_REQUIRED)
+    else:
+        if not q.endswith("?"):
+            codes.add(NOT_A_QUESTION)
+        low = q.lower()
+        if any(s in low for s in TASK_STEMS) or any(
+            low.startswith(v) for v in TASK_LEADING_VERBS
+        ):
+            codes.add(TASK_SHAPED)
+    if actor_class is not ActorClass.HUMAN:
+        codes.add(UNK_UNSUPPORTED_ACTOR)
+    return tuple(sorted(codes))
+
+
+def validate_unknown_resolution(
+    resolution_type: str,
+    rationale: str,
+    answering_claims: tuple[str, ...],
+    actor_class: ActorClass,
+) -> tuple[str, ...]:
+    """Disposition admissibility: human-only, rationale required, and an
+    answer without evidence is not an answer (Article I)."""
+    codes: set[str] = set()
+    if actor_class is not ActorClass.HUMAN:
+        codes.add(ACTOR_NOT_PERMITTED)
+    if not rationale or not rationale.strip():
+        codes.add(RATIONALE_REQUIRED)
+    if resolution_type in ("ANSWERED", "PARTIALLY_ANSWERED") and not answering_claims:
+        codes.add(ANSWER_REQUIRES_EVIDENCE)
     return tuple(sorted(codes))
 
 

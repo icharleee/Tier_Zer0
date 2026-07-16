@@ -27,6 +27,11 @@ CONTAMINATION_REGISTRY: dict[str, tuple[str, ...]] = {
     # Interpretation additionally forbids preference vocabulary (H4/Article IV).
     "interpretations": INTERPRETATION_STEMS + ("rank", "preferred", "primary", "weight", "confiden", "probab", "score"),
     "interpretation_groundings": INTERPRETATION_STEMS + ("rank", "preferred", "primary", "weight"),
+    # Unknown forbids conclusion/task vocabulary (ONT-PRN-020: a boundary,
+    # never a placeholder for assumptions or a TODO item).
+    "unknowns": ("answer", "conclusion", "priorit", "deadline", "task", "hypoth", "likelihood", "predict"),
+    "unknown_links": ("answer", "conclusion", "priorit", "deadline", "task", "ground", "support"),
+    "unknown_resolutions": ("priorit", "deadline", "task", "hypoth", "likelihood", "predict"),
 }
 
 
@@ -49,7 +54,7 @@ def test_registry_covers_every_epistemic_table():
     """The registry must grow with the ladder: any table for a ladder object
     (observations, interpretations, hypotheses, and their junctions) must
     have a registry entry before it ships."""
-    ladder_markers = ("observation", "interpret", "hypoth")
+    ladder_markers = ("observation", "interpret", "hypoth", "unknown", "contradiction")
     for table_name in Base.metadata.tables:
         if any(m in table_name for m in ladder_markers):
             assert table_name in CONTAMINATION_REGISTRY, (

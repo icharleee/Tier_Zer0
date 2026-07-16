@@ -225,7 +225,7 @@ class TestExperimentH4:
             arr = "{" + ",".join(obs_ids) + "}" if obs_ids else "{}"
             rarr = "{" + ",".join(roles) + "}" if roles else "{}"
             return sorted(pg_session.execute(text(
-                "SELECT argus_private.validate_interpretation(:c, CAST(:o AS text[]), :m, :r, :us, :ue, :a, CAST(:roles AS text[]))"
+                "SELECT argus_private.validate_interpretation(:c, CAST(:o AS text[]), :m, :r, :us, :ue, :a, CAST(:roles AS text[]), NULL)"
             ), {"c": pg_case.id, "o": arr, "m": m, "r": r, "us": us, "ue": ue,
                 "a": actor, "roles": rarr}).scalar())
 
@@ -265,7 +265,7 @@ class TestExperimentH4:
         with pytest.raises(DBAPIError) as err:
             pg_session.execute(text(
                 "SELECT argus_private.create_interpretation('cmp01', :c, CAST(:o AS text[]),"
-                " CAST(:roles AS text[]), :m, :r, 'ACKNOWLEDGED', :ue, 'HUMAN', 'det.x', NULL)"
+                " CAST(:roles AS text[]), :m, :r, 'ACKNOWLEDGED', :ue, 'HUMAN', 'det.x', NULL, NULL)"
             ), {"c": pg_case.id, "o": "{" + obs.id + "}", "roles": "{SUPPORTING}",
                 "m": "This is more likely than INT-000001.", "r": REASONING, "ue": UNC_EXPL})
             pg_session.commit()
