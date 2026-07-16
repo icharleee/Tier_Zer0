@@ -96,11 +96,17 @@ The refinement distinguishes *technical ordering* (creation order, citation iden
 
 Registered ahead of Slice 2B (*Unknowns and Evidentiary Limits*) — the first explicit representation of **negative knowledge** (Resolution 015 / ONT-PRN-020). Connects directly to Article IX: representing uncertainty is not the same as representing the limits that produce it.
 
-**Final refinement (AGC Session 008):** *Independent implementations preserve explicit epistemic boundaries while ensuring that neither absence nor newly acquired knowledge automatically changes previously admitted reasoning.* Knowledge changes; the system does not; humans decide what to do next. **Status: Untested.**
+**Final refinement (AGC Session 008):** *Independent implementations preserve explicit epistemic boundaries while ensuring that neither absence nor newly acquired knowledge automatically changes previously admitted reasoning.* Knowledge changes; the system does not; humans decide what to do next.
+
+**Status: Supported (n = 1)** — Slice 2B: the bounded Interpretation remained byte-identical through linking, UNDER_REVIEW, and human resolution with evidence; dispositions derived identically in both renderings; verdict confirmed by AGC Session 009.
+
+> **Observation O6:** Explicitly represented ignorance is computationally stable; implicit ignorance expressed as missing data is not. NULL cannot have provenance, citations, audit history, operational stewardship, explicit resolution, or constitutional constraints — `UNK-000001` can. Empirical, not philosophical: demonstrated in Slice 2B.
 
 > **Observation O5:** Negative knowledge becomes computationally useful only after it is represented explicitly rather than implicitly through missing data. NULL is not Unknown; missing rows are not Unknown; Unknown is a deliberate epistemic object.
 
-*Candidate observation (not yet numbered — record if repeated):* the ladder appears to alternate between positive structures (Evidence, Observation, Interpretation, Hypothesis) and negative boundaries (Unknown bounding meaning, Contradiction bounding explanation). This may be the natural rhythm of investigative cognition — positive assertions, negative boundaries, positive explanations, negative constraints. Not elevated to ontology; watch whether Contradiction (Slice 2C) exhibits the same pairing.
+*Candidate observation 1 (first repetition recorded, AGC Session 009):* the ladder alternates between positive structures and negative boundaries. One full cycle now exists (Evidence/Observation/Interpretation positive → Unknown negative, built to constrain Interpretation). If Slice 2C–2D produce the Hypothesis-positive/Contradiction-negative pairing, two complete cycles exist — only then does this elevate to a principle.
+
+*Candidate observation 2 (AGC Session 009):* complex systems become trustworthy when every increase in expressive power is preceded by an increase in structural constraint — provenance before Observation; grounding before Interpretation; admissibility before Unknown; Unknown and Contradiction before Hypothesis. Recorded as candidate (ADR-0026 §3); elevate if the pattern holds through Slice 2D.
 
 > **Observation O2:** Independent verification derived directly from the ontology detected implementation divergence without sharing executable logic.
 
@@ -128,3 +134,4 @@ In Slice 1C, the test suite transcribed the canonical matrix as its own literal 
 | 0.7.0 | 2026-07-13 | H4 refined for falsifiability at the Slice 2A plan review: technical ordering distinguished from epistemic preference. |
 | 0.8.0 | 2026-07-13 | H4 marked Supported (n = 1); Observation O4 (structural exclusion of preference) and Hypothesis H5 (epistemic boundaries, refined wording, untested) registered per AGC Review Session 007. |
 | 0.9.0 | 2026-07-13 | H5 finally refined (knowledge changes; the system does not); Observation O5 (explicit negative knowledge) registered; positive/negative alternation recorded as a candidate observation (AGC Session 008). |
+| 0.10.0 | 2026-07-13 | H5 marked Supported (n = 1); Observation O6 (explicit ignorance is computationally stable — empirical); rhythm candidate's first repetition recorded; trustworthiness-via-constraint registered as candidate observation 2 (AGC Session 009 / ADR-0026). |
