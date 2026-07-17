@@ -1,6 +1,6 @@
 # ARGUS Derivation Specification
 
-- **Document version:** 1.5.0 — Ratified at 1.0.0 by AGC Review Session 003, 2026-07-13; 1.5.0 refines ONT-INT-001 obligations per the Slice 2A amendments (see version history)
+- **Document version:** 1.6.0 — Ratified at 1.0.0 by AGC Review Session 003, 2026-07-13; 1.6.0 refines ONT-HYP-001 obligations per ONT-PRN-023 and the Slice 2D amendments (see version history)
 - **Date:** 2026-07-13
 - **Established by:** [ADR-0014](../adr/0014-establish-the-derivation-specification-layer.md) (AGC Review Session 002)
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) 1.2.0
@@ -58,11 +58,20 @@ Applies to every consequential state transition: case transitions, retractions, 
 
 Applies to every epistemic layer. No layer's schema may carry the vocabulary of the layers above it; a release-blocking contamination test walks every epistemic table's columns against this registry, with its expectations transcribed from this table (ONT-PRN-015). Adding a stem is MINOR; removing one requires AGC review. Vocabulary scanning is the tripwire; reviews still judge semantics.
 
+**Scope (Session 012 caution):** these guards apply to **structured surfaces** — schema identifiers, enum values, function names, structured fields. Prose lexical guards are separate, conservative, and limited to clearly adjudicative or ranking phrases (the comparative and adjudicative guards in the Constitutional Predicates). Forbidden-word scanning never *proves* semantic cleanliness.
+
 | Layer | Forbidden column-name stems (from higher layers) |
 |---|---|
 | Observation (ONT-OBS-001) | confiden, infer, probab, interpret, hypoth, rank, suspic, intent, meaning, likelihood, predict, score |
-| Interpretation (ONT-INT-001) — pre-registered | hypoth, likelihood, predict, verdict, guilt |
+| Interpretation (ONT-INT-001) | hypoth, likelihood, predict, verdict, guilt; junctions and the object additionally: rank, preferred, primary, weight (object also: confiden, probab, score) |
 | SourceLocator (ONT-SRC-001) | all Observation stems plus: statement, claim |
+| Unknown family (ONT-UNK-001, ONT-UNL-001, ONT-UNR-001) | priorit, deadline, task (object and links also: answer, conclusion; object and resolutions also: hypoth, likelihood, predict; links also: ground, support — a boundary can never become support) |
+| Contradiction family (ONT-CON-001, ONT-CNM-001, ONT-CDP-001) | winner, prevail, surviv, adjudicat, correct, refut (object also: rank, preferred, weight, score, hypoth; members also: rank, preferred, support, challeng; dispositions also: rank, preferred) |
+| Hypothesis (ONT-HYP-001) | verdict, guilt, conclu, probab, confiden, preferred, primary, leading, best, winner, accept, theory, rank, weight, score, likelihood, predict, refut, disprov, defeat, weaken, invalidat, promot |
+| HypothesisGrounding / HypothesisAlternative | rank, preferred, primary, weight, score, winner, strength, better, stronger, refut |
+| ContradictionLink (Contradiction → Hypothesis) | winner, prevail, surviv, adjudicat, correct, refut, disprov, defeat, weaken, invalidat, rank, preferred |
+
+The Hypothesis row renders Resolution 018's prohibited fields (`probability`, `confidence_score`, `preferred`, `primary`, `leading`, `best_fit`, `winner`, `case_theory`, `accepted`) as stems over structured surfaces — where a stem like `theory`, `best`, or `accept` would be overly broad for prose, it is exactly right for a column name. ContradictionLink deliberately omits `hypoth`: referencing the object it bounds is the link's purpose; the Contradiction object itself still never carries hypothesis vocabulary.
 
 ### D-AUD — Atomic audit (from ONT-AUD-001 semantics)
 
@@ -117,11 +126,14 @@ Applies to every material mutation of every object.
 
 ### ONT-HYP-001 — Hypothesis
 
-- **Schema properties:** narrative; ≥1 Interpretation reference; reasoning; **testability statement** (what would strengthen or weaken it — Article VII); uncertainty expression.
-- **Invariants:** no terminal confirmed/true state exists to reach; no "leading hypothesis" field; competing hypotheses structurally unprivileged.
-- **Audit events:** created; retracted; review transition; grounding-flag raised.
-- **API behavior:** no endpoint may promote, rank, confirm, or auto-close a hypothesis; open Unknowns and Contradictions touching a hypothesis MUST be retrievable with it (Article IX).
-- **Required tests:** creation without a testability statement fails; no confirmation transition exists (attempted transition fails structurally). Cite ONT-HYP-001, ONT-PRN-007.
+Refined per ONT-PRN-023 (Resolution 018 / ADR-0028) and the Session 012 amendments. A Hypothesis is a provisional, testable explanatory structure — the highest epistemic object authorized in the current ARGUS ontology (Understanding and Judgment remain human outcomes, never machine-authored objects; extending the ladder would require explicit constitutional review). Admissible only when the system can state what supports it, what limits it, what could challenge it, and what remains unknown.
+
+- **Schema properties:** explanatory statement; reasoning description; the inherited uncertainty envelope (status + mandatory explanation); mandatory **testability statement** and **challenge condition** (declarations of what future evidence would matter — Article VII, never predictions); grounding snapshots to ≥1 same-case Interpretation with role `DERIVED_FROM` | `CONTEXTUALIZED_BY`, interpretation fingerprint v2, and link time — only `DERIVED_FROM` satisfies the minimum, and rung-skipping MUST be unrepresentable; the immutable creation-time alternative articulation (`alternative_articulation_at_creation` + absence explanation when none linked); Unknown and Contradiction articulation at creation (boundary link or explicit no-current explanation — silence is a refusal).
+- **Invariants:** no terminal confirmed/true state exists to reach; no preference, probability, confidence, promotion, or refutation surface exists anywhere (contamination registry, structured surfaces); `hypothesis_health` (CURRENT/DEGRADED/UNSUPPORTED), `current_alternative_state`, `unknown_boundary_state`, and `contradiction_boundary_state` are derived, never stored; resolving/disposing/linking any boundary and retracting any sibling alter no stored Hypothesis field — even UNSUPPORTED never auto-retracts (Article II).
+- **Validity boundaries are boundary-owned:** Unknown bounds via UnknownLink (target set extended to Hypothesis); Contradiction challenges via ContradictionLink (`CHALLENGED_BY_CONTRADICTION` only — no refutation relationship may ever be added). The positive epistemic object never owns its own constraints.
+- **Audit events:** claim-created; claim-retracted; hypothesis-alternative-linked; contradiction-linked; unknown-linked (boundary side); grounding-flag raised (derived surfacing).
+- **API behavior:** no endpoint may promote, rank, confirm, refute, or auto-close a hypothesis; the disclaimer, open Unknowns, Contradictions, alternatives, and all derived states MUST be retrievable with it (Articles III, IV, IX).
+- **Required tests:** the canonical refusal matrix (CONSTITUTIONAL_PREDICATES.md) dual-rendered and conformance-swept; creation without testability/challenge/articulation fails; boundary resolution and sibling retraction leave hypotheses byte-identical; the creation-time absence explanation survives later alternative linking. Cite ONT-HYP-001, ONT-PRN-023, ONT-PRN-007.
 
 ### ONT-UNK-001 — Unknown
 
@@ -206,3 +218,4 @@ Under the vertical-slice strategy (ADR-0015), the [Invariant Matrix](INVARIANT_M
 | 1.3.0 | 2026-07-13 | ONT-OBS-001 creation gated by the can_support_observation constitutional predicate (ADR-0018 / Resolution 009). |
 | 1.4.0 | 2026-07-13 | D-PRN-018: semantic contamination registry with per-layer forbidden vocabulary and the release-blocking test obligation (Resolution 013 / ADR-0022). |
 | 1.5.0 | 2026-07-13 | ONT-INT-001 obligations refined per Slice 2A amendments: uncertainty envelope, grounding snapshot/roles, comparative guard, derived grounding_health. |
+| 1.6.0 | 2026-07-13 | ONT-HYP-001 obligations refined per ONT-PRN-023 (ADR-0028) and the five Session 012 amendments: four structural conditions, creation-time vs. derived alternative state, boundary-owned validity links, versioned fingerprints, three-state health. D-PRN-018 registry extended through the Hypothesis layer (recording the Unknown/Contradiction rows shipped with Slices 2B/2C) with the structured-surface scope caution. |

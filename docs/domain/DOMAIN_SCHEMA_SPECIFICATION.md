@@ -1,6 +1,6 @@
 # ARGUS Domain Schema Specification
 
-- **Document version:** 1.5.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; 1.5.0 refines ONT-CON-001/ONT-CNM-001 and adds ONT-CDP-001 per the Slice 2C amendments (see version history)
+- **Document version:** 1.6.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; 1.6.0 refines ONT-HYP-001 per ONT-PRN-023 and the Slice 2D amendments, adding HypothesisAlternative and ContradictionLink (see version history)
 - **Date:** 2026-07-13
 - **Governed by:** [Engineering Constitution](../foundation/ENGINEERING_CONSTITUTION.md) 1.0.0, [Lexicon](../glossary/LEXICON.md) 1.0.0, ADR-0001–0006, ADR-0009
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) — the source of truth for meaning (Founder Resolution 003)
@@ -213,7 +213,7 @@ Lifecycle sections state the immutability class and any structurally load-bearin
 
 **Optional attributes.** Explicit assumptions relied upon; references to competing Interpretations of the same Observations (cross-links, not exclusions).
 
-**Relationships.** Belongs to one Case. References ≥1 Observation (only downward — C10). Referenced upward by Hypotheses. May be a ContradictionMember; may be linked by UnknownLinks. May ground a Relationship (entity graph).
+**Relationships.** Belongs to one Case. References ≥1 Observation (only downward — C10). Referenced upward by Hypothesis groundings (`DERIVED_FROM` / `CONTEXTUALIZED_BY`, snapshot with interpretation fingerprint v2). May be a ContradictionMember; may be linked by UnknownLinks. May ground a Relationship (entity graph).
 
 **Lifecycle.** Class V; review status per C8 orthogonal. States and transitions: [Entity Lifecycles §4–6](ENTITY_LIFECYCLES.md#46-observation-interpretation-hypothesis-v).
 
@@ -233,29 +233,51 @@ Lifecycle sections state the immutability class and any structurally load-bearin
 
 ### 6. Hypothesis
 
-**Purpose.** A testable explanatory model evaluated against available evidence (Lexicon). A candidate account of what happened — never a verdict.
+**Purpose.** A testable explanatory model evaluated against available evidence (Lexicon). **A Hypothesis is a provisional, testable explanatory structure; its existence means only that it is admissible for examination — not that ARGUS considers it likely, preferred, correct, or accepted** (ONT-PRN-023, verbatim disclaimer — this wording eventually reaches the UI). The highest epistemic object authorized in the current ARGUS ontology: Understanding and Judgment remain human outcomes and are not represented as machine-authored epistemic objects. Governing rule: ARGUS may preserve explanations for examination; it may never convert explanation into verdict.
 
-**Identity.** Opaque ID (C2).
+**Identity.** Opaque ID (C2); per-case citation `HYP-NNNNNN`.
 
-**Required attributes.** Explanatory narrative; references to ≥1 Interpretation; reasoning description; explicit statement of what evidence would strengthen or weaken it (testability — Article VII); uncertainty expression (Article IX); creating actor; `created_at`; AI provenance block if applicable.
+**Required attributes.** Explanatory statement; reasoning description; the structured uncertainty envelope (status + mandatory explanation — Article IX); **testability statement** and **challenge condition** (what future evidence would matter — declarations, not predictions; Article VII); grounding snapshots to ≥1 same-case Interpretation (role `DERIVED_FROM` | `CONTEXTUALIZED_BY`; interpretation fingerprint v2; link time) — **only `DERIVED_FROM` satisfies the minimum; a Hypothesis containing only contextual links is inadmissible**; the immutable creation-time alternative articulation: `alternative_articulation_at_creation` ∈ `ALTERNATIVE_LINKED_AT_CREATION` | `NONE_CURRENTLY_ARTICULATED_AT_CREATION` with `alternative_absence_explanation` required in the second mode; Unknown articulation (≥1 `LIMITED_BY_UNKNOWN` UnknownLink **or** `no_current_unknowns_explanation` — "no specific unresolved gap is presently articulated", never "no unknowns exist"); Contradiction articulation (≥1 `CHALLENGED_BY_CONTRADICTION` ContradictionLink **or** `no_current_contradictions_explanation` — absence of a linked contradiction, never uncontradictedness in reality); creating HumanActor (AI authorship NOT AUTHORIZED); `created_at`.
 
-**Optional attributes.** Links to open Unknowns and Contradictions it touches (surfaced limitations); event-time frame the hypothesis addresses.
+**Derived, never stored.** `hypothesis_health` ∈ `CURRENT` (every `DERIVED_FROM` Interpretation unretracted and grounded) | `DEGRADED` (≥1 degraded, ≥1 current) | `UNSUPPORTED` (none current — the historical explanation remains recorded; its current derivational foundation no longer satisfies admission conditions; human review required, never auto-retraction); `current_alternative_state` ∈ `ALTERNATIVES_CURRENT` | `NO_CURRENT_ALTERNATIVES` | `ALTERNATIVES_DEGRADED` — the current state changes through derivation as links appear or counterparts retract, **without erasing the historical creation-time articulation**; `unknown_boundary_state` and `contradiction_boundary_state` (see Constitutional Predicates). No stored authoritative booleans.
 
-**Relationships.** Belongs to one Case. References ≥1 Interpretation (only downward — C10). May be a ContradictionMember; may be linked by UnknownLinks.
+**Relationships.** Belongs to one Case. References ≥1 Interpretation (only downward — C10; rung-skips structurally unrepresentable). Symmetric HypothesisAlternative pairs (§6b). Bounded by UnknownLinks and challenged by ContradictionLinks — **boundary objects own the links; the Hypothesis never owns or reinterprets its own constraints.**
 
 **Lifecycle.** Class V; review status per C8 orthogonal. **There is no terminal "confirmed" or "true" state** — a Hypothesis is never system-promoted to fact; conviction lives in human Understanding, outside the schema (Article II). States and transitions: [Entity Lifecycles §4–6](ENTITY_LIFECYCLES.md#46-observation-interpretation-hypothesis-v).
 
-**Invariants.** ≥1 Interpretation reference, immutable set. Competing Hypotheses coexist without structural privilege (Article IV): no "leading hypothesis" field, no exclusivity constraint, no ranking stored as fact. Testability statement non-empty.
+**Invariants.** ≥1 `DERIVED_FROM` reference, immutable set. Competing Hypotheses coexist without structural privilege (Article IV): no preference, probability, confidence, promotion, acceptance, or refutation surface exists (Resolution 018 prohibited fields, enforced over structured surfaces by the contamination registry). Testability and challenge statements non-empty. Boundary resolution/disposition and sibling retraction alter no stored field (no automatic revision, promotion, or refutation). Retracting one Hypothesis promotes no other.
 
-**Permitted actors.** Create: HumanActor, AIWorkflow (proposal). Retract/review: HumanActor.
+**Permitted actors.** Create: HumanActor only (Slice 2D; AI proposal arrives, if ever, with the AI-integration ADR under C7's provenance block). Retract: HumanActor.
 
-**Prohibited operations.** In-place edits; level-skipping references; deletion; system- or AI-side promotion, ranking, or confirmation; deleting alternatives.
+**Prohibited operations.** In-place edits; level-skipping references; deletion; system- or AI-side promotion, ranking, confirmation, refutation, or auto-closure; deleting alternatives; converting boundary links into support.
 
-**Provenance requirements.** Full C7 plus reasoning and testability statements.
+**Provenance requirements.** Full C7 plus reasoning, testability, and challenge statements.
 
-**Audit events.** Created; retracted; review transition; grounding-flag raised.
+**Audit events.** claim-created; claim-retracted; hypothesis-alternative-linked; grounding-flag raised (derived surfacing).
 
-**Unresolved questions.** Whether investigator-recorded confidence assessments (human, attributed, versioned) belong on Hypothesis or in a future working-notes construct — deliberately deferred; risks importing judgment into the schema.
+**Unresolved questions.** Whether investigator-recorded confidence assessments (human, attributed, versioned) belong anywhere — deliberately deferred; risks importing judgment into the schema. Comparative assessment, if it ever exists, becomes its own governed object, never prose or a field here.
+
+---
+
+### 6b. HypothesisAlternative
+
+**Purpose.** The symmetric record that two Hypotheses are articulated alternatives (Article IV exercised structurally). Naming an alternative confers no status on either side.
+
+**Identity.** Opaque ID (C2).
+
+**Required attributes.** The unordered pair (normalized: lexicographically smaller hypothesis id first); non-empty `relation_explanation` (free of comparative-strength vocabulary — conservative guard); linking HumanActor; `linked_at`.
+
+**Relationships.** Binds exactly two distinct Hypotheses of the same Case.
+
+**Lifecycle.** Class CI: unordered, symmetric, non-ranking, content-immutable, **preserved after either Hypothesis is retracted** — a retracted alternative never silently vanishes from history; current alternative health is derived while the original link is preserved. See [Entity Lifecycles §15](ENTITY_LIFECYCLES.md#15-hypothesisalternative-ci).
+
+**Invariants.** No self-link; no duplicate pair; same-case only; no direction, weight, or rank exists or may be added.
+
+**Permitted actors.** Create: HumanActor — at either Hypothesis's creation (same transaction) or later via the dedicated `link_hypothesis_alternative` operation (Session 012 Amendment 4: the first Hypothesis must not be able to acquire an alternative only as a side effect of another creation path).
+
+**Prohibited operations.** Deletion; retargeting; ranking or comparative-strength language; modification of either Hypothesis as a side effect.
+
+**Audit events.** hypothesis-alternative-linked (atomic with the link).
 
 ---
 
@@ -269,7 +291,7 @@ Lifecycle sections state the immutability class and any structurally load-bearin
 
 **Optional attributes.** Severity/priority annotation (triage aid, not truth signal).
 
-**Relationships.** Belongs to one Case. Composed of ContradictionMembers. May be linked by UnknownLinks (a contradiction often implies an unknown).
+**Relationships.** Belongs to one Case. Composed of ContradictionMembers. May be linked by UnknownLinks (a contradiction often implies an unknown). May challenge Hypotheses via ContradictionLinks (§8c) — the boundary object owns the link; the challenged Hypothesis never does.
 
 **Lifecycle.** Disposition transitions HumanActor-only with rationale; both terminal (recurrence = new Contradiction referencing the old). Description corrections: class V (retract/replace the description, not the Contradiction's history). States and transitions: [Entity Lifecycles §7](ENTITY_LIFECYCLES.md#7-contradiction-v-description-terminal-disposition).
 
@@ -338,6 +360,30 @@ Lifecycle sections state the immutability class and any structurally load-bearin
 **Provenance requirements.** Disposing actor, rationale, informing references.
 
 **Audit events.** contradiction-disposed (outcome in detail); disposition-superseded.
+
+**Unresolved questions.** None currently.
+
+---
+
+### 8c. ContradictionLink (Contradiction → Hypothesis)
+
+**Purpose.** The validity-boundary record that a Contradiction challenges a Hypothesis (`CHALLENGED_BY_CONTRADICTION` — the only authorized relationship; a Contradiction challenges without killing, ONT-PRN-023). Mirrors UnknownLink: the boundary object describes the limit it imposes; the positive epistemic object does not own its own constraints (ADR-0024 symmetry, ADR-0025 family separation).
+
+**Identity.** Opaque ID (C2).
+
+**Required attributes.** Owning Contradiction; challenged Hypothesis (same Case); `hypothesis_fingerprint` (hypothesis fingerprint v1 — the version challenged); `relationship_type` = `CHALLENGED_BY_CONTRADICTION` (no `refuted`, `disproven`, `defeated`, `weakened`, or `invalidated` exists or may ever be added); non-empty explanation of how the incompatibility bears on the explanation; linking HumanActor; `linked_at`.
+
+**Relationships.** Belongs to exactly one Contradiction (and its Case); targets exactly one Hypothesis.
+
+**Lifecycle.** Class V (link errors follow the retract pattern with reason, mirroring UnknownLink §10) — **never silently removed**. A disposed Contradiction remains historically linked; current boundary activity (`contradiction_boundary_state`) is derived. See [Entity Lifecycles §16](ENTITY_LIFECYCLES.md#16-contradictionlink-v).
+
+**Invariants.** Same-case only; no duplicate (contradiction, hypothesis) pair; linking, disposing, or retracting alters neither the Contradiction nor the Hypothesis; the link never grounds, supports, or adjudicates.
+
+**Permitted actors.** Create: HumanActor — at Hypothesis creation (same transaction, boundary mechanism invoked) or later via `link_contradiction`. Retract: HumanActor with reason.
+
+**Prohibited operations.** AI/system authorship; retargeting; any adjudicative or refutation relationship type; deletion.
+
+**Audit events.** contradiction-linked; contradiction-unlinked (retraction).
 
 **Unresolved questions.** None currently.
 
@@ -543,3 +589,4 @@ The [Invariant Matrix](INVARIANT_MATRIX.md) population and the ERD (`docs/archit
 | 1.3.0 | 2026-07-13 | ONT-INT-001 refined per Slice 2A amendments: structured uncertainty envelope, grounding revision snapshot with roles, admissibility disclaimer (U2 remains open — the envelope is not a confidence scale). |
 | 1.4.0 | 2026-07-13 | ONT-UNK-001: operational state (UNDER_REVIEW) separated from derived epistemic disposition; ONT-UNR-001 gains PARTIALLY_ANSWERED with mandatory claim references (AGC Session 008, Amendment 1). |
 | 1.5.0 | 2026-07-13 | ONT-CON-001 gains the explicit incompatibility basis (type/scope/basis) and derived health; ONT-CNM-001 becomes INCOMPATIBLE_CLAIM with recognition-time snapshots; ONT-CDP-001 added as §8b (ADR-0027, AGC Session 010). |
+| 1.6.0 | 2026-07-13 | ONT-HYP-001 refined per ONT-PRN-023 (ADR-0028) and the five Session 012 amendments: verbatim disclaimer, four structural conditions, creation-time vs. derived alternative state, mandatory boundary articulation, three-state derived health, HumanActor-only creation; HypothesisAlternative added as §6b; ContradictionLink added as §8c (boundary-owned validity links). |

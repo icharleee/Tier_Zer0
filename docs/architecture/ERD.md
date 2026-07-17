@@ -1,6 +1,6 @@
 # ARGUS Entity-Relationship Diagram
 
-- **Document version:** 0.5.0 (Slice 2C coverage added: the Contradiction boundary family)
+- **Document version:** 0.6.0 (Slice 2D coverage added: the Hypothesis family and boundary-owned validity links)
 - **Derived from:** [Domain Schema Specification](../domain/DOMAIN_SCHEMA_SPECIFICATION.md) 1.1.0, [Entity Lifecycles](../domain/ENTITY_LIFECYCLES.md) 2.0.0, ADR-0007
 
 ## Slice 1 — Constitutional Evidence Activation
@@ -24,6 +24,61 @@ erDiagram
     CASE ||--o{ CONTRADICTION : "scopes"
     CONTRADICTION ||--|{ CONTRADICTION_MEMBER : "binds (>= 2 INCOMPATIBLE_CLAIMs, snapshots)"
     CONTRADICTION ||--o| CONTRADICTION_DISPOSITION : "disposed by (human-only, non-adjudicating)"
+    CASE ||--o{ HYPOTHESIS : "scopes"
+    INTERPRETATION ||--o{ HYPOTHESIS_GROUNDING : "relied upon by (snapshot, fingerprint v2)"
+    HYPOTHESIS ||--|{ HYPOTHESIS_GROUNDING : "grounded by (>= 1 DERIVED_FROM)"
+    HYPOTHESIS ||--o{ HYPOTHESIS_ALTERNATIVE : "articulated alternative (symmetric, non-ranking)"
+    UNKNOWN ||--o{ UNKNOWN_LINK : "bounds Hypothesis too (LIMITED_BY_UNKNOWN)"
+    CONTRADICTION ||--o{ CONTRADICTION_LINK : "challenges (CHALLENGED_BY_CONTRADICTION, never kills)"
+    HYPOTHESIS ||--o{ CONTRADICTION_LINK : "challenged by (boundary-owned)"
+
+    HYPOTHESIS {
+        string id PK
+        string case_id FK
+        string citation "HYP-NNNNNN"
+        string explanatory_statement "admissible for examination - never likely, preferred, correct, or accepted (ONT-PRN-023)"
+        string reasoning_description "required (Article III)"
+        string uncertainty_status "ACKNOWLEDGED | MATERIAL | LIMITING | UNRESOLVED"
+        string uncertainty_explanation "required (Article IX)"
+        string testability_statement "what future evidence would matter (Article VII)"
+        string challenge_condition "declaration, not prediction"
+        string alternative_articulation_at_creation "ALTERNATIVE_LINKED_AT_CREATION | NONE_CURRENTLY_ARTICULATED_AT_CREATION (immutable historical truth)"
+        string alternative_absence_explanation "required iff none articulated at creation; never erased by later links"
+        string no_current_unknowns_explanation "nullable; XOR with LIMITED_BY_UNKNOWN links at creation"
+        string no_current_contradictions_explanation "nullable; XOR with CHALLENGED_BY_CONTRADICTION links at creation"
+        string created_by "HUMAN only (AI authorship NOT AUTHORIZED)"
+        datetime created_at
+        datetime retracted_at "nullable (class V); siblings unaffected, no promotion"
+        string retraction_reason
+    }
+    HYPOTHESIS_GROUNDING {
+        string id PK
+        string hypothesis_id FK
+        string interpretation_id FK "rung-skips unrepresentable (FK)"
+        string interpretation_fingerprint "fingerprint v2: sha256 over 4 fields, 0x1F-separated"
+        string grounding_role "DERIVED_FROM | CONTEXTUALIZED_BY (only DERIVED_FROM satisfies the minimum)"
+        datetime linked_at "CI rows; survive all retractions"
+    }
+    HYPOTHESIS_ALTERNATIVE {
+        string id PK
+        string hypothesis_a_id FK "normalized: a < b (unordered pair)"
+        string hypothesis_b_id FK
+        string relation_explanation "required; no comparative-strength language"
+        string linked_by "HUMAN only"
+        datetime linked_at "CI; survives either side's retraction"
+    }
+    CONTRADICTION_LINK {
+        string id PK
+        string contradiction_id FK
+        string hypothesis_id FK "same case"
+        string hypothesis_fingerprint "fingerprint v1: sha256 over 6 fields, 0x1F-separated"
+        string relationship_type "CHALLENGED_BY_CONTRADICTION only - no refuted/disproven/defeated/weakened/invalidated, ever"
+        string explanation "required; how the incompatibility bears on the explanation"
+        string linked_by "HUMAN only"
+        datetime linked_at
+        datetime retracted_at "nullable (class V, link errors only - never silent removal)"
+        string retraction_reason
+    }
 
     CONTRADICTION {
         string id PK
@@ -69,7 +124,7 @@ erDiagram
     UNKNOWN_LINK {
         string id PK
         string unknown_id FK
-        string target_type "Observation | Interpretation | EvidenceArtifact"
+        string target_type "Observation | Interpretation | EvidenceArtifact | Hypothesis"
         string target_id "same case; boundary, never grounds"
         string nature "how the gap bounds the target"
         datetime linked_at
@@ -201,3 +256,4 @@ Notes:
 | 0.3.0 | 2026-07-13 | Slice 2A gate: Interpretation (uncertainty envelope, no preference surface) and grounding snapshots (fingerprint + role + linked_at). |
 | 0.4.0 | 2026-07-13 | Slice 2B gate: Unknown (operational vs. epistemic state), UnknownLink (validity-boundary family), UnknownResolution (human-only, evidence-requiring). |
 | 0.5.0 | 2026-07-13 | Slice 2C gate: Contradiction (typed, scoped, based), members as snapshot-bearing INCOMPATIBLE_CLAIMs, non-adjudicating disposition (ADR-0027). |
+| 0.6.0 | 2026-07-13 | Slice 2D gate: Hypothesis (four conditions, creation-time articulation, derived states), grounding snapshots (fingerprint v2), symmetric HypothesisAlternative, boundary-owned ContradictionLink, UnknownLink target extension (ADR-0028, Session 012). |

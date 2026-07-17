@@ -1,6 +1,6 @@
 # ARGUS Constitutional Predicates
 
-- **Document version:** 0.5.0 (0.4.0 ratified with Slice 2B; 0.5.0 adds the Slice 2C contradiction admissibility matrix with the four Session 010 amendments)
+- **Document version:** 0.6.0 (0.5.0 ratified with Slice 2C; 0.6.0 adds the Slice 2D hypothesis admissibility matrix with the five Session 012 amendments)
 - **Date:** 2026-07-13
 - **Established by:** [ADR-0018](../adr/0018-constitutional-predicates.md) (Founder Resolution 009, ONT-PRN-014)
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) 1.6.0, [Entity Lifecycles](ENTITY_LIFECYCLES.md) 2.0.0, ADR-0007
@@ -18,7 +18,7 @@ Objects answer *what exists*. Predicates answer *what is permitted*. A constitut
 | `can_be_retracted` | May this actor retract this artifact now? | Derived from the transition registry (ONT-PRN-013: no second lifecycle rendering) |
 | `can_be_sealed` / `can_be_unsealed` | May this actor (un)seal this artifact now? | Derived from the transition registry |
 | `can_be_interpreted` | May this Observation ground an Interpretation? | Slice 2+ |
-| `can_generate_hypothesis` | May these Interpretations ground a Hypothesis? | Slice 3+ |
+| `can_generate_hypothesis` | May these Interpretations ground a Hypothesis? | **Slice 2D — realized as `validate_hypothesis`** |
 
 Every predicate MUST be: derived, never stored; refusal-explaining via canonical codes; independently rendered in Python and PostgreSQL with a conformance sweep proving identical decisions and identical codes.
 
@@ -174,6 +174,82 @@ An Unknown says exactly one thing: *this question currently has no constitutiona
 
 **Gold fixture (mutually exclusive under shared scope):** A: *"The visible vehicle is stationary throughout 19:42:00–19:42:10."* B: *"The visible vehicle changes position during 19:42:00–19:42:10."* Scope: same vehicle, camera, coordinate frame, and interval.
 
+## Canonical admissibility matrix — `validate_hypothesis` (normative, Slice 2D)
+
+**What a valid Hypothesis means (ONT-PRN-023, verbatim disclaimer):** *a Hypothesis is a provisional, testable explanatory structure; its existence means only that it is admissible for examination — not that ARGUS considers it likely, preferred, correct, or accepted.* Hypothesis is the highest epistemic object authorized in the current ARGUS ontology; Understanding and Judgment remain human outcomes and are not represented as machine-authored epistemic objects. The governing rule: **ARGUS may preserve explanations for examination; it may never convert explanation into verdict.**
+
+**The four conditions of Resolution 018, rendered structurally.** An explanation is admissible only when the system can state what supports it, what limits it, what could challenge it, and what remains unknown:
+
+1. **Supports (existence relationships):** ≥1 `DERIVED_FROM` grounding referencing an unretracted, currently-grounded same-case Interpretation. `CONTEXTUALIZED_BY` groundings are optional and never satisfy the minimum — a Hypothesis containing only contextual links is inadmissible. Rung-skipping is structurally unrepresentable (groundings reference `interpretations.id` by foreign key); an attempt to ground on any other object surfaces as `unknown-interpretation`.
+2. **Limits (Unknown articulation):** either ≥1 Unknown linked `LIMITED_BY_UNKNOWN` (an `UnknownLink` targeting the Hypothesis, created by the boundary object's own mechanism) **or** a non-empty `no_current_unknowns_explanation`. The explanation states that no specific unresolved gap is *presently articulated* — never that no unknowns exist.
+3. **Challenge (Contradiction articulation + falsifiability):** either ≥1 Contradiction linked `CHALLENGED_BY_CONTRADICTION` (a `ContradictionLink`) **or** a non-empty `no_current_contradictions_explanation` (absence means no formal contradiction is currently linked — not that the Hypothesis is uncontradicted in reality). Plus the mandatory `testability_statement` and `challenge_condition` — declarations of what future evidence would matter, not predictions.
+4. **Unknown (the inherited envelope):** `uncertainty_status` (same envelope as Interpretation, no "certain") plus mandatory `uncertainty_explanation`.
+
+**Alternative articulation (Article IV, Session 012 Amendment 2 — creation-time record separated from current derived state):** at creation the author either links ≥1 existing same-case Hypothesis as a symmetric alternative or supplies a non-empty `alternative_absence_explanation` (what alternative space was considered and why none is currently articulable). The immutable `alternative_articulation_at_creation` ∈ `ALTERNATIVE_LINKED_AT_CREATION` | `NONE_CURRENTLY_ARTICULATED_AT_CREATION` records the historical fact; **`current_alternative_state`** is derived, never stored: `ALTERNATIVES_CURRENT` (≥1 link whose counterpart is unretracted) | `NO_CURRENT_ALTERNATIVES` (no links) | `ALTERNATIVES_DEGRADED` (links exist, every counterpart retracted). A later link changes the derived state without touching the original Hypothesis's bytes; the creation-time absence explanation remains historical truth.
+
+**Grounding snapshots (interpretation fingerprint v2 — exact, versioned; implementations may not choose field sets silently):** each grounding records `hypothesis_id`, `interpretation_id`, `interpretation_fingerprint`, `grounding_role` ∈ `DERIVED_FROM` | `CONTEXTUALIZED_BY`, `linked_at`. Fingerprint v2 = SHA-256 over the UTF-8 encoding of `meaning_statement` ‖ 0x1F ‖ `reasoning_description` ‖ 0x1F ‖ `uncertainty_status` ‖ 0x1F ‖ `uncertainty_explanation` (U+001F unit separator; fields in exactly this order). The Slice 2A single-field statement fingerprint remains v1 where already deployed.
+
+**Hypothesis fingerprint v1 (for ContradictionLink snapshots):** SHA-256 over the UTF-8 encoding of `explanatory_statement` ‖ 0x1F ‖ `reasoning_description` ‖ 0x1F ‖ `uncertainty_status` ‖ 0x1F ‖ `uncertainty_explanation` ‖ 0x1F ‖ `testability_statement` ‖ 0x1F ‖ `challenge_condition`.
+
+**`hypothesis_health` (derived, never stored — three states per Session 012 Amendment 5):** `CURRENT` — every `DERIVED_FROM` Interpretation remains unretracted and grounded; `DEGRADED` — at least one has degraded but at least one remains current; `UNSUPPORTED` — no `DERIVED_FROM` Interpretation remains current (the historical explanation remains recorded, but its current derivational foundation no longer satisfies admission conditions). Even `UNSUPPORTED` never auto-retracts anything; human review remains required. `CONTEXTUALIZED_BY` groundings never enter the computation.
+
+**Boundary states (derived, never stored; links are never silently removed):** `unknown_boundary_state` ∈ `LIMITS_CURRENT` (≥1 unretracted link whose Unknown is unresolved) | `LIMITS_RESOLVED` (≥1 unretracted link, all linked Unknowns resolved) | `NONE_ARTICULATED` (no unretracted links; the creation-time explanation stands as history). `contradiction_boundary_state` ∈ `CHALLENGES_CURRENT` | `CHALLENGES_DISPOSED` | `NONE_ARTICULATED`, identically over ContradictionLinks and dispositions. Resolving an Unknown or disposing a Contradiction changes only these derived values — never any stored Hypothesis field (no automatic revision, promotion, or refutation).
+
+**Prohibited surfaces (Resolution 018; contamination registry, structured surfaces only per the Session 012 caution):** no field, enum value, function name, or constraint may carry `probability`, `confidence_score`, `preferred`, `primary`, `leading`, `best_fit`, `winner`, `case_theory`, `accepted`, or any refutation vocabulary (`refuted`, `disproven`, `defeated`, `weakened`, `invalidated`). Prose passes only the conservative comparative guard below; forbidden-word scanning is a tripwire, never proof of semantic cleanliness.
+
+**Comparative-language guard (inherited from Slice 2A, same conservative term list):** explanatory and reasoning prose may describe and distinguish; it may not make quantified or ordinal comparative-strength claims. Same guarded terms as `validate_interpretation`; the alternative-link `relation_explanation` passes the same guard (naming an alternative confers no status on either side).
+
+| Condition | Codes emitted |
+|---|---|
+| Explanatory statement empty | `ONT-HYP-001:statement-required` |
+| Reasoning description empty | `ONT-HYP-001:reasoning-required` |
+| Uncertainty status absent/invalid | `ONT-HYP-001:uncertainty-status-required` |
+| Uncertainty explanation empty | `ONT-HYP-001:uncertainty-explanation-required` |
+| Testability statement empty | `ONT-HYP-001:testability-required` |
+| Challenge condition empty | `ONT-HYP-001:challenge-condition-required` |
+| Actor class ≠ HUMAN (AI authorship NOT AUTHORIZED) | `ONT-HYP-001:unsupported-actor` |
+| Zero `DERIVED_FROM` groundings (incl. contextual-only) | `ONT-HYP-001:derivation-required` |
+| Invalid grounding role | `ONT-HYP-001:invalid-grounding-role` |
+| Referenced interpretation nonexistent (incl. rung-skip attempts) | `ONT-HYP-001:unknown-interpretation` |
+| Referenced interpretation retracted | `ONT-HYP-001:interpretation-retracted` |
+| Referenced interpretation ungrounded (grounding_health DEGRADED) | `ONT-HYP-001:interpretation-degraded` |
+| Grounding from another case | `ONT-HYP-001:cross-case-grounding` |
+| Duplicate interpretation reference | `ONT-HYP-001:duplicate-grounding` |
+| Neither alternative link nor absence explanation | `ONT-HYP-001:alternative-articulation-required` |
+| Both alternative link and absence explanation | `ONT-HYP-001:alternative-articulation-conflict` |
+| Neither Unknown link nor no-current-unknowns explanation | `ONT-HYP-001:unknown-boundary-articulation-required` |
+| Both Unknown link and explanation | `ONT-HYP-001:unknown-boundary-articulation-conflict` |
+| Neither Contradiction link nor no-current-contradictions explanation | `ONT-HYP-001:contradiction-boundary-articulation-required` |
+| Both Contradiction link and explanation | `ONT-HYP-001:contradiction-boundary-articulation-conflict` |
+| Guarded comparative vocabulary in statement/reasoning | `ONT-HYP-001:comparative-language` |
+
+**Alternative-link operation (`link_hypothesis_alternative` — Session 012 Amendment 4):** human actor; no self-link; both Hypotheses same-case; normalized unordered pair (lexicographically smaller id first); no duplicate pair; non-empty `relation_explanation` free of the guarded comparative terms; audit event `hypothesis-alternative-linked` appended atomically; neither Hypothesis modified; the link survives either side's retraction (a retracted alternative never silently vanishes from history).
+
+| Condition | Codes emitted |
+|---|---|
+| Non-human actor | `ONT-PRN-007:actor-not-permitted` |
+| Self-link | `ONT-HYP-001:alt-self-link` |
+| Either hypothesis nonexistent | `ONT-HYP-001:alt-unknown-hypothesis` |
+| Cross-case pair | `ONT-HYP-001:alt-cross-case` |
+| Duplicate pair | `ONT-HYP-001:alt-duplicate` |
+| Relation explanation empty | `ONT-HYP-001:alt-explanation-required` |
+| Guarded comparative vocabulary in relation explanation | `ONT-HYP-001:alt-comparative-language` |
+
+**Contradiction-link operation (`link_contradiction` — boundary-owned, Contradiction → Hypothesis):** `relationship_type` = `CHALLENGED_BY_CONTRADICTION` only (`refuted`/`disproven`/`defeated`/`weakened`/`invalidated` do not exist and may never be added); human actor; same-case; hypothesis fingerprint v1 snapshot; non-empty explanation; audit event `contradiction-linked`; alters neither the Contradiction nor the Hypothesis. A disposed Contradiction remains historically linked — its current boundary activity is derived, the link never silently removed. Link errors follow the retract pattern (class V), mirroring UnknownLink.
+
+| Condition | Codes emitted |
+|---|---|
+| Non-human actor | `ONT-PRN-007:actor-not-permitted` |
+| Contradiction or Hypothesis nonexistent | `ONT-CON-001:link-target-not-found` |
+| Cross-case link | `ONT-CON-001:link-cross-case` |
+| Duplicate link (same contradiction, same hypothesis) | `ONT-CON-001:link-duplicate` |
+| Explanation empty | `ONT-CON-001:link-explanation-required` |
+| Relationship type ≠ CHALLENGED_BY_CONTRADICTION | `ONT-CON-001:link-invalid-relationship` |
+
+**UnknownLink target extension:** `Hypothesis` joins the permitted target set (`LIMITED_BY_UNKNOWN` semantics); existing codes `ONT-UNK-001:unknown-target` / `ONT-UNK-001:cross-case-link` apply unchanged.
+
+**Gold fixtures:** explanatory statement *"The sedan visible at 19:42 was already parked before the recording interval began."* — canonical absence explanations: alternatives — *"No alternative explanation is currently articulated: the alternative space considered (arrival or departure during the interval) is not yet supported by any grounded Interpretation."*; unknowns — *"No specific unresolved gap is presently articulated for this explanation; unknowns may exist that have not been recognized."*; contradictions — *"No formal contradiction is currently linked; this does not assert the explanation is uncontradicted in reality."*
+
 ## Acceptance test (per ADR-0018)
 
 > **Can every constitutional predicate be derived identically by independent implementations?**
@@ -189,3 +265,4 @@ Experiment One: `can_support_observation`, every matrix row, Python decision vs.
 | 0.3.0 | 2026-07-13 | Slice 2A: interpretation admissibility matrix, structured uncertainty envelope, grounding snapshot + roles + derived grounding_health, comparative-vocabulary guard, the admissibility disclaimer (Slice 2A plan review amendments). Ratified with Slice 2A (AGC Session 007). |
 | 0.4.0 | 2026-07-13 | Slice 2B: unknown admissibility matrix, question-form/anti-TODO guard, resolution evidence requirements, derived unknown scope (deferred), UNRESOLVED-names-its-Unknown accumulated obligation, H5 negative obligations (AGC Session 008 amendments). Ratified with Slice 2B (AGC Session 009). |
 | 0.5.0 | 2026-07-13 | Slice 2C: contradiction admissibility matrix — explicit incompatibility basis (type/scope/basis), INCOMPATIBLE_CLAIM member role, member snapshots, derived contradiction_health, ADR-0027 disposition outcomes, adjudicative-language guard (AGC Session 010 amendments). |
+| 0.6.0 | 2026-07-13 | Slice 2D: hypothesis admissibility matrix per ONT-PRN-023 (ADR-0028) and the five Session 012 amendments — four structural conditions, creation-time vs. derived alternative state, mandatory Unknown/Contradiction articulation, versioned fingerprints (interpretation v2, hypothesis v1), three-state hypothesis_health, alternative-link and contradiction-link operations. |

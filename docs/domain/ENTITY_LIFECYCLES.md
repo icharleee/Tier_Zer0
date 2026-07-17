@@ -1,6 +1,6 @@
 # ARGUS Entity Lifecycles
 
-- **Document version:** 2.2.0 — Ratified at 1.0.0 by AGC Review Session 001; 2.1.0 added the Unknown operational/epistemic separation; 2.2.0 applies the same separation to Contradiction via ContradictionDisposition (ADR-0027, AGC Session 010)
+- **Document version:** 2.3.0 — Ratified at 1.0.0 by AGC Review Session 001; 2.2.0 applied the operational/epistemic separation to Contradiction; 2.3.0 adds the Hypothesis creation preconditions (ONT-PRN-023), HypothesisAlternative (§15), and ContradictionLink (§16) per AGC Session 012
 - **Date:** 2026-07-13
 - **Derived from:** the [Ontology](ONTOLOGY.md); structural context in the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md)
 
@@ -77,11 +77,11 @@ ACTIVE → RETRACTED        (review status orthogonal, per C8)
 
 | Transition | Actor | Preconditions | Audit event |
 |---|---|---|---|
-| create → ACTIVE | Human or AI (proposal) | Full provenance (C7); ladder references valid (C10): Observation ≥1 SourceLocator; Interpretation ≥1 Observation; Hypothesis ≥1 Interpretation | claim-created |
+| create → ACTIVE | Human or AI (proposal; Hypothesis: **Human only** — AI authorship NOT AUTHORIZED, Session 012) | Full provenance (C7); ladder references valid (C10): Observation ≥1 SourceLocator; Interpretation ≥1 Observation; Hypothesis ≥1 `DERIVED_FROM` Interpretation (contextual-only inadmissible). Hypothesis additionally (ONT-PRN-023): uncertainty envelope; testability statement + challenge condition; alternative articulation (link or absence explanation, recorded immutably at creation); Unknown and Contradiction articulation (boundary link or explicit no-current explanation) | claim-created |
 | ACTIVE → RETRACTED | Human | Reason; successor linked where applicable | claim-retracted |
 | (flag) ungrounded / grounding-degraded | System (detection) | Every supporting reference retracted, or any reference degraded | grounding-flag-raised |
 
-Flags are surfaced states, not transitions: a degraded claim awaits **human** disposition and is never auto-retracted (Article II). **Hypothesis has no `CONFIRMED`, `TRUE`, or any terminal success state** — conviction lives in human Understanding, outside the system.
+Flags are surfaced states, not transitions: a degraded claim awaits **human** disposition and is never auto-retracted (Article II). **Hypothesis has no `CONFIRMED`, `TRUE`, or any terminal success state** — conviction lives in human Understanding, outside the system. Hypothesis derived states (`hypothesis_health` CURRENT/DEGRADED/UNSUPPORTED, `current_alternative_state`, boundary states) are computed, never stored, and never transition anything: even UNSUPPORTED — no `DERIVED_FROM` Interpretation remains current — leaves the historical explanation recorded and awaiting human review. Boundary resolution/disposition and sibling retraction alter no stored Hypothesis field.
 
 ## 7. Contradiction (V description; operational state CT; terminal disposition via ContradictionDisposition)
 
@@ -172,6 +172,23 @@ ACTIVE → RETRACTED        (review status orthogonal)
 
 No lifecycle. Created only by the system as an atomic side effect of actor-attributed operations; never updated, deleted, retracted, or superseded — by anyone, including administrators, at every layer. A wrong entry is corrected by a subsequent compensating entry that references it.
 
+## 15. HypothesisAlternative (CI)
+
+No lifecycle. Created by a Human — with the second Hypothesis (same transaction) or later via the dedicated `link_hypothesis_alternative` operation (Session 012 Amendment 4) — and never removed, retargeted, or deleted. Unordered, symmetric, normalized by identifier, same-case, non-ranking. **Preserved after either Hypothesis is retracted**: a retracted alternative never silently vanishes from history; `current_alternative_state` is derived while the original link is preserved. Audit event: hypothesis-alternative-linked. Modifies neither Hypothesis.
+
+## 16. ContradictionLink (V)
+
+```
+ACTIVE → RETRACTED
+```
+
+| Transition | Actor | Preconditions | Audit event |
+|---|---|---|---|
+| create → ACTIVE | **Human only** | Contradiction and Hypothesis in same Case; relationship `CHALLENGED_BY_CONTRADICTION` (the only authorized value — no refutation relationship may ever be added); explanation recorded; hypothesis fingerprint v1 snapshot | contradiction-linked |
+| ACTIVE → RETRACTED | Human | Reason (link errors only — never silent removal) | contradiction-unlinked |
+
+A disposed Contradiction remains historically linked; disposition changes only the derived `contradiction_boundary_state`, never the link or the Hypothesis. Linking alters neither endpoint.
+
 ---
 
 ## Version history
@@ -183,3 +200,4 @@ No lifecycle. Created only by the system as an atomic side effect of actor-attri
 | 2.0.0 | 2026-07-13 | EvidenceArtifact lifecycle made explicit per ADR-0007 / AGC Session 004: STAGED recognized as pre-constitutional; PENDING renamed PENDING_VERIFICATION; QUARANTINED introduced with human-only disposition; ONT-PRN-012 conventions added. MAJOR: 1.0.0 state names would mislead an implementer. |
 | 2.1.0 | 2026-07-13 | Unknown §9: UNDER_REVIEW operational state (reversible, no conclusion) separated from derived epistemic disposition; PARTIALLY_ANSWERED added with the remaining-gap-as-new-Unknown rule (AGC Session 008, Amendment 1). |
 | 2.2.0 | 2026-07-13 | Contradiction §7: operational/epistemic separation via ContradictionDisposition with the five non-adjudicating outcomes; incompatibility basis preconditions; derived contradiction_health (ADR-0027, AGC Session 010). |
+| 2.3.0 | 2026-07-13 | Hypothesis creation preconditions per ONT-PRN-023 (human-only, four conditions, articulation requirements); derived three-state health noted as non-transitioning; HypothesisAlternative §15 (CI, survives retraction); ContradictionLink §16 (V, CHALLENGED_BY_CONTRADICTION only) — AGC Session 012. |

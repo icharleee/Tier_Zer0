@@ -1,6 +1,6 @@
 # ODE-0001: Ontology-Driven Engineering — Axioms and Method
 
-- **Document version:** 0.12.0 (Draft)
+- **Document version:** 0.13.0 (Draft)
 - **Program:** Ontology-Driven Engineering (ODE)
 - **Date:** 2026-07-13
 - **Origin:** Named by AGC Review Session 001 (ADR-0010); axioms established by AGC Review Session 002; first implementation: ARGUS
@@ -112,9 +112,9 @@ The dimension added (ONT-PRN-022): joint incompatibility becomes representable �
 
 > **Observation O7:** Formal incompatibility can be represented as a durable boundary without converting conflict into computational adjudication when scope, membership, health, and disposition are modeled separately.
 
-> **Hypothesis H7 (registered at AGC Session 011, ahead of Slice 2D):** Independent implementations can admit provisional explanatory structures while preserving falsifiability, explicit limitations, competing alternatives, and non-preference.
+> **Hypothesis H7 (refined at the Slice 2D gate review, AGC Session 012):** Independent implementations can admit plural, provisional explanatory structures while preserving derivational support, falsifiability, explicit alternative and boundary articulation, uncertainty, and non-preference — without automatically revising, promoting, refuting, or adjudicating any explanation.
 
-Registered ahead of Slice 2D (*Hypotheses*) — the first object that attempts to *explain* reality, governed by ONT-PRN-023 (Resolution 018 / ADR-0028): an explanation is admissible only when the system can state what supports it, what limits it, what could challenge it, and what remains unknown. The decisive rule: ARGUS may preserve explanations for examination; it may never convert explanation into verdict. **Status: Untested.**
+Registered ahead of Slice 2D (*Hypotheses*) — the first object that attempts to *explain* reality, governed by ONT-PRN-023 (Resolution 018 / ADR-0028): an explanation is admissible only when the system can state what supports it, what limits it, what could challenge it, and what remains unknown. The Session 012 refinement makes the experiment falsifiable along two axes the original wording left implicit: *historical articulation vs. current derived state* (a creation-time absence explanation must survive later alternative linking), and the complete negative-obligation set (no automatic revision, promotion, or refutation from any boundary event or sibling retraction). The decisive rule: ARGUS may preserve explanations for examination; it may never convert explanation into verdict. **Status: Untested.**
 
 *Candidate observation 1 (first repetition recorded, AGC Session 009):* the ladder alternates between positive structures and negative boundaries. One full cycle now exists (Evidence/Observation/Interpretation positive → Unknown negative, built to constrain Interpretation). If Slice 2C–2D produce the Hypothesis-positive/Contradiction-negative pairing, two complete cycles exist — only then does this elevate to a principle.
 
@@ -149,3 +149,4 @@ In Slice 1C, the test suite transcribed the canonical matrix as its own literal 
 | 0.10.0 | 2026-07-13 | H5 marked Supported (n = 1); Observation O6 (explicit ignorance is computationally stable — empirical); rhythm candidate's first repetition recorded; trustworthiness-via-constraint registered as candidate observation 2 (AGC Session 009 / ADR-0026). |
 | 0.11.0 | 2026-07-13 | Hypothesis H6 registered as refined at the Slice 2C plan review (scoped incompatibility without adjudication), untested. |
 | 0.12.0 | 2026-07-13 | H6 marked Supported (n = 1); Observation O7 (incompatibility as durable boundary without adjudication) registered; Hypothesis H7 (provisional explanatory structures, untested) registered per AGC Review Session 011 / ADR-0028. Header version corrected (had lagged at 0.1.0 since the initial draft). |
+| 0.13.0 | 2026-07-13 | H7 refined at the Slice 2D gate review (AGC Session 012): plural explanatory structures, derivational support, historical-vs-current articulation, and the complete non-adjudication obligation set — precise enough to falsify. |
