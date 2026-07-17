@@ -190,6 +190,64 @@ def dispose_contradiction(
     return disposition
 
 
+def link_contradiction(
+    session, *, contradiction, hypothesis_id: str, explanation: str, actor: Actor,
+) -> "ContradictionLink":
+    """Boundary-owned validity link (Session 012): the Contradiction
+    CHALLENGES a Hypothesis — the only authorized relationship; it never
+    refutes, disproves, defeats, weakens, or invalidates. Alters neither
+    endpoint; a disposed Contradiction remains historically linked."""
+    from ..domain import fingerprints
+    from ..domain.models import ContradictionLink, Hypothesis
+
+    hyp = session.get(Hypothesis, hypothesis_id)
+    duplicate = session.execute(select(ContradictionLink).where(
+        ContradictionLink.contradiction_id == contradiction.id,
+        ContradictionLink.hypothesis_id == hypothesis_id,
+    )).scalars().first() is not None
+    codes = adm.validate_contradiction_link(
+        both_exist=hyp is not None,
+        same_case=hyp is not None and hyp.case_id == contradiction.case_id,
+        duplicate=duplicate,
+        relationship_type=adm.CHALLENGED_BY_CONTRADICTION,
+        explanation=explanation,
+        actor_class=actor.actor_class,
+    )
+    if codes:
+        _raise(codes, "ContradictionLink")
+    if _is_postgres(session):
+        link_id = uuid.uuid4().hex
+        session.execute(
+            text("SELECT argus_private.link_contradiction(:id, :con, :hyp, :expl, :ac, :aid, :ver)"),
+            {"id": link_id, "con": contradiction.id, "hyp": hypothesis_id,
+             "expl": explanation, "ac": actor.actor_class.value,
+             "aid": actor.actor_id, "ver": actor.ai_model_version},
+        )
+        session.commit()
+        return session.get(ContradictionLink, link_id)
+    session.get(CaseAuditHead, contradiction.case_id, with_for_update=True)
+    link = ContradictionLink(
+        contradiction_id=contradiction.id, hypothesis_id=hypothesis_id,
+        hypothesis_fingerprint=fingerprints.hypothesis_fingerprint_v1(
+            hyp.explanatory_statement, hyp.reasoning_description,
+            hyp.uncertainty_status.value, hyp.uncertainty_explanation,
+            hyp.testability_statement, hyp.challenge_condition,
+        ),
+        explanation=explanation,
+        linked_by_class=actor.actor_class.value, linked_by_id=actor.actor_id,
+    )
+    session.add(link)
+    session.flush()
+    audit.emit(session, case_id=contradiction.case_id, actor=actor,
+               action="contradiction-linked",
+               target_type="ContradictionLink", target_id=link.id,
+               detail={"contradiction_id": contradiction.id,
+                       "hypothesis_id": hypothesis_id,
+                       "relationship_type": adm.CHALLENGED_BY_CONTRADICTION})
+    session.commit()
+    return link
+
+
 def contradiction_health(session, contradiction) -> str:
     """Derived, never stored. Python rendering; PostgreSQL carries
     argus_private.contradiction_health for conformance."""

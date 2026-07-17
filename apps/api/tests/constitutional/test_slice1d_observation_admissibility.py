@@ -205,16 +205,22 @@ class TestExperimentH3:
         result = verify_case_chain(pg_session, pg_case.id)
         assert result.valid, result.findings
         # The exclusions are load-bearing: unauthorized reasoning tables do
-        # not exist. (Interpretation was excluded when this slice shipped and
-        # this assertion fired red the moment Slice 2A created the table —
-        # the tripwire working as designed. It was narrowed under the Slice
-        # 2A authorization; Hypothesis remains NOT AUTHORIZED.)
+        # not exist. (Interpretation's tripwire fired red when Slice 2A
+        # created its table and was narrowed under that authorization;
+        # Hypothesis's fired the same way at Slice 2D and was retired under
+        # AGC Session 012. What remains guarded is the ladder's terminus:
+        # Understanding and Judgment are human outcomes and never get
+        # machine-authored object representations — no ontology version
+        # authorizes them.)
         tables = {
             r for r in pg_session.execute(
                 text("SELECT tablename FROM pg_tables WHERE schemaname = 'public'")
             ).scalars()
         }
-        assert not any("hypoth" in t for t in tables)
+        assert not any(
+            ("understanding" in t) or ("judgment" in t) or ("verdict" in t)
+            for t in tables
+        )
 
     def test_h3_validator_conformance(
         self, pg_session, pg_admin_engine, store, pg_case, investigator, verifier

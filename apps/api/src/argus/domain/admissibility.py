@@ -372,6 +372,264 @@ def validate_contradiction_disposition(
     return tuple(sorted(codes))
 
 
+# ---- Hypothesis admissibility (Slice 2D; ONT-HYP-001, ONT-PRN-023) ----
+#
+# An explanation is constitutionally admissible only when the system can
+# state what supports it, what limits it, what could challenge it, and what
+# remains unknown (Resolution 018). ARGUS may preserve explanations for
+# examination; it may never convert explanation into verdict.
+
+HYP_STATEMENT_REQUIRED = "ONT-HYP-001:statement-required"
+HYP_REASONING_REQUIRED = "ONT-HYP-001:reasoning-required"
+HYP_UNCERTAINTY_STATUS_REQUIRED = "ONT-HYP-001:uncertainty-status-required"
+HYP_UNCERTAINTY_EXPLANATION_REQUIRED = "ONT-HYP-001:uncertainty-explanation-required"
+HYP_TESTABILITY_REQUIRED = "ONT-HYP-001:testability-required"
+HYP_CHALLENGE_CONDITION_REQUIRED = "ONT-HYP-001:challenge-condition-required"
+HYP_UNSUPPORTED_ACTOR = "ONT-HYP-001:unsupported-actor"
+HYP_DERIVATION_REQUIRED = "ONT-HYP-001:derivation-required"
+HYP_INVALID_GROUNDING_ROLE = "ONT-HYP-001:invalid-grounding-role"
+HYP_UNKNOWN_INTERPRETATION = "ONT-HYP-001:unknown-interpretation"
+HYP_INTERPRETATION_RETRACTED = "ONT-HYP-001:interpretation-retracted"
+HYP_INTERPRETATION_DEGRADED = "ONT-HYP-001:interpretation-degraded"
+HYP_CROSS_CASE = "ONT-HYP-001:cross-case-grounding"
+HYP_DUPLICATE_GROUNDING = "ONT-HYP-001:duplicate-grounding"
+HYP_ALT_ARTICULATION_REQUIRED = "ONT-HYP-001:alternative-articulation-required"
+HYP_ALT_ARTICULATION_CONFLICT = "ONT-HYP-001:alternative-articulation-conflict"
+HYP_UNK_ARTICULATION_REQUIRED = "ONT-HYP-001:unknown-boundary-articulation-required"
+HYP_UNK_ARTICULATION_CONFLICT = "ONT-HYP-001:unknown-boundary-articulation-conflict"
+HYP_CON_ARTICULATION_REQUIRED = "ONT-HYP-001:contradiction-boundary-articulation-required"
+HYP_CON_ARTICULATION_CONFLICT = "ONT-HYP-001:contradiction-boundary-articulation-conflict"
+HYP_COMPARATIVE_LANGUAGE = "ONT-HYP-001:comparative-language"
+
+ALT_SELF_LINK = "ONT-HYP-001:alt-self-link"
+ALT_UNKNOWN_HYPOTHESIS = "ONT-HYP-001:alt-unknown-hypothesis"
+ALT_CROSS_CASE = "ONT-HYP-001:alt-cross-case"
+ALT_DUPLICATE = "ONT-HYP-001:alt-duplicate"
+ALT_EXPLANATION_REQUIRED = "ONT-HYP-001:alt-explanation-required"
+ALT_COMPARATIVE_LANGUAGE = "ONT-HYP-001:alt-comparative-language"
+
+CONLINK_TARGET_NOT_FOUND = "ONT-CON-001:link-target-not-found"
+CONLINK_CROSS_CASE = "ONT-CON-001:link-cross-case"
+CONLINK_DUPLICATE = "ONT-CON-001:link-duplicate"
+CONLINK_EXPLANATION_REQUIRED = "ONT-CON-001:link-explanation-required"
+CONLINK_INVALID_RELATIONSHIP = "ONT-CON-001:link-invalid-relationship"
+
+VALID_HYPOTHESIS_GROUNDING_ROLES = frozenset({"DERIVED_FROM", "CONTEXTUALIZED_BY"})
+CHALLENGED_BY_CONTRADICTION = "CHALLENGED_BY_CONTRADICTION"
+
+
+@dataclass(frozen=True)
+class InterpretationGroundingState:
+    """The constitutional state of one Interpretation a Hypothesis would
+    rely on, as assembled by the caller."""
+
+    exists: bool
+    retracted: bool = False
+    grounded: bool = False  # interpretation grounding_health == GROUNDED
+    same_case: bool = True
+    role: str = "DERIVED_FROM"
+
+
+def _articulate(
+    codes: set[str], link_count: int, explanation: str | None,
+    required_code: str, conflict_code: str,
+) -> None:
+    """The Resolution 018 articulation rule: boundary link XOR explicit
+    absence explanation. Silence is a refusal; contradiction of record
+    (both at once) is a refusal."""
+    has_explanation = bool(explanation and explanation.strip())
+    if link_count <= 0 and not has_explanation:
+        codes.add(required_code)
+    if link_count > 0 and has_explanation:
+        codes.add(conflict_code)
+
+
+def validate_hypothesis(
+    *,
+    explanatory_statement: str,
+    reasoning_description: str,
+    uncertainty_status: str | None,
+    uncertainty_explanation: str,
+    testability_statement: str,
+    challenge_condition: str,
+    actor_class: ActorClass,
+    groundings: tuple[InterpretationGroundingState, ...],
+    distinct_grounding_count: int | None = None,
+    alternative_link_count: int = 0,
+    alternative_absence_explanation: str | None = None,
+    unknown_link_count: int = 0,
+    no_current_unknowns_explanation: str | None = None,
+    contradiction_link_count: int = 0,
+    no_current_contradictions_explanation: str | None = None,
+) -> tuple[str, ...]:
+    """The canonical hypothesis refusal matrix, rendered in Python.
+    Admissible iff empty. A valid Hypothesis is admissible for
+    examination — never likely, preferred, correct, or accepted."""
+    codes: set[str] = set()
+
+    if not explanatory_statement or not explanatory_statement.strip():
+        codes.add(HYP_STATEMENT_REQUIRED)
+    if not reasoning_description or not reasoning_description.strip():
+        codes.add(HYP_REASONING_REQUIRED)
+    if uncertainty_status not in VALID_UNCERTAINTY_STATUSES:
+        codes.add(HYP_UNCERTAINTY_STATUS_REQUIRED)
+    if not uncertainty_explanation or not uncertainty_explanation.strip():
+        codes.add(HYP_UNCERTAINTY_EXPLANATION_REQUIRED)
+    if not testability_statement or not testability_statement.strip():
+        codes.add(HYP_TESTABILITY_REQUIRED)
+    if not challenge_condition or not challenge_condition.strip():
+        codes.add(HYP_CHALLENGE_CONDITION_REQUIRED)
+    if actor_class is not ActorClass.HUMAN:
+        # AI authorship NOT AUTHORIZED (Session 012 formal decision).
+        codes.add(HYP_UNSUPPORTED_ACTOR)
+
+    prose = f"{explanatory_statement or ''} {reasoning_description or ''}".lower()
+    if any(term in prose for term in COMPARATIVE_GUARD_TERMS):
+        codes.add(HYP_COMPARATIVE_LANGUAGE)
+
+    # Supports: only DERIVED_FROM satisfies the minimum (Amendment 5).
+    if not any(g.role == "DERIVED_FROM" for g in groundings):
+        codes.add(HYP_DERIVATION_REQUIRED)
+    if (
+        distinct_grounding_count is not None
+        and distinct_grounding_count < len(groundings)
+    ):
+        codes.add(HYP_DUPLICATE_GROUNDING)
+    for g in groundings:
+        if g.role not in VALID_HYPOTHESIS_GROUNDING_ROLES:
+            codes.add(HYP_INVALID_GROUNDING_ROLE)
+        if not g.exists:
+            codes.add(HYP_UNKNOWN_INTERPRETATION)
+            continue
+        if g.retracted:
+            codes.add(HYP_INTERPRETATION_RETRACTED)
+            continue
+        if not g.same_case:
+            codes.add(HYP_CROSS_CASE)
+            continue
+        if not g.grounded:
+            codes.add(HYP_INTERPRETATION_DEGRADED)
+
+    # Limits, challenge, alternatives: articulation is mandatory — a
+    # Hypothesis is never admitted merely because its author omitted every
+    # limitation (Session 012, Amendment 3).
+    _articulate(codes, alternative_link_count, alternative_absence_explanation,
+                HYP_ALT_ARTICULATION_REQUIRED, HYP_ALT_ARTICULATION_CONFLICT)
+    _articulate(codes, unknown_link_count, no_current_unknowns_explanation,
+                HYP_UNK_ARTICULATION_REQUIRED, HYP_UNK_ARTICULATION_CONFLICT)
+    _articulate(codes, contradiction_link_count, no_current_contradictions_explanation,
+                HYP_CON_ARTICULATION_REQUIRED, HYP_CON_ARTICULATION_CONFLICT)
+
+    return tuple(sorted(codes))
+
+
+def validate_hypothesis_alternative(
+    *,
+    self_link: bool,
+    both_exist: bool,
+    same_case: bool,
+    duplicate: bool,
+    relation_explanation: str,
+    actor_class: ActorClass,
+) -> tuple[str, ...]:
+    """The alternative-link refusal matrix (Session 012, Amendment 4).
+    Naming an alternative confers no status on either side."""
+    codes: set[str] = set()
+    if actor_class is not ActorClass.HUMAN:
+        codes.add(ACTOR_NOT_PERMITTED)
+    if self_link:
+        codes.add(ALT_SELF_LINK)
+    if not both_exist:
+        codes.add(ALT_UNKNOWN_HYPOTHESIS)
+    elif not same_case:
+        codes.add(ALT_CROSS_CASE)
+    if duplicate:
+        codes.add(ALT_DUPLICATE)
+    if not relation_explanation or not relation_explanation.strip():
+        codes.add(ALT_EXPLANATION_REQUIRED)
+    elif any(t in relation_explanation.lower() for t in COMPARATIVE_GUARD_TERMS):
+        codes.add(ALT_COMPARATIVE_LANGUAGE)
+    return tuple(sorted(codes))
+
+
+def validate_contradiction_link(
+    *,
+    both_exist: bool,
+    same_case: bool,
+    duplicate: bool,
+    relationship_type: str,
+    explanation: str,
+    actor_class: ActorClass,
+) -> tuple[str, ...]:
+    """The boundary-link refusal matrix: a Contradiction challenges a
+    Hypothesis; it never refutes, disproves, defeats, weakens, or
+    invalidates it — no such relationship exists or may ever be added."""
+    codes: set[str] = set()
+    if actor_class is not ActorClass.HUMAN:
+        codes.add(ACTOR_NOT_PERMITTED)
+    if not both_exist:
+        codes.add(CONLINK_TARGET_NOT_FOUND)
+    elif not same_case:
+        codes.add(CONLINK_CROSS_CASE)
+    if duplicate:
+        codes.add(CONLINK_DUPLICATE)
+    if relationship_type != CHALLENGED_BY_CONTRADICTION:
+        codes.add(CONLINK_INVALID_RELATIONSHIP)
+    if not explanation or not explanation.strip():
+        codes.add(CONLINK_EXPLANATION_REQUIRED)
+    return tuple(sorted(codes))
+
+
+def hypothesis_health(groundings: tuple[InterpretationGroundingState, ...]) -> str:
+    """Derived, never stored (Amendment 5, three states): computed over
+    DERIVED_FROM groundings only. CURRENT — every one unretracted and
+    grounded; DEGRADED — at least one degraded, at least one current;
+    UNSUPPORTED — none current: the historical explanation remains
+    recorded, but its current derivational foundation no longer satisfies
+    admission conditions. Even UNSUPPORTED never auto-retracts — human
+    review remains required (Article II)."""
+    derived = [g for g in groundings if g.role == "DERIVED_FROM"]
+    current = [g for g in derived if g.exists and not g.retracted and g.grounded]
+    if derived and len(current) == len(derived):
+        return "CURRENT"
+    if current:
+        return "DEGRADED"
+    return "UNSUPPORTED"
+
+
+def current_alternative_state(counterpart_active: tuple[bool, ...]) -> str:
+    """Derived, never stored (Amendment 2): the CURRENT state, kept apart
+    from the immutable creation-time articulation which it never erases.
+    One flag per alternative link: is the counterpart unretracted?"""
+    if not counterpart_active:
+        return "NO_CURRENT_ALTERNATIVES"
+    if any(counterpart_active):
+        return "ALTERNATIVES_CURRENT"
+    return "ALTERNATIVES_DEGRADED"
+
+
+def unknown_boundary_state(link_unresolved: tuple[bool, ...]) -> str:
+    """Derived, never stored: one flag per unretracted LIMITED_BY_UNKNOWN
+    link — is the linked Unknown still unresolved? Links are never silently
+    removed; resolution changes only this derived value."""
+    if not link_unresolved:
+        return "NONE_ARTICULATED"
+    if any(link_unresolved):
+        return "LIMITS_CURRENT"
+    return "LIMITS_RESOLVED"
+
+
+def contradiction_boundary_state(link_undisposed: tuple[bool, ...]) -> str:
+    """Derived, never stored: one flag per unretracted
+    CHALLENGED_BY_CONTRADICTION link — is the linked Contradiction still
+    undisposed? A disposed Contradiction remains historically linked."""
+    if not link_undisposed:
+        return "NONE_ARTICULATED"
+    if any(link_undisposed):
+        return "CHALLENGES_CURRENT"
+    return "CHALLENGES_DISPOSED"
+
+
 def contradiction_health(members: tuple[MemberState, ...]) -> str:
     """Derived, never stored (Amendment 3): CURRENT iff all members remain
     unretracted and available; else DEGRADED. Degradation is surfaced;

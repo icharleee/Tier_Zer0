@@ -491,6 +491,163 @@ class ContradictionDisposition(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
 
 
+class HypothesisGroundingRole(enum.Enum):
+    """How a Hypothesis relies on an Interpretation (Session 012, Amendment 5).
+    Only DERIVED_FROM satisfies the existence minimum — a Hypothesis
+    containing only contextual links is inadmissible."""
+
+    DERIVED_FROM = "DERIVED_FROM"
+    CONTEXTUALIZED_BY = "CONTEXTUALIZED_BY"
+
+
+class AlternativeArticulation(enum.Enum):
+    """The immutable creation-time record of how Article IV was exercised
+    (Session 012, Amendment 2). Historical truth of the creation moment —
+    the current derived state lives nowhere in storage and never erases
+    this articulation."""
+
+    ALTERNATIVE_LINKED_AT_CREATION = "ALTERNATIVE_LINKED_AT_CREATION"
+    NONE_CURRENTLY_ARTICULATED_AT_CREATION = "NONE_CURRENTLY_ARTICULATED_AT_CREATION"
+
+
+class Hypothesis(Base):
+    """ONT-HYP-001 / ONT-PRN-023 — a provisional, testable explanatory
+    structure; its existence means only that it is admissible for
+    examination — not that ARGUS considers it likely, preferred, correct,
+    or accepted. The highest epistemic object authorized in the current
+    ontology; Understanding and Judgment remain human, outside the schema.
+
+    No probability, confidence, preference, promotion, acceptance, or
+    refutation surface exists on this table (Resolution 018; contamination
+    registry). hypothesis_health, current_alternative_state, and the
+    boundary states are derived, never stored. ARGUS may preserve
+    explanations for examination; it may never convert explanation into
+    verdict.
+    """
+
+    __tablename__ = "hypotheses"
+    __table_args__ = (UniqueConstraint("case_id", "citation", name="uq_hyp_citation"),)
+
+    ONTOLOGY_CLASS = "ONT-HYP-001"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=_new_id)
+    case_id: Mapped[str] = mapped_column(ForeignKey("cases.id"), nullable=False)
+    citation: Mapped[str] = mapped_column(String(16))  # HYP-000001, per case
+    explanatory_statement: Mapped[str] = mapped_column(Text)
+    reasoning_description: Mapped[str] = mapped_column(Text)
+    uncertainty_status: Mapped[UncertaintyStatus] = mapped_column(
+        SAEnum(UncertaintyStatus, native_enum=False)
+    )
+    uncertainty_explanation: Mapped[str] = mapped_column(Text)
+    testability_statement: Mapped[str] = mapped_column(Text)
+    challenge_condition: Mapped[str] = mapped_column(Text)
+    alternative_articulation_at_creation: Mapped[AlternativeArticulation] = mapped_column(
+        SAEnum(AlternativeArticulation, native_enum=False)
+    )
+    alternative_absence_explanation: Mapped[str | None] = mapped_column(
+        Text, nullable=True
+    )
+    no_current_unknowns_explanation: Mapped[str | None] = mapped_column(
+        Text, nullable=True
+    )
+    no_current_contradictions_explanation: Mapped[str | None] = mapped_column(
+        Text, nullable=True
+    )
+    created_by_class: Mapped[str] = mapped_column(String(16))
+    created_by_id: Mapped[str] = mapped_column(String(200))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+    retracted_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    retraction_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+
+class HypothesisGrounding(Base):
+    """The grounding snapshot: exactly which Interpretation revision the
+    Hypothesis relied upon at creation — interpretation fingerprint v2
+    (four fields, 0x1F-separated; see CONSTITUTIONAL_PREDICATES.md), role,
+    link time. Content-immutable; survives every retraction. The FK to
+    interpretations makes rung-skipping unrepresentable (D-PRN-004)."""
+
+    __tablename__ = "hypothesis_groundings"
+    __table_args__ = (
+        UniqueConstraint("hypothesis_id", "interpretation_id", name="uq_hyp_grounding"),
+    )
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=_new_id)
+    hypothesis_id: Mapped[str] = mapped_column(
+        ForeignKey("hypotheses.id"), nullable=False
+    )
+    interpretation_id: Mapped[str] = mapped_column(
+        ForeignKey("interpretations.id"), nullable=False
+    )
+    interpretation_fingerprint: Mapped[str] = mapped_column(String(64))
+    grounding_role: Mapped[HypothesisGroundingRole] = mapped_column(
+        SAEnum(HypothesisGroundingRole, native_enum=False)
+    )
+    linked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+
+
+class HypothesisAlternative(Base):
+    """The symmetric record that two Hypotheses are articulated alternatives
+    (Article IV exercised structurally). Unordered pair normalized by
+    identifier (a < b); no direction, weight, or rank exists or may be
+    added. Content-immutable; preserved after either side's retraction —
+    a retracted alternative never silently vanishes from history."""
+
+    __tablename__ = "hypothesis_alternatives"
+    __table_args__ = (
+        UniqueConstraint("hypothesis_a_id", "hypothesis_b_id", name="uq_hyp_alternative"),
+    )
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=_new_id)
+    hypothesis_a_id: Mapped[str] = mapped_column(
+        ForeignKey("hypotheses.id"), nullable=False
+    )
+    hypothesis_b_id: Mapped[str] = mapped_column(
+        ForeignKey("hypotheses.id"), nullable=False
+    )
+    relation_explanation: Mapped[str] = mapped_column(Text)
+    linked_by_class: Mapped[str] = mapped_column(String(16))
+    linked_by_id: Mapped[str] = mapped_column(String(200))
+    linked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+
+
+class ContradictionLink(Base):
+    """The validity-boundary record that a Contradiction challenges a
+    Hypothesis (CHALLENGED_BY_CONTRADICTION — the only authorized
+    relationship, ever; a Contradiction challenges without killing).
+    Boundary-owned, mirroring UnknownLink: the boundary object describes
+    the limit it imposes; the Hypothesis never owns its own constraints.
+    A disposed Contradiction remains historically linked; link errors
+    follow the retract pattern — never silent removal."""
+
+    __tablename__ = "contradiction_links"
+    __table_args__ = (
+        UniqueConstraint("contradiction_id", "hypothesis_id", name="uq_con_link"),
+    )
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=_new_id)
+    contradiction_id: Mapped[str] = mapped_column(
+        ForeignKey("contradictions.id"), nullable=False
+    )
+    hypothesis_id: Mapped[str] = mapped_column(
+        ForeignKey("hypotheses.id"), nullable=False
+    )
+    hypothesis_fingerprint: Mapped[str] = mapped_column(String(64))
+    relationship_type: Mapped[str] = mapped_column(
+        String(32), default="CHALLENGED_BY_CONTRADICTION"
+    )
+    explanation: Mapped[str] = mapped_column(Text)
+    linked_by_class: Mapped[str] = mapped_column(String(16))
+    linked_by_id: Mapped[str] = mapped_column(String(200))
+    linked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+    retracted_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    retraction_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+
 class CaseAuditHead(Base):
     """The per-case audit chain root (ADR-0016): explicit aggregate for
     sequence allocation and current head hash. Locked FOR UPDATE first in the

@@ -37,6 +37,21 @@ CONTAMINATION_REGISTRY: dict[str, tuple[str, ...]] = {
     "contradictions": ("winner", "prevail", "surviv", "adjudicat", "correct", "refut", "rank", "preferred", "weight", "score", "hypoth"),
     "contradiction_members": ("winner", "prevail", "surviv", "adjudicat", "correct", "refut", "rank", "preferred", "support", "challeng"),
     "contradiction_dispositions": ("winner", "prevail", "surviv", "adjudicat", "correct", "refut", "rank", "preferred"),
+    # Hypothesis renders Resolution 018's prohibited fields as stems over
+    # structured surfaces (Session 012 caution: exactly right for column
+    # names, even where too broad for prose). No verdict, preference,
+    # probability, promotion, acceptance, or refutation surface — ever.
+    "hypotheses": (
+        "verdict", "guilt", "conclu", "probab", "confiden", "preferred",
+        "primary", "leading", "best", "winner", "accept", "theory", "rank",
+        "weight", "score", "likelihood", "predict", "refut", "disprov",
+        "defeat", "weaken", "invalidat", "promot",
+    ),
+    "hypothesis_groundings": ("rank", "preferred", "primary", "weight", "score", "winner", "strength", "better", "stronger", "refut"),
+    "hypothesis_alternatives": ("rank", "preferred", "primary", "weight", "score", "winner", "strength", "better", "stronger", "refut"),
+    # The boundary link references the object it bounds ("hypoth" is its
+    # purpose) but may never carry adjudicative or refutation vocabulary.
+    "contradiction_links": ("winner", "prevail", "surviv", "adjudicat", "correct", "refut", "disprov", "defeat", "weaken", "invalidat", "rank", "preferred"),
 }
 
 

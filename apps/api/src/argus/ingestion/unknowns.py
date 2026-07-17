@@ -23,6 +23,7 @@ from ..domain.models import (
     Case,
     CaseAuditHead,
     EvidenceArtifact,
+    Hypothesis,
     Interpretation,
     Observation,
     ResolutionType,
@@ -36,6 +37,8 @@ _TARGETS = {
     "Observation": Observation,
     "Interpretation": Interpretation,
     "EvidenceArtifact": EvidenceArtifact,
+    # Slice 2D (Session 012): Unknown bounds Hypothesis (LIMITED_BY_UNKNOWN).
+    "Hypothesis": Hypothesis,
 }
 
 
