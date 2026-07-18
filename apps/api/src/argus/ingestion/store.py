@@ -16,6 +16,14 @@ from typing import Protocol
 from .hashing import ALGORITHM
 
 
+def expected_storage_ref(algorithm: str, digest: str) -> str:
+    """The constitutional content-addressing rule (ADR-0007): the reference
+    every adapter derives the same way. Slice 1E compares this against the
+    recorded_storage_ref; neither is epistemically authoritative
+    (ONT-PRN-026)."""
+    return f"{algorithm}/{digest}"
+
+
 class ContentStore(Protocol):
     def put_staged(self, session_id: str, data: bytes) -> None: ...
 
@@ -28,6 +36,13 @@ class ContentStore(Protocol):
         ...
 
     def read_permanent(self, digest: str) -> bytes: ...
+
+    def permanent_exists(self, digest: str) -> bool:
+        """Metadata-level existence at the content-addressed permanent
+        location — detectable WITHOUT content access. The Slice 1E sealed
+        probe relies on this distinction: existence is a different fact
+        from content successfully read (AGC Session 016)."""
+        ...
 
     def quarantine_staged(self, session_id: str) -> str:
         """Move staged bytes to quarantine. Retains, never deletes (Article II:
@@ -60,10 +75,13 @@ class LocalContentStore:
         target = self._permanent / digest
         if not target.exists():  # write-once; double promotion is a no-op
             target.write_bytes(self.read_staged(session_id))
-        return f"{ALGORITHM}/{digest}"
+        return expected_storage_ref(ALGORITHM, digest)
 
     def read_permanent(self, digest: str) -> bytes:
         return (self._permanent / digest).read_bytes()
+
+    def permanent_exists(self, digest: str) -> bool:
+        return (self._permanent / digest).exists()
 
     def quarantine_staged(self, session_id: str) -> str:
         source = self._staging / session_id

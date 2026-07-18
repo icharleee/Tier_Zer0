@@ -192,6 +192,13 @@ def verify_and_activate(
     if recomputed != artifact.hash_digest:
         quarantine_ref = store.quarantine_staged(staging_session)
         artifact.storage_ref = quarantine_ref
+        # The storage_ref pointer must reach the database BEFORE the
+        # transition function runs: session.execute(text(...)) does not
+        # autoflush, and _perform's expire() would silently discard the
+        # pending change. Discovered by the first H9 reconciliation scan
+        # (STORAGE_LOCATION_MISMATCH on every PG-activated artifact) —
+        # the UPDATE(storage_ref) column grant exists for exactly this.
+        session.flush()
         quarantine_artifact(
             session,
             artifact,
@@ -207,6 +214,7 @@ def verify_and_activate(
     if readback != artifact.hash_digest:
         quarantine_ref = store.quarantine_staged(staging_session)
         artifact.storage_ref = quarantine_ref
+        session.flush()  # see above: pointer precedes the transition
         quarantine_artifact(
             session, artifact, verifier, reason="permanent-copy read-back mismatch"
         )
@@ -214,6 +222,7 @@ def verify_and_activate(
         return artifact
 
     artifact.storage_ref = permanent_ref
+    session.flush()  # see above: pointer precedes the transition
     activate_artifact(session, artifact, verifier, verified_digest=readback)
     session.commit()  # T2: activation + audit, atomically
     store.release_staged(staging_session)  # staging is pre-constitutional
