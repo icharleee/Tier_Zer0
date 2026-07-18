@@ -1,6 +1,6 @@
 # ARGUS Domain Invariant Matrix
 
-- **Document version:** 0.9.0 (Slice 3A: Case Reconstruction read-model rows per the six Session 014 amendments)
+- **Document version:** 0.10.0 (Slice 1E: Storage Reconciliation rows per the four Session 016 amendments)
 - **Date:** 2026-07-13
 - **Required by:** ADR-0006 (per-table enforcement specification and material-mutation enumeration)
 - **Derived from:** the [Ontology](ONTOLOGY.md) via the [Derivation Specification](DERIVATION_SPECIFICATION.md) (ADR-0014), with structure from the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md) and [Entity Lifecycles](ENTITY_LIFECYCLES.md)
@@ -139,6 +139,23 @@ No tables are added or altered by this slice; the ERD is unchanged. The reconstr
 | Reconstruction: audit summary semantics | ONT-AUD-001 (Article VIII) | invariant | — | — | `integrity_status` ∈ CHAIN_VALID/CHAIN_INVALID/CHAIN_NOT_VERIFIED means chain integrity only; CHAIN_INVALID never prevents reconstruction (surface, never silently dispose); independent SQL recomputation in `argus_private.audit_chain_status` | — | `test_broken_chain_surfaced_not_hidden` |
 | Reconstruction: refusal | ONT-CAS-001 | invariant | — | — | unknown case refuses with `ONT-CAS-001:unknown-case`; empty case reconstructs validly | — | `test_unknown_case_refused`, `test_empty_case_valid` |
 
+### Storage Reconciliation (Slice 1E, ADR-0031/0032)
+
+No tables are added or altered; the ERD is unchanged. Detection only — repair is behind a later gate.
+
+| Entity / field group | Ontology rule | Class | Permitted mutations | Permitted actors | Enforcing mechanism | Material mutations audited | Verifying test |
+|---|---|---|---|---|---|---|---|
+| Scan: purity (non-effects) | ONT-PRN-027 | invariant | none — pure read: no writes, no transitions, no quarantine, no repair, no audit emission; twice-identical canonical reports over unchanged DB + store | — | prober/composer issue only reads; classifier functions STABLE; runtime metadata confined to the meta envelope | — (deliberately none) | `test_scan_pure_and_deterministic` |
+| Integrity conditions: closed set, never truth | ONT-PRN-026 | invariant | — | — | closed enum MATCHED/MISSING/DIVERGENT/UNREADABLE/UNVERIFIED; no CORRECT/AUTHORITATIVE/TRUE_VERSION/WINNER exists; prohibited-stem scan over report surfaces; no path from any condition into any epistemic record | — | `test_no_truth_surface`, `test_classification_matrix` |
+| MATCHED: full applicable invariant agreement | ONT-PRN-026 (Amendment 2) | invariant | — | — | MATCHED requires verification performed + present + readable + supported algorithm + digest, size, and storage-location agreement — mutual consistency, never authenticity | — | `test_matched_requires_all_invariants` |
+| DIVERGENT: diagnostic reasons | ONT-PRN-026 (Amendment 1) | invariant | — | — | DIGEST_MISMATCH / SIZE_MISMATCH / STORAGE_LOCATION_MISMATCH as subconditions; recorded vs. expected storage refs distinguished; a matching hash never hides metadata drift | — | `test_divergence_reasons` |
+| Classification precedence | ONT-PRN-015 (Session 016) | invariant | — | — | normative five-step precedence in STORAGE_RECONCILIATION.md §5; Python classifier + `argus_private.classify_storage_integrity` dual-rendered over shared observed facts, conformance-swept | — | `test_h9_classifier_conformance` |
+| SEALED: metadata-only probe | ONT-EVA-001 (Article VI) | invariant | — | — | default scan never opens sealed content (a pure scan cannot audit a sealed read); UNVERIFIED with explicit envelope; observed.present = storage-level existence without content access; digest-bearing details withheld and declared | — | `test_sealed_metadata_only` |
+| Stalled verification: separate surfacing | ONT-PRN-012 (ADR-0007 §4) | invariant | — | — | PENDING_VERIFICATION artifacts in `stalled_verification` only — never classified, never mixed into UNVERIFIED, never auto-transitioned | — | `test_stalled_separate_not_classified` |
+| Operational summary: separated, reconciled | ONT-PRN-026 (Amendment 3) | invariant | — | — | counts outside the per-artifact results; sum of condition counts = classified permanent-storage artifacts; no evidentiary, epistemic, or prioritization meaning | — | `test_summary_sum_invariant` |
+| ContentStore protocol contract | ONT-PRN-010, ONT-PRN-013 | invariant | — | — | reusable conformance suite every adapter must pass (write-once promotion, content-addressing rule, metadata-level existence, exact reads, quarantine retains, error normalization) — an adapter may not change what MISSING/UNREADABLE means | — | `test_content_store_contract` |
+| Refusal | ONT-CAS-001 | invariant | — | — | unknown case refuses `ONT-CAS-001:unknown-case`; empty case reconciles validly | — | `test_unknown_case_refused_empty_valid` |
+
 ### Constitutional predicates (Slice 1C, ADR-0018)
 
 | Entity / field group | Ontology rule | Class | Permitted mutations | Permitted actors | Enforcing mechanism | Material mutations audited | Verifying test |
@@ -162,3 +179,4 @@ No tables are added or altered by this slice; the ERD is unchanged. The reconstr
 | 0.7.0 | 2026-07-13 | Slice 2C gate: Contradiction/ContradictionMember/ContradictionDisposition rows (ADR-0027, Session 010 amendments). |
 | 0.8.0 | 2026-07-13 | Slice 2D gate: Hypothesis/HypothesisGrounding/HypothesisAlternative/ContradictionLink rows per ADR-0028 (ONT-PRN-023) and the five Session 012 amendments — creation-time vs. derived alternative state, mandatory boundary articulation, versioned fingerprints, three-state health, H7 negative obligations. |
 | 0.9.0 | 2026-07-13 | Slice 3A gate: Case Reconstruction read-model rows (purity, two-level equivalence, manifest completeness, visibility envelope, structural non-preference, historical/current pairing, audit summary semantics, refusal) per the six Session 014 amendments. No schema changes. |
+| 0.10.0 | 2026-07-13 | Slice 1E gate: Storage Reconciliation rows (purity, closed integrity conditions, strengthened MATCHED, diagnostic divergence reasons, normative precedence, sealed metadata-only probe, stalled-verification separation, summary reconciliation, ContentStore contract, refusal) per the four Session 016 amendments. No schema changes. |

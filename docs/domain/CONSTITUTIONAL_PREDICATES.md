@@ -1,6 +1,6 @@
 # ARGUS Constitutional Predicates
 
-- **Document version:** 0.7.0 (0.6.0 ratified with Slice 2D; 0.7.0 adds the Slice 3A reconstruction refusal condition per the Session 014 amendments)
+- **Document version:** 0.8.0 (0.7.0 ratified with Slice 3A; 0.8.0 adds the Slice 1E storage-integrity classification pointer per the Session 016 amendments)
 - **Date:** 2026-07-13
 - **Established by:** [ADR-0018](../adr/0018-constitutional-predicates.md) (Founder Resolution 009, ONT-PRN-014)
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) 1.6.0, [Entity Lifecycles](ENTITY_LIFECYCLES.md) 2.0.0, ADR-0007
@@ -260,6 +260,10 @@ The Case Reconstruction is a transient, read-only projection — not a predicate
 
 An empty case reconstructs validly; emptiness is not an error. `audit_chain.integrity_status` ∈ `CHAIN_VALID` | `CHAIN_INVALID` | `CHAIN_NOT_VERIFIED` means chain integrity only — never that evidence, claims, or the case are "verified" — and `CHAIN_INVALID` never prevents reconstruction.
 
+## Storage-integrity classification (Slice 1E)
+
+Reconciliation classifies **integrity, never truth** (ONT-PRN-026/027): the closed condition set `MATCHED` | `MISSING` | `DIVERGENT` | `UNREADABLE` | `UNVERIFIED`, diagnostic divergence reasons, normative precedence, and the report shape live in [STORAGE_RECONCILIATION.md](STORAGE_RECONCILIATION.md); the classifier pair (`argus.reconciliation_scan` / `argus_private.classify_storage_integrity`) is dual-rendered over shared observed facts. Refusal: `ONT-CAS-001:unknown-case`. Agreement is never authenticity; divergence is never falsity; the scan mutates nothing.
+
 ## Acceptance test (per ADR-0018)
 
 > **Can every constitutional predicate be derived identically by independent implementations?**
@@ -277,3 +281,4 @@ Experiment One: `can_support_observation`, every matrix row, Python decision vs.
 | 0.5.0 | 2026-07-13 | Slice 2C: contradiction admissibility matrix — explicit incompatibility basis (type/scope/basis), INCOMPATIBLE_CLAIM member role, member snapshots, derived contradiction_health, ADR-0027 disposition outcomes, adjudicative-language guard (AGC Session 010 amendments). |
 | 0.6.0 | 2026-07-13 | Slice 2D: hypothesis admissibility matrix per ONT-PRN-023 (ADR-0028) and the five Session 012 amendments — four structural conditions, creation-time vs. derived alternative state, mandatory Unknown/Contradiction articulation, versioned fingerprints (interpretation v2, hypothesis v1), three-state hypothesis_health, alternative-link and contradiction-link operations. |
 | 0.7.0 | 2026-07-13 | Slice 3A: reconstruction refusal condition (unknown-case), audit-chain integrity enum semantics, pointer to the Case Reconstruction Specification (AGC Session 014 amendments). |
+| 0.8.0 | 2026-07-13 | Slice 1E: storage-integrity classification pointer (closed condition set, dual-rendered classifier, integrity-never-truth semantics per ONT-PRN-026/027; AGC Session 016 amendments). |

@@ -1,6 +1,6 @@
 # ARGUS Derivation Specification
 
-- **Document version:** 1.7.0 — Ratified at 1.0.0 by AGC Review Session 003, 2026-07-13; 1.7.0 adds D-PRN-024/D-PRN-025 and the Case Reconstruction obligations per the Slice 3A amendments (see version history)
+- **Document version:** 1.8.0 — Ratified at 1.0.0 by AGC Review Session 003, 2026-07-13; 1.8.0 adds D-PRN-026/D-PRN-027 and the Storage Reconciliation obligations per the Slice 1E amendments (see version history)
 - **Date:** 2026-07-13
 - **Established by:** [ADR-0014](../adr/0014-establish-the-derivation-specification-layer.md) (AGC Review Session 002)
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) 1.2.0
@@ -91,6 +91,25 @@ Applies to every temporal attribute of every object, and to every read surface.
 ### D-REC — Case Reconstruction (composition obligations)
 
 The Case Reconstruction is a transient, read-only projection with no epistemic standing of its own (Session 014; not a first-class object). Its normative surface — manifest, visibility envelope, structural non-preference, canonical serialization, ordering, refusal conditions, non-effects — lives in [CASE_RECONSTRUCTION.md](CASE_RECONSTRUCTION.md) and is verified by the H8 suite through semantic structural equality strengthened by canonical byte identity. Governing rule: composition may reveal relationships already present in the constitutional graph; it may never create a meaning that no constitutional record already carries.
+
+### D-PRN-026 — Integrity is never truth (from ONT-PRN-026)
+
+Applies to every comparison among stored representations of constitutional records.
+
+- **Schema/surfaces:** integrity outcomes are a closed condition set; no state or field may express correctness, authenticity, authority, or a "true version"; agreement/divergence vocabulary never crosses into evidentiary claims.
+- **Invariants:** no integrity result changes any epistemic record, disposition, derived epistemic state, or admissibility.
+- **Tests:** the prohibited-surface scan and the negative obligation that classification alters nothing. Cite ONT-PRN-026.
+
+### D-PRN-027 — No silent repair (from ONT-PRN-027)
+
+Applies to every operation that can observe divergence in constitutional storage or history.
+
+- **Process:** detection, proposed remediation, and authorized mutation are separate operations; scans hold no write path; repair (where it ever exists) enters via controlled functions with its own audit events under its own gate.
+- **Tests:** a scan mutates nothing (byte-check before/after) and emits no audit entries; repeat scans over unchanged state are identical. Cite ONT-PRN-027.
+
+### D-REC-STORAGE — Storage Reconciliation (detection obligations)
+
+The reconciliation scan is a transient, read-only projection of storage-integrity state. Its normative surface — the storage-reference authority triple, the closed condition set with diagnostic reasons, classification precedence, sealed handling, report shape, ContentStore protocol contract — lives in [STORAGE_RECONCILIATION.md](STORAGE_RECONCILIATION.md), verified by the H9 suite (dual-rendered classification over shared observed facts; probing declared single-implementation). Governing rule: reconciliation may tell ARGUS that its representations disagree; it may never tell ARGUS what reality therefore means.
 
 ### D-AUD — Atomic audit (from ONT-AUD-001 semantics)
 
@@ -239,3 +258,4 @@ Under the vertical-slice strategy (ADR-0015), the [Invariant Matrix](INVARIANT_M
 | 1.5.0 | 2026-07-13 | ONT-INT-001 obligations refined per Slice 2A amendments: uncertainty envelope, grounding snapshot/roles, comparative guard, derived grounding_health. |
 | 1.6.0 | 2026-07-13 | ONT-HYP-001 obligations refined per ONT-PRN-023 (ADR-0028) and the five Session 012 amendments: four structural conditions, creation-time vs. derived alternative state, boundary-owned validity links, versioned fingerprints, three-state health. D-PRN-018 registry extended through the Hypothesis layer (recording the Unknown/Contradiction rows shipped with Slices 2B/2C) with the structured-surface scope caution. |
 | 1.7.0 | 2026-07-13 | Added D-PRN-024 (constraint precedes expressive power, ADR-0029), D-PRN-025 (historical vs. current, ADR-0030), and D-REC (Case Reconstruction composition obligations, deferring to CASE_RECONSTRUCTION.md), per the Slice 3A gate (AGC Session 014). |
+| 1.8.0 | 2026-07-13 | Added D-PRN-026 (integrity is never truth, ADR-0031), D-PRN-027 (no silent repair, ADR-0032), and D-REC-STORAGE (reconciliation detection obligations, deferring to STORAGE_RECONCILIATION.md), per the Slice 1E gate (AGC Session 016). |
