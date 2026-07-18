@@ -50,3 +50,5 @@ An ADR is required for any decision that:
 | [0026](0026-dimensions-over-objects.md) | Epistemic layers expand dimensions, not merely object counts | Accepted (freeze exemption per ONT-PRN-011) |
 | [0027](0027-contradiction-disposition.md) | ContradictionDisposition as a first-class object | Accepted (freeze exemption per ONT-PRN-011) |
 | [0028](0028-explanations-must-state-their-conditions.md) | An explanation must state what supports, limits, challenges, and escapes it | Accepted (freeze exemption per ONT-PRN-011) |
+| [0029](0029-constraint-precedes-expressive-power.md) | No expressive power without prior constraint | Accepted (freeze exemption per ONT-PRN-011) |
+| [0030](0030-historical-articulation-vs-current-condition.md) | Historical articulation and current derived condition remain distinct | Accepted (freeze exemption per ONT-PRN-011) |

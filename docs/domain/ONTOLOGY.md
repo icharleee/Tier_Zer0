@@ -1,6 +1,6 @@
 # The ARGUS Ontology
 
-- **Document version:** 1.14.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; subsequent minor versions add stable identifiers and principles through ONT-PRN-023 and the fifteenth object ONT-CDP-001 (see version history)
+- **Document version:** 1.15.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; subsequent minor versions add stable identifiers and principles through ONT-PRN-025 and the fifteenth object ONT-CDP-001 (see version history)
 - **Date:** 2026-07-13
 - **Governed by:** [Engineering Constitution](../foundation/ENGINEERING_CONSTITUTION.md) 1.0.0, [Lexicon](../glossary/LEXICON.md) 1.0.0, ADR-0009 (Founder Resolution 003)
 - **Derived from it:** the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md), [Entity Lifecycles](ENTITY_LIFECYCLES.md), the [Invariant Matrix](INVARIANT_MATRIX.md), and every implementation artifact thereafter
@@ -162,6 +162,8 @@ Cross-cutting principles carry stable identifiers alongside the object registry 
 | ONT-PRN-021 | Every epistemic object distinguishes the relationships that justify its existence from the relationships that limit its validity — the two families never merge or convert (Resolution 016) | §2, §3 |
 | ONT-PRN-022 | Every new epistemic layer expands the dimensions through which reality may be represented, rather than merely increasing the number of representable objects (Resolution 017) | §2, §3 |
 | ONT-PRN-023 | An explanation is constitutionally admissible only when the system can state what supports it, what limits it, what could challenge it, and what remains unknown (Resolution 018) | §2, §3 |
+| ONT-PRN-024 | No new epistemic object or capability may be implemented until the ontology defines the constraints, refusal conditions, provenance obligations, validity boundaries, and non-effects that limit its expressive power (Resolution 019) | §8 |
+| ONT-PRN-025 | Historical articulation and current derived condition are represented separately whenever later events can change the present state without invalidating what was true at creation (Resolution 020) | §2, §6 |
 
 ## 10. Unresolved ontological questions
 
@@ -200,3 +202,4 @@ Ratified as one constitutional package with the [Domain Schema Specification](DO
 | 1.12.0 | 2026-07-13 | Added ONT-PRN-022 (dimensions over objects, Resolution 017 / ADR-0026) and the normative boundary taxonomy with the never-alters invariant, per AGC Review Session 009. |
 | 1.13.0 | 2026-07-13 | Added ONT-CDP-001 (ContradictionDisposition, the fifteenth first-class object, ADR-0027); Contradiction's role refined to formally scoped joint incompatibility, per AGC Review Session 010. |
 | 1.14.0 | 2026-07-13 | Added ONT-PRN-023 (an explanation must state what supports, limits, challenges, and escapes it — the governing principle for the Hypothesis layer, Resolution 018 / ADR-0028), per AGC Review Session 011. |
+| 1.15.0 | 2026-07-13 | Added ONT-PRN-024 (constraint precedes expressive power, Resolution 019 / ADR-0029) and ONT-PRN-025 (historical articulation vs. current derived condition, Resolution 020 / ADR-0030), per AGC Review Session 013. |

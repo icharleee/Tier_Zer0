@@ -1,6 +1,6 @@
 # ODE-0001: Ontology-Driven Engineering — Axioms and Method
 
-- **Document version:** 0.13.0 (Draft)
+- **Document version:** 0.14.0 (Draft)
 - **Program:** Ontology-Driven Engineering (ODE)
 - **Date:** 2026-07-13
 - **Origin:** Named by AGC Review Session 001 (ADR-0010); axioms established by AGC Review Session 002; first implementation: ARGUS
@@ -114,11 +114,23 @@ The dimension added (ONT-PRN-022): joint incompatibility becomes representable �
 
 > **Hypothesis H7 (refined at the Slice 2D gate review, AGC Session 012):** Independent implementations can admit plural, provisional explanatory structures while preserving derivational support, falsifiability, explicit alternative and boundary articulation, uncertainty, and non-preference — without automatically revising, promoting, refuting, or adjudicating any explanation.
 
-Registered ahead of Slice 2D (*Hypotheses*) — the first object that attempts to *explain* reality, governed by ONT-PRN-023 (Resolution 018 / ADR-0028): an explanation is admissible only when the system can state what supports it, what limits it, what could challenge it, and what remains unknown. The Session 012 refinement makes the experiment falsifiable along two axes the original wording left implicit: *historical articulation vs. current derived state* (a creation-time absence explanation must survive later alternative linking), and the complete negative-obligation set (no automatic revision, promotion, or refutation from any boundary event or sibling retraction). The decisive rule: ARGUS may preserve explanations for examination; it may never convert explanation into verdict. **Status: Untested.**
+Registered ahead of Slice 2D (*Hypotheses*) — the first object that attempts to *explain* reality, governed by ONT-PRN-023 (Resolution 018 / ADR-0028): an explanation is admissible only when the system can state what supports it, what limits it, what could challenge it, and what remains unknown. The Session 012 refinement makes the experiment falsifiable along two axes the original wording left implicit: *historical articulation vs. current derived state* (a creation-time absence explanation must survive later alternative linking), and the complete negative-obligation set (no automatic revision, promotion, or refutation from any boundary event or sibling retraction). The decisive rule: ARGUS may preserve explanations for examination; it may never convert explanation into verdict.
 
-*Candidate observation 1 (first repetition recorded, AGC Session 009):* the ladder alternates between positive structures and negative boundaries. One full cycle now exists (Evidence/Observation/Interpretation positive → Unknown negative, built to constrain Interpretation). If Slice 2C–2D produce the Hypothesis-positive/Contradiction-negative pairing, two complete cycles exist — only then does this elevate to a principle.
+**Status: Supported (n = 1)** — Slice 2D, verdict confirmed by AGC Session 013 through independent invariants: two Hypotheses coexist without preference; creation-time alternative articulation immutable while current alternative state changes derivationally; boundary links remain boundary-owned; boundary disposition changes no Hypothesis bytes; retraction of one Hypothesis promotes no other; derivational health surfaced rather than acted upon; Python and PostgreSQL renderings agree (17-row conformance sweep, zero divergences on the first run — not itself proof of broader convergence, but meaningful evidence that the derivation discipline is becoming repeatable); fingerprints use normative, versioned definitions; prohibited ranking and verdict surfaces structurally absent. The decisive result: *a Hypothesis may gain alternatives, lose current support, encounter answered Unknowns, and face disposed Contradictions without ARGUS rewriting, promoting, refuting, or adjudicating it.*
 
-*Candidate observation 2 (AGC Session 009):* complex systems become trustworthy when every increase in expressive power is preceded by an increase in structural constraint — provenance before Observation; grounding before Interpretation; admissibility before Unknown; Unknown and Contradiction before Hypothesis. Recorded as candidate (ADR-0026 §3); elevate if the pattern holds through Slice 2D.
+**Standing limitations (publication mandatory, per Sessions 012–013):** no evidentiary sufficiency model; no formal comparative assessment; no calibrated confidence; no AI provenance at Hypothesis; no authenticated actor identity; no end-user review workflow; and — added by Session 013 — no formal mechanism yet distinguishes creation admissibility from later human endorsement or institutional adoption (a warning that future workflow must never smuggle epistemic truth into administrative approval, not permission to build an "accepted hypothesis" state).
+
+> **Observation O8 (promoted from candidate observation 1, AGC Session 013):** Epistemic representation develops through an alternating rhythm of positive structures that express what may be claimed and negative boundary structures that express where those claims must stop.
+
+Demonstrated sequence: Interpretation (positive meaning structure) → Unknown (negative knowledge boundary) → Contradiction (negative incompatibility boundary) → Hypothesis (positive explanatory structure); paired cycles Interpretation-bounded-by-Unknown and Hypothesis-bounded-by-Contradiction. Two completed cycles establish a credible pattern; they do not prove all future epistemic architectures must alternate this way — recorded as an ODE observation, **deliberately not constitutionalized** (Session 013: proportional to the evidence).
+
+> **Hypothesis H8 (proposed at AGC Session 013, ahead of Slice 3A):** Independent implementations can compose the complete epistemic graph into a coherent case reconstruction while preserving provenance, plurality, boundaries, temporal truth, and non-preference without generating a privileged narrative.
+
+Registered ahead of Slice 3A (*Case Reconstruction Read Model*) — the first **integration** experiment: the prior slices tested local constitutional behavior; H8 tests global compositional integrity. The question: can ARGUS render the full topology of an investigation without collapsing it into a single story? **Status: Untested.**
+
+*Candidate observation 1 (first repetition recorded, AGC Session 009):* the ladder alternates between positive structures and negative boundaries. One full cycle now exists (Evidence/Observation/Interpretation positive → Unknown negative, built to constrain Interpretation). If Slice 2C–2D produce the Hypothesis-positive/Contradiction-negative pairing, two complete cycles exist — only then does this elevate to a principle. *(Condition met at Slice 2D; promoted to Observation O8 by AGC Session 013 — as an observation, not an ontology principle.)*
+
+*Candidate observation 2 (AGC Session 009):* complex systems become trustworthy when every increase in expressive power is preceded by an increase in structural constraint — provenance before Observation; grounding before Interpretation; admissibility before Unknown; Unknown and Contradiction before Hypothesis. Recorded as candidate (ADR-0026 §3); elevate if the pattern holds through Slice 2D. *(Condition met; promoted to Principle P1 by AGC Session 013 — see §6.)*
 
 > **Observation O2:** Independent verification derived directly from the ontology detected implementation divergence without sharing executable logic.
 
@@ -126,7 +138,27 @@ In Slice 1C, the test suite transcribed the canonical matrix as its own literal 
 
 > **Observation O1:** During the implementation of Slice 1B, multiple architectural refinements emerged from executable constraints rather than design discussion — a real PostgreSQL syntax error caught by the live database, a lock-order inconsistency exposed by concurrency design, and a three-way lifecycle duplication identified before drift (leading to Resolution 008) — supporting the hypothesis that implementation is an effective source of ontology validation when governed by a one-directional derivation chain.
 
-## 6. Open questions
+## 6. Principles
+
+The first ODE principle, promoted from candidate observation 2 by AGC Session 013 after surviving the full implemented epistemic ladder:
+
+> **Principle P1 — Constraint precedes expressive power.** Every increase in a system's epistemic expressive power should be preceded by structural constraints capable of limiting, tracing, and refusing that new expression.
+
+Evidence, by slice (the record cites experiments, not proof):
+
+| New expressive power | Constraint established beforehand | Slice |
+|---|---|---|
+| Observation | Evidence provenance and rung separation | 1D (after 1A–1C) |
+| Interpretation | Grounding, uncertainty, and non-preference | 2A |
+| Unknown | Non-conclusion and boundary immutability | 2B |
+| Contradiction | Scope, symmetry, and anti-adjudication | 2C |
+| Hypothesis | Unknowns, Contradictions, falsifiability, and alternative articulation | 2D |
+
+Hypothesis was not introduced and constrained afterward: its obligation floor existed before its schema did (ONT-PRN-023 at Session 011, the Session 012 amendments at the gate, the Invariant Matrix rows before code). That is a stronger result than ontology-first development alone — it demonstrates **constraint-before-expression as a repeatable engineering method**. Within ARGUS the principle is enforced by Founder Resolution 019 / ONT-PRN-024 (ADR-0029); whether it should bind all future ontology extensions *constitutionally* is deliberately deferred (Session 013).
+
+**Status: Supported across the currently implemented epistemic ladder (Slices 1D–2D).** Not proven; recorded with its evidence.
+
+## 7. Open questions
 
 - How does an ODE system evolve its ontology under live load — what is the migration discipline when meaning (not just structure) changes?
 - What tooling makes derivation checkable mechanically (ontology-to-schema linting, test-annotation verification)?
@@ -150,3 +182,4 @@ In Slice 1C, the test suite transcribed the canonical matrix as its own literal 
 | 0.11.0 | 2026-07-13 | Hypothesis H6 registered as refined at the Slice 2C plan review (scoped incompatibility without adjudication), untested. |
 | 0.12.0 | 2026-07-13 | H6 marked Supported (n = 1); Observation O7 (incompatibility as durable boundary without adjudication) registered; Hypothesis H7 (provisional explanatory structures, untested) registered per AGC Review Session 011 / ADR-0028. Header version corrected (had lagged at 0.1.0 since the initial draft). |
 | 0.13.0 | 2026-07-13 | H7 refined at the Slice 2D gate review (AGC Session 012): plural explanatory structures, derivational support, historical-vs-current articulation, and the complete non-adjudication obligation set — precise enough to falsify. |
+| 0.14.0 | 2026-07-13 | H7 marked Supported (n = 1) with the seven standing limitations; Observation O8 (positive/negative rhythm) promoted from candidate 1 — observation, not ontology principle; Principle P1 (constraint precedes expressive power, §6) promoted from candidate 2 with per-slice evidence; Hypothesis H8 (compositional integrity, untested) registered ahead of Slice 3A — per AGC Session 013. |
