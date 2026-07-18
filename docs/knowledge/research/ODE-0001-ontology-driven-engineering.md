@@ -1,6 +1,6 @@
 # ODE-0001: Ontology-Driven Engineering — Axioms and Method
 
-- **Document version:** 0.14.0 (Draft)
+- **Document version:** 0.15.0 (Draft)
 - **Program:** Ontology-Driven Engineering (ODE)
 - **Date:** 2026-07-13
 - **Origin:** Named by AGC Review Session 001 (ADR-0010); axioms established by AGC Review Session 002; first implementation: ARGUS
@@ -124,9 +124,11 @@ Registered ahead of Slice 2D (*Hypotheses*) — the first object that attempts t
 
 Demonstrated sequence: Interpretation (positive meaning structure) → Unknown (negative knowledge boundary) → Contradiction (negative incompatibility boundary) → Hypothesis (positive explanatory structure); paired cycles Interpretation-bounded-by-Unknown and Hypothesis-bounded-by-Contradiction. Two completed cycles establish a credible pattern; they do not prove all future epistemic architectures must alternate this way — recorded as an ODE observation, **deliberately not constitutionalized** (Session 013: proportional to the evidence).
 
-> **Hypothesis H8 (proposed at AGC Session 013, ahead of Slice 3A):** Independent implementations can compose the complete epistemic graph into a coherent case reconstruction while preserving provenance, plurality, boundaries, temporal truth, and non-preference without generating a privileged narrative.
+> **Hypothesis H8 (refined at the Slice 3A gate review, AGC Session 014):** Independent implementations can compose the complete authorized epistemic graph of a Case into semantically and canonically equivalent read models while preserving provenance, plurality, boundary structure, temporal truth, visibility constraints, and non-preference — without constructing a privileged narrative or introducing new epistemic meaning.
 
-Registered ahead of Slice 3A (*Case Reconstruction Read Model*) — the first **integration** experiment: the prior slices tested local constitutional behavior; H8 tests global compositional integrity. The question: can ARGUS render the full topology of an investigation without collapsing it into a single story? **Status: Untested.**
+Registered ahead of Slice 3A (*Case Reconstruction Read Model*) — the first **integration** experiment: H1–H7 mostly asked *can one concept remain constitutional?*; H8 asks *can all constitutional concepts remain constitutional when viewed together?* The final clause is the true integration threat: a collection of constitutionally safe objects can still become unconstitutional if the read model arranges them into an implied answer. H8 is tested through semantic structural equality and strengthened by canonical byte identity; a byte divergence fails implementation conformance but does not prove epistemic divergence until classified (Session 014). The question: can ARGUS render the full topology of an investigation without collapsing it into a single story? **Status: Untested.**
+
+*Candidate observation O9 (registered at AGC Session 014, deliberately not promoted — Slice 3A tests it first):* Constitutional properties that hold locally do not automatically survive composition; global read models require their own non-effects, completeness, symmetry, and non-preference constraints.
 
 *Candidate observation 1 (first repetition recorded, AGC Session 009):* the ladder alternates between positive structures and negative boundaries. One full cycle now exists (Evidence/Observation/Interpretation positive → Unknown negative, built to constrain Interpretation). If Slice 2C–2D produce the Hypothesis-positive/Contradiction-negative pairing, two complete cycles exist — only then does this elevate to a principle. *(Condition met at Slice 2D; promoted to Observation O8 by AGC Session 013 — as an observation, not an ontology principle.)*
 
@@ -183,3 +185,4 @@ Hypothesis was not introduced and constrained afterward: its obligation floor ex
 | 0.12.0 | 2026-07-13 | H6 marked Supported (n = 1); Observation O7 (incompatibility as durable boundary without adjudication) registered; Hypothesis H7 (provisional explanatory structures, untested) registered per AGC Review Session 011 / ADR-0028. Header version corrected (had lagged at 0.1.0 since the initial draft). |
 | 0.13.0 | 2026-07-13 | H7 refined at the Slice 2D gate review (AGC Session 012): plural explanatory structures, derivational support, historical-vs-current articulation, and the complete non-adjudication obligation set — precise enough to falsify. |
 | 0.14.0 | 2026-07-13 | H7 marked Supported (n = 1) with the seven standing limitations; Observation O8 (positive/negative rhythm) promoted from candidate 1 — observation, not ontology principle; Principle P1 (constraint precedes expressive power, §6) promoted from candidate 2 with per-slice evidence; Hypothesis H8 (compositional integrity, untested) registered ahead of Slice 3A — per AGC Session 013. |
+| 0.15.0 | 2026-07-13 | H8 refined at the Slice 3A gate review (AGC Session 014): semantic + canonical equivalence, visibility constraints, and the no-new-epistemic-meaning clause; candidate observation O9 (local constitutionality does not automatically survive composition) registered, deliberately unpromoted. |

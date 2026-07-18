@@ -1,6 +1,6 @@
 # ARGUS Derivation Specification
 
-- **Document version:** 1.6.0 — Ratified at 1.0.0 by AGC Review Session 003, 2026-07-13; 1.6.0 refines ONT-HYP-001 obligations per ONT-PRN-023 and the Slice 2D amendments (see version history)
+- **Document version:** 1.7.0 — Ratified at 1.0.0 by AGC Review Session 003, 2026-07-13; 1.7.0 adds D-PRN-024/D-PRN-025 and the Case Reconstruction obligations per the Slice 3A amendments (see version history)
 - **Date:** 2026-07-13
 - **Established by:** [ADR-0014](../adr/0014-establish-the-derivation-specification-layer.md) (AGC Review Session 002)
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) 1.2.0
@@ -72,6 +72,25 @@ Applies to every epistemic layer. No layer's schema may carry the vocabulary of 
 | ContradictionLink (Contradiction → Hypothesis) | winner, prevail, surviv, adjudicat, correct, refut, disprov, defeat, weaken, invalidat, rank, preferred |
 
 The Hypothesis row renders Resolution 018's prohibited fields (`probability`, `confidence_score`, `preferred`, `primary`, `leading`, `best_fit`, `winner`, `case_theory`, `accepted`) as stems over structured surfaces — where a stem like `theory`, `best`, or `accept` would be overly broad for prose, it is exactly right for a column name. ContradictionLink deliberately omits `hypoth`: referencing the object it bounds is the link's purpose; the Contradiction object itself still never carries hypothesis vocabulary.
+
+### D-PRN-024 — Constraint precedes expressive power (from ONT-PRN-024)
+
+Applies to every proposed epistemic object or capability, and to composition surfaces (read models).
+
+- **Process:** no implementation until the ontology defines the constraints, refusal conditions, provenance obligations, validity boundaries, and non-effects limiting the new expressive power; the slice plan gate is unapprovable without this floor.
+- **Tests:** the floor lands as refusal codes, Invariant Matrix rows, and negative-obligation tests before code. Cite ONT-PRN-024.
+
+### D-PRN-025 — Historical articulation vs. current derived condition (from ONT-PRN-025)
+
+Applies to every temporal attribute of every object, and to every read surface.
+
+- **Schema:** each temporal attribute classifies as exactly one of *historical-immutable* (stored, content-immutable) or *current-derived* (computed, stored nowhere). A stored field that later events would need to update is a design defect.
+- **Read surfaces:** expose both, side by side, labeled; no derivation overwrites or conceals a historical articulation; no historical record is presented as the current condition.
+- **Tests:** per pattern instance, prove the creation-time record survives the later event that changes the derived state (the Slice 2D acceptance template). Cite ONT-PRN-025.
+
+### D-REC — Case Reconstruction (composition obligations)
+
+The Case Reconstruction is a transient, read-only projection with no epistemic standing of its own (Session 014; not a first-class object). Its normative surface — manifest, visibility envelope, structural non-preference, canonical serialization, ordering, refusal conditions, non-effects — lives in [CASE_RECONSTRUCTION.md](CASE_RECONSTRUCTION.md) and is verified by the H8 suite through semantic structural equality strengthened by canonical byte identity. Governing rule: composition may reveal relationships already present in the constitutional graph; it may never create a meaning that no constitutional record already carries.
 
 ### D-AUD — Atomic audit (from ONT-AUD-001 semantics)
 
@@ -219,3 +238,4 @@ Under the vertical-slice strategy (ADR-0015), the [Invariant Matrix](INVARIANT_M
 | 1.4.0 | 2026-07-13 | D-PRN-018: semantic contamination registry with per-layer forbidden vocabulary and the release-blocking test obligation (Resolution 013 / ADR-0022). |
 | 1.5.0 | 2026-07-13 | ONT-INT-001 obligations refined per Slice 2A amendments: uncertainty envelope, grounding snapshot/roles, comparative guard, derived grounding_health. |
 | 1.6.0 | 2026-07-13 | ONT-HYP-001 obligations refined per ONT-PRN-023 (ADR-0028) and the five Session 012 amendments: four structural conditions, creation-time vs. derived alternative state, boundary-owned validity links, versioned fingerprints, three-state health. D-PRN-018 registry extended through the Hypothesis layer (recording the Unknown/Contradiction rows shipped with Slices 2B/2C) with the structured-surface scope caution. |
+| 1.7.0 | 2026-07-13 | Added D-PRN-024 (constraint precedes expressive power, ADR-0029), D-PRN-025 (historical vs. current, ADR-0030), and D-REC (Case Reconstruction composition obligations, deferring to CASE_RECONSTRUCTION.md), per the Slice 3A gate (AGC Session 014). |

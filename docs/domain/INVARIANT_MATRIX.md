@@ -1,6 +1,6 @@
 # ARGUS Domain Invariant Matrix
 
-- **Document version:** 0.8.0 (Slice 2D: Hypothesis family rows per ADR-0028 / ONT-PRN-023 and the five Session 012 amendments)
+- **Document version:** 0.9.0 (Slice 3A: Case Reconstruction read-model rows per the six Session 014 amendments)
 - **Date:** 2026-07-13
 - **Required by:** ADR-0006 (per-table enforcement specification and material-mutation enumeration)
 - **Derived from:** the [Ontology](ONTOLOGY.md) via the [Derivation Specification](DERIVATION_SPECIFICATION.md) (ADR-0014), with structure from the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md) and [Entity Lifecycles](ENTITY_LIFECYCLES.md)
@@ -123,6 +123,22 @@ Enforcement mechanisms name their PostgreSQL construct per ADR-0006; the service
 | `current_alternative_state`, `unknown_boundary_state`, `contradiction_boundary_state` (derived; no storage) | ONT-HYP-001, ONT-PRN-023, ONT-PRN-015 | invariant | none — derived from links, resolutions, dispositions; no authoritative boolean stored | — | Python predicates + `argus_private.*` renderings, conformance-tested; state changes only through derivation | — | `test_derived_states_change_without_touching_bytes` |
 | H7 negative obligations | ONT-HYP-001, ONT-PRN-023 (Articles II, IV, IX) | invariant | — | — | resolving the shared Unknown, disposing the linked Contradiction, linking alternatives, and retracting a sibling leave every Hypothesis byte-identical; no automatic promotion, refutation, or revision path exists in any function | — | `test_h7_no_automatic_revision`, `test_h7_retraction_no_promotion` |
 
+### Case Reconstruction read model (Slice 3A, AGC Session 014)
+
+No tables are added or altered by this slice; the ERD is unchanged. The reconstruction is a transient projection ([CASE_RECONSTRUCTION.md](CASE_RECONSTRUCTION.md)) — these rows govern the read surface itself.
+
+| Entity / field group | Ontology rule | Class | Permitted mutations | Permitted actors | Enforcing mechanism | Material mutations audited | Verifying test |
+|---|---|---|---|---|---|---|---|
+| Reconstruction: purity (non-effects) | ONT-PRN-024, ONT-PRN-010 | invariant | none — a pure read: no writes, no events, no transitions; twice-identical against unchanged records | — | Python composer issues only SELECTs; `argus_private.case_reconstruction` is STABLE (no writes possible); no evaluation-time values in the canonical payload | — (deliberately none: reconstruction is not a material mutation) | `test_reconstruction_pure_and_deterministic` |
+| Reconstruction: dual-rendered equivalence | ONT-PRN-015 | invariant | — | — | semantic structural equality (jsonb equality) as the H8 requirement; canonical byte identity (chain_version=1 serialization rules, both canonicalizers parity-proven) as the strengthened conformance test | — | `test_h8_semantic_equality`, `test_h8_canonical_byte_identity` |
+| Reconstruction: completeness against the closed manifest | ONT-PRN-003, ONT-PRN-006 (Article VIII) | invariant | — | — | every constitutional class classified in the Reconstruction Manifest; per-class DB count = reconstruction count; manifest-vs-registry coverage test breaks when a future table is unclassified | — | `test_manifest_completeness`, `test_manifest_covers_registry` |
+| Reconstruction: retraction and degradation visibility | ONT-PRN-006 (Article VIII) | invariant | — | — | retracted records present with labeled retraction objects; degraded health surfaced per object; no selective omission by health or disposition | — | `test_retracted_records_visible` |
+| Reconstruction: structural non-preference | ONT-PRN-023 (Article IV) | invariant | — | — | uniform per-class schema, no privileged slots, ordering solely by documented non-epistemic identifiers, symmetric top-level `hypothesis_alternatives`, no aggregation of uncertainty/health/boundary states; prohibited-key registry as tripwire | — | `test_structural_symmetry`, `test_no_prohibited_keys` |
+| Reconstruction: historical/current pairing | ONT-PRN-025 | invariant | — | — | stored articulations and derived states side by side, labeled (`derived` containment); neither merged nor concealed | — | `test_historical_and_current_side_by_side` |
+| Reconstruction: visibility envelope (SEALED) | ONT-EVA-001 (Article VI vs. VIII) | invariant | — | — | explicit `visibility` object; SEALED = existence-plus-status with withheld fields absent and declared (`withholding_basis: AUTHORITY_REQUIRED`); never silent omission; only FULL and SEALED authorized | — | `test_sealed_visibility_envelope` |
+| Reconstruction: audit summary semantics | ONT-AUD-001 (Article VIII) | invariant | — | — | `integrity_status` ∈ CHAIN_VALID/CHAIN_INVALID/CHAIN_NOT_VERIFIED means chain integrity only; CHAIN_INVALID never prevents reconstruction (surface, never silently dispose); independent SQL recomputation in `argus_private.audit_chain_status` | — | `test_broken_chain_surfaced_not_hidden` |
+| Reconstruction: refusal | ONT-CAS-001 | invariant | — | — | unknown case refuses with `ONT-CAS-001:unknown-case`; empty case reconstructs validly | — | `test_unknown_case_refused`, `test_empty_case_valid` |
+
 ### Constitutional predicates (Slice 1C, ADR-0018)
 
 | Entity / field group | Ontology rule | Class | Permitted mutations | Permitted actors | Enforcing mechanism | Material mutations audited | Verifying test |
@@ -145,3 +161,4 @@ Enforcement mechanisms name their PostgreSQL construct per ADR-0006; the service
 | 0.6.0 | 2026-07-13 | Slice 2B gate: Unknown/UnknownLink/UnknownResolution rows per ADR-0024/0025 and the Session 008 amendments. |
 | 0.7.0 | 2026-07-13 | Slice 2C gate: Contradiction/ContradictionMember/ContradictionDisposition rows (ADR-0027, Session 010 amendments). |
 | 0.8.0 | 2026-07-13 | Slice 2D gate: Hypothesis/HypothesisGrounding/HypothesisAlternative/ContradictionLink rows per ADR-0028 (ONT-PRN-023) and the five Session 012 amendments — creation-time vs. derived alternative state, mandatory boundary articulation, versioned fingerprints, three-state health, H7 negative obligations. |
+| 0.9.0 | 2026-07-13 | Slice 3A gate: Case Reconstruction read-model rows (purity, two-level equivalence, manifest completeness, visibility envelope, structural non-preference, historical/current pairing, audit summary semantics, refusal) per the six Session 014 amendments. No schema changes. |
