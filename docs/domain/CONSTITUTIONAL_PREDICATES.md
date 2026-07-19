@@ -1,6 +1,6 @@
 # ARGUS Constitutional Predicates
 
-- **Document version:** 0.8.0 (0.7.0 ratified with Slice 3A; 0.8.0 adds the Slice 1E storage-integrity classification pointer per the Session 016 amendments)
+- **Document version:** 0.9.0 (0.8.0 ratified with Slice 1E; 0.9.0 adds the Slice 1F-A authenticated-actor refusal codes per the Session 018 amendments)
 - **Date:** 2026-07-13
 - **Established by:** [ADR-0018](../adr/0018-constitutional-predicates.md) (Founder Resolution 009, ONT-PRN-014)
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) 1.6.0, [Entity Lifecycles](ENTITY_LIFECYCLES.md) 2.0.0, ADR-0007
@@ -264,6 +264,18 @@ An empty case reconstructs validly; emptiness is not an error. `audit_chain.inte
 
 Reconciliation classifies **integrity, never truth** (ONT-PRN-026/027): the closed condition set `MATCHED` | `MISSING` | `DIVERGENT` | `UNREADABLE` | `UNVERIFIED`, diagnostic divergence reasons, normative precedence, and the report shape live in [STORAGE_RECONCILIATION.md](STORAGE_RECONCILIATION.md); the classifier pair (`argus.reconciliation_scan` / `argus_private.classify_storage_integrity`) is dual-rendered over shared observed facts. Refusal: `ONT-CAS-001:unknown-case`. Agreement is never authenticity; divergence is never falsity; the scan mutates nothing.
 
+## Authenticated actor context (Slice 1F-A)
+
+Identity is **authenticated, never asserted** (ONT-PRN-028): the actor attributed to a constitutional action derives from an authenticated principal, never from caller payload; authentication establishes attribution only — no authority, access, credibility, or epistemic standing. The principal model, binding rule, `SET LOCAL` database guard, and honest single-implementation bound live in [ACTOR_CONTEXT.md](ACTOR_CONTEXT.md). Canonical refusal codes:
+
+| Code | Meaning | Layer |
+|---|---|---|
+| `ONT-PRN-007:unauthenticated` | No verified principal on a constitutional command | transport, DB guard |
+| `ONT-PRN-007:identity-input-prohibited` | Caller-controlled identity field present (refused even when it matches the principal) | transport schema |
+| `ONT-PRN-007:identity-substitution` | Legacy/compat path claims an identity conflicting with the principal | binding |
+| `ONT-PRN-007:principal-class-mismatch` | Action requires a class the principal cannot satisfy | binding |
+| `ONT-PRN-007:actor-principal-mismatch` | Recorded actor inconsistent with the transaction-bound principal | DB guard |
+
 ## Acceptance test (per ADR-0018)
 
 > **Can every constitutional predicate be derived identically by independent implementations?**
@@ -282,3 +294,4 @@ Experiment One: `can_support_observation`, every matrix row, Python decision vs.
 | 0.6.0 | 2026-07-13 | Slice 2D: hypothesis admissibility matrix per ONT-PRN-023 (ADR-0028) and the five Session 012 amendments — four structural conditions, creation-time vs. derived alternative state, mandatory Unknown/Contradiction articulation, versioned fingerprints (interpretation v2, hypothesis v1), three-state hypothesis_health, alternative-link and contradiction-link operations. |
 | 0.7.0 | 2026-07-13 | Slice 3A: reconstruction refusal condition (unknown-case), audit-chain integrity enum semantics, pointer to the Case Reconstruction Specification (AGC Session 014 amendments). |
 | 0.8.0 | 2026-07-13 | Slice 1E: storage-integrity classification pointer (closed condition set, dual-rendered classifier, integrity-never-truth semantics per ONT-PRN-026/027; AGC Session 016 amendments). |
+| 0.9.0 | 2026-07-13 | Slice 1F-A: authenticated-actor refusal codes (unauthenticated, identity-input-prohibited, identity-substitution, principal-class-mismatch, actor-principal-mismatch) and pointer to the Actor Context Specification per ONT-PRN-028 (AGC Session 018 amendments). |

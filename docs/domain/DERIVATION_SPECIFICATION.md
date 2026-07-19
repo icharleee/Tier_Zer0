@@ -1,6 +1,6 @@
 # ARGUS Derivation Specification
 
-- **Document version:** 1.8.0 — Ratified at 1.0.0 by AGC Review Session 003, 2026-07-13; 1.8.0 adds D-PRN-026/D-PRN-027 and the Storage Reconciliation obligations per the Slice 1E amendments (see version history)
+- **Document version:** 1.9.0 — Ratified at 1.0.0 by AGC Review Session 003, 2026-07-13; 1.9.0 adds D-PRN-028 (authenticated actor context) per the Slice 1F-A amendments (see version history)
 - **Date:** 2026-07-13
 - **Established by:** [ADR-0014](../adr/0014-establish-the-derivation-specification-layer.md) (AGC Review Session 002)
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) 1.2.0
@@ -110,6 +110,15 @@ Applies to every operation that can observe divergence in constitutional storage
 ### D-REC-STORAGE — Storage Reconciliation (detection obligations)
 
 The reconciliation scan is a transient, read-only projection of storage-integrity state. Its normative surface — the storage-reference authority triple, the closed condition set with diagnostic reasons, classification precedence, sealed handling, report shape, ContentStore protocol contract — lives in [STORAGE_RECONCILIATION.md](STORAGE_RECONCILIATION.md), verified by the H9 suite (dual-rendered classification over shared observed facts; probing declared single-implementation). Governing rule: reconciliation may tell ARGUS that its representations disagree; it may never tell ARGUS what reality therefore means.
+
+### D-PRN-028 — Identity is authenticated, never asserted (from ONT-PRN-028)
+
+Applies to every constitutional command (any action that creates or transitions constitutional state) exposed through a transport boundary.
+
+- **Schema:** constitutional command schemas carry no identity field; the actor is derived from an authenticated principal, never from payload. A caller-supplied identity field is refused, even when it matches (matching caller assertion is still assertion).
+- **Invariants:** authentication (a single-implementation transport concern), actor attribution (the triangulated binding rule), authority (1F-B), and epistemic meaning (never) stay distinct; the principal carries no permissions; binding performs no resource authorization; attribution confers no credibility.
+- **Persistence:** the principal is bound transaction-scoped (`SET LOCAL`, never a persistent pooled-connection GUC); the guard fails closed at mutation entry for the authenticated application transaction, with audit-append checking only as defense-in-depth; no fallback to caller-supplied identity for transport-originated writes.
+- **Tests:** the binding matrix dual-rendered; refusal for unauthenticated / caller identity input / class mismatch / actor-principal mismatch; principal context does not leak across transactions; a record's epistemic fields are identical across different authenticated authors. Cite ONT-PRN-028. Detail in [ACTOR_CONTEXT.md](ACTOR_CONTEXT.md).
 
 ### D-AUD — Atomic audit (from ONT-AUD-001 semantics)
 
@@ -259,3 +268,4 @@ Under the vertical-slice strategy (ADR-0015), the [Invariant Matrix](INVARIANT_M
 | 1.6.0 | 2026-07-13 | ONT-HYP-001 obligations refined per ONT-PRN-023 (ADR-0028) and the five Session 012 amendments: four structural conditions, creation-time vs. derived alternative state, boundary-owned validity links, versioned fingerprints, three-state health. D-PRN-018 registry extended through the Hypothesis layer (recording the Unknown/Contradiction rows shipped with Slices 2B/2C) with the structured-surface scope caution. |
 | 1.7.0 | 2026-07-13 | Added D-PRN-024 (constraint precedes expressive power, ADR-0029), D-PRN-025 (historical vs. current, ADR-0030), and D-REC (Case Reconstruction composition obligations, deferring to CASE_RECONSTRUCTION.md), per the Slice 3A gate (AGC Session 014). |
 | 1.8.0 | 2026-07-13 | Added D-PRN-026 (integrity is never truth, ADR-0031), D-PRN-027 (no silent repair, ADR-0032), and D-REC-STORAGE (reconciliation detection obligations, deferring to STORAGE_RECONCILIATION.md), per the Slice 1E gate (AGC Session 016). |
+| 1.9.0 | 2026-07-13 | Added D-PRN-028 (identity is authenticated, never asserted; the authentication/attribution/authority/epistemic separation, deferring to ACTOR_CONTEXT.md), per the Slice 1F-A gate (AGC Session 018). |

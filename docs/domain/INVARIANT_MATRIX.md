@@ -1,6 +1,6 @@
 # ARGUS Domain Invariant Matrix
 
-- **Document version:** 0.10.0 (Slice 1E: Storage Reconciliation rows per the four Session 016 amendments)
+- **Document version:** 0.11.0 (Slice 1F-A: Authenticated Actor Context rows per the four Session 018 amendments)
 - **Date:** 2026-07-13
 - **Required by:** ADR-0006 (per-table enforcement specification and material-mutation enumeration)
 - **Derived from:** the [Ontology](ONTOLOGY.md) via the [Derivation Specification](DERIVATION_SPECIFICATION.md) (ADR-0014), with structure from the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md) and [Entity Lifecycles](ENTITY_LIFECYCLES.md)
@@ -156,6 +156,22 @@ No tables are added or altered; the ERD is unchanged. Detection only — repair 
 | ContentStore protocol contract | ONT-PRN-010, ONT-PRN-013 | invariant | — | — | reusable conformance suite every adapter must pass (write-once promotion, content-addressing rule, metadata-level existence, exact reads, quarantine retains, error normalization) — an adapter may not change what MISSING/UNREADABLE means | — | `test_content_store_contract` |
 | Refusal | ONT-CAS-001 | invariant | — | — | unknown case refuses `ONT-CAS-001:unknown-case`; empty case reconciles validly | — | `test_unknown_case_refused_empty_valid` |
 
+### Authenticated Actor Context (Slice 1F-A, ADR-0033)
+
+No epistemic tables are added or altered. Migration 012 adds the database principal guard (read-side assertion) and wires it into the audit-append path as defense-in-depth; the FastAPI transport is the first application-layer surface.
+
+| Entity / field group | Ontology rule | Class | Permitted mutations | Permitted actors | Enforcing mechanism | Material mutations audited | Verifying test |
+|---|---|---|---|---|---|---|---|
+| Actor attribution: derived from principal | ONT-PRN-028 | invariant | — | — | `bind_actor` derives the domain Actor from an `AuthenticatedPrincipal`; the endpoint never constructs `Actor(...)` from request fields; binding is pure | — (binding emits nothing) | `test_binding_matrix`, `test_api_records_authenticated_principal` |
+| Command schemas: no identity field | ONT-PRN-028 (Amendment 3) | invariant | — | — | strict request schemas (`extra=forbid`); any caller identity field refused even when it matches the principal | — | `test_identity_input_prohibited`, `test_matching_identity_still_refused` |
+| Unauthenticated command refused | ONT-PRN-028 | invariant | — | — | transport dependency requires a verified principal; DB guard fails closed (no principal bound → refuse); no record, no audit entry | — | `test_unauthenticated_refused`, `test_no_write_on_refusal` |
+| Principal class vs. required action class | ONT-PRN-028, ONT-PRN-007 | invariant | — | — | `bind_actor` refuses `principal-class-mismatch`; a SERVICE principal cannot perform a HUMAN-only action by claiming HUMAN | — | `test_principal_class_mismatch` |
+| SERVICE human_attribution: attribution only | ONT-PRN-028 (Amendment 2) | invariant | — | — | `human_attribution` traces to the provisioned principal, never payload; narrowed meaning (not authority); legacy `human_authority` field flagged for 1F-B | — | `test_service_human_attribution_from_principal` |
+| Database principal guard: SET LOCAL, fail-closed | ONT-PRN-028 (Amendment 4) | invariant | — | — | `argus_private.assert_transaction_principal` at mutation entry; transaction-scoped `SET LOCAL`; consistency re-checked in `append_audit_event` as defense-in-depth; honest trust-boundary limit stated | — | `test_db_guard_actor_principal_mismatch`, `test_principal_does_not_leak_across_transactions` |
+| Authentication ≠ authority | ONT-PRN-028 corollary | invariant | — | — | `AuthenticatedPrincipal` carries no permission set / case access / visibility; `bind_actor` performs no resource authorization (structural) | — | `test_authentication_confers_no_authority` |
+| Identity ≠ epistemic meaning | ONT-PRN-028 corollary, Article IX | invariant | — | — | records authored under different authenticated principals are epistemically identical; differences confined to attribution/audit fields | — | `test_same_object_different_authors` |
+| Refusal | ONT-PRN-007 | invariant | — | — | canonical codes (unauthenticated / identity-input-prohibited / identity-substitution / principal-class-mismatch / actor-principal-mismatch) | — | `test_refusal_codes` |
+
 ### Constitutional predicates (Slice 1C, ADR-0018)
 
 | Entity / field group | Ontology rule | Class | Permitted mutations | Permitted actors | Enforcing mechanism | Material mutations audited | Verifying test |
@@ -180,3 +196,4 @@ No tables are added or altered; the ERD is unchanged. Detection only — repair 
 | 0.8.0 | 2026-07-13 | Slice 2D gate: Hypothesis/HypothesisGrounding/HypothesisAlternative/ContradictionLink rows per ADR-0028 (ONT-PRN-023) and the five Session 012 amendments — creation-time vs. derived alternative state, mandatory boundary articulation, versioned fingerprints, three-state health, H7 negative obligations. |
 | 0.9.0 | 2026-07-13 | Slice 3A gate: Case Reconstruction read-model rows (purity, two-level equivalence, manifest completeness, visibility envelope, structural non-preference, historical/current pairing, audit summary semantics, refusal) per the six Session 014 amendments. No schema changes. |
 | 0.10.0 | 2026-07-13 | Slice 1E gate: Storage Reconciliation rows (purity, closed integrity conditions, strengthened MATCHED, diagnostic divergence reasons, normative precedence, sealed metadata-only probe, stalled-verification separation, summary reconciliation, ContentStore contract, refusal) per the four Session 016 amendments. No schema changes. |
+| 0.11.0 | 2026-07-13 | Slice 1F-A gate: Authenticated Actor Context rows (derived attribution, identity-free schemas, unauthenticated refusal, principal-class check, attribution-only human_attribution, SET LOCAL fail-closed DB guard, authentication≠authority, identity≠epistemic, refusal codes) per ONT-PRN-028 and the four Session 018 amendments. No epistemic schema changes. |

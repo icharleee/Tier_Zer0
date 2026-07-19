@@ -54,3 +54,4 @@ An ADR is required for any decision that:
 | [0030](0030-historical-articulation-vs-current-condition.md) | Historical articulation and current derived condition remain distinct | Accepted (freeze exemption per ONT-PRN-011) |
 | [0031](0031-reconciliation-never-converts-agreement-into-truth.md) | Reconciliation never converts agreement into truth | Accepted (freeze exemption per ONT-PRN-011) |
 | [0032](0032-no-silent-repair-of-constitutional-history.md) | No silent repair of constitutional history | Accepted (freeze exemption per ONT-PRN-011) |
+| [0033](0033-identity-is-authenticated-never-asserted.md) | Identity is authenticated, never asserted | Accepted (freeze exemption per ONT-PRN-011) |
