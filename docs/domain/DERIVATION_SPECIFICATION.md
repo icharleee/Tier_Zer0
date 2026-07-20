@@ -1,6 +1,6 @@
 # ARGUS Derivation Specification
 
-- **Document version:** 1.9.0 — Ratified at 1.0.0 by AGC Review Session 003, 2026-07-13; 1.9.0 adds D-PRN-028 (authenticated actor context) per the Slice 1F-A amendments (see version history)
+- **Document version:** 1.10.0 — Ratified at 1.0.0 by AGC Review Session 003, 2026-07-13; 1.10.0 adds D-PRN-029/030 (authority and protected access) per the Slice 1F-B amendments (see version history)
 - **Date:** 2026-07-13
 - **Established by:** [ADR-0014](../adr/0014-establish-the-derivation-specification-layer.md) (AGC Review Session 002)
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) 1.2.0
@@ -119,6 +119,22 @@ Applies to every constitutional command (any action that creates or transitions 
 - **Invariants:** authentication (a single-implementation transport concern), actor attribution (the triangulated binding rule), authority (1F-B), and epistemic meaning (never) stay distinct; the principal carries no permissions; binding performs no resource authorization; attribution confers no credibility.
 - **Persistence:** the principal is bound transaction-scoped (`SET LOCAL`, never a persistent pooled-connection GUC); the guard fails closed at mutation entry for the authenticated application transaction, with audit-append checking only as defense-in-depth; no fallback to caller-supplied identity for transport-originated writes.
 - **Tests:** the binding matrix dual-rendered; refusal for unauthenticated / caller identity input / class mismatch / actor-principal mismatch; principal context does not leak across transactions; a record's epistemic fields are identical across different authenticated authors. Cite ONT-PRN-028. Detail in [ACTOR_CONTEXT.md](ACTOR_CONTEXT.md).
+
+### D-PRN-029 — Authority governs actions and visibility, never truth (from ONT-PRN-029)
+
+Applies to every action-authorization and visibility decision.
+
+- **Schema/surfaces:** authorization is a pure decision over normalized, resource-scoped capability grants (Case scope only in 1F-B; no `*`, no inheritance); action authority and visibility authority stay distinct; no authority outcome carries a trust/credibility/preference surface.
+- **Invariants:** no grant or denial changes any stored field, derived state, admissibility, or reconstruction epistemic content; two principals see identical epistemic state for fields both may view; authentication alone confers nothing; trusted-internal execution is not user authority.
+- **Tests:** the `authorize` decision matrix dual-rendered; capability non-inheritance; Case-A grant refused in Case B; authority changes no derived state. Cite ONT-PRN-029. Detail in [AUTHORITY.md](AUTHORITY.md).
+
+### D-PRN-030 — Protected access is explicit, least-privileged, auditable (from ONT-PRN-030)
+
+Applies to every access to protected (SEALED) information.
+
+- **Visibility:** the two-stage ladder — withholding is explicit only once existence may be disclosed (secrecy is not an existence leak); a principal without CASE_READ receives a generic resource denial, never a SEALED envelope.
+- **Access accounting:** protected content is disclosed only when access attribution has been durably recorded; the evidence stays byte-identical; the access event is a new fact (the bounded refinement of read purity). `SEALED_VERIFY` returns integrity, never content, never authenticity.
+- **Tests:** no existence leak without CASE_READ; content withheld if the access audit fails; SEALED_VERIFY without SEALED_CONTENT_READ; explicit withholding never absence. Cite ONT-PRN-030. Detail in [AUTHORITY.md](AUTHORITY.md).
 
 ### D-AUD — Atomic audit (from ONT-AUD-001 semantics)
 
@@ -269,3 +285,4 @@ Under the vertical-slice strategy (ADR-0015), the [Invariant Matrix](INVARIANT_M
 | 1.7.0 | 2026-07-13 | Added D-PRN-024 (constraint precedes expressive power, ADR-0029), D-PRN-025 (historical vs. current, ADR-0030), and D-REC (Case Reconstruction composition obligations, deferring to CASE_RECONSTRUCTION.md), per the Slice 3A gate (AGC Session 014). |
 | 1.8.0 | 2026-07-13 | Added D-PRN-026 (integrity is never truth, ADR-0031), D-PRN-027 (no silent repair, ADR-0032), and D-REC-STORAGE (reconciliation detection obligations, deferring to STORAGE_RECONCILIATION.md), per the Slice 1E gate (AGC Session 016). |
 | 1.9.0 | 2026-07-13 | Added D-PRN-028 (identity is authenticated, never asserted; the authentication/attribution/authority/epistemic separation, deferring to ACTOR_CONTEXT.md), per the Slice 1F-A gate (AGC Session 018). |
+| 1.10.0 | 2026-07-13 | Added D-PRN-029 (authority governs actions and visibility, never truth) and D-PRN-030 (protected access explicit, least-privileged, auditable; two-stage visibility; audit before disclosure), deferring to AUTHORITY.md, per the Slice 1F-B gate (AGC Session 020). |

@@ -1,6 +1,6 @@
 # ARGUS Constitutional Predicates
 
-- **Document version:** 0.9.0 (0.8.0 ratified with Slice 1E; 0.9.0 adds the Slice 1F-A authenticated-actor refusal codes per the Session 018 amendments)
+- **Document version:** 0.10.0 (0.9.0 ratified with Slice 1F-A; 0.10.0 adds the Slice 1F-B authority decision codes per the Session 020 amendments)
 - **Date:** 2026-07-13
 - **Established by:** [ADR-0018](../adr/0018-constitutional-predicates.md) (Founder Resolution 009, ONT-PRN-014)
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) 1.6.0, [Entity Lifecycles](ENTITY_LIFECYCLES.md) 2.0.0, ADR-0007
@@ -276,6 +276,18 @@ Identity is **authenticated, never asserted** (ONT-PRN-028): the actor attribute
 | `ONT-PRN-007:principal-class-mismatch` | Action requires a class the principal cannot satisfy | binding |
 | `ONT-PRN-007:actor-principal-mismatch` | Recorded actor inconsistent with the transaction-bound principal | DB guard |
 
+## Authority and visibility (Slice 1F-B)
+
+**Authority governs actions and visibility, never epistemic standing** (ONT-PRN-029); **protected access is explicit, least-privileged, attributable, and auditable, and absence of access is never absence of evidence** (ONT-PRN-030). The closed capability set, the two-stage visibility ladder, audit-before-disclosure, and the facts-only provider live in [AUTHORITY.md](AUTHORITY.md). The `authorize` decision is dual-rendered (`argus.domain.authority` / `argus_private.authorize`) over normalized grant facts; capabilities are Case-scoped with no inheritance and no global `*`. Decision reasons `CAPABILITY_NOT_GRANTED` / `RESOURCE_SCOPE_MISMATCH` map to the canonical codes:
+
+| Code | Meaning | Layer |
+|---|---|---|
+| `ONT-PRN-029:action-not-authorized` | Principal lacks the action capability for this resource | authority |
+| `ONT-PRN-029:visibility-not-authorized` | Principal lacks the visibility capability for this resource | authority |
+| `ONT-PRN-029:out-of-scope-resource` | Capability held, but scoped to a different Case | authority |
+
+Authority never alters epistemic state; a privileged principal's records are neither more permitted-into-truth nor more credible. `SEALED_VERIFY` classifies storage integrity, never authenticity (ONT-PRN-026 survives elevated access).
+
 ## Acceptance test (per ADR-0018)
 
 > **Can every constitutional predicate be derived identically by independent implementations?**
@@ -295,3 +307,4 @@ Experiment One: `can_support_observation`, every matrix row, Python decision vs.
 | 0.7.0 | 2026-07-13 | Slice 3A: reconstruction refusal condition (unknown-case), audit-chain integrity enum semantics, pointer to the Case Reconstruction Specification (AGC Session 014 amendments). |
 | 0.8.0 | 2026-07-13 | Slice 1E: storage-integrity classification pointer (closed condition set, dual-rendered classifier, integrity-never-truth semantics per ONT-PRN-026/027; AGC Session 016 amendments). |
 | 0.9.0 | 2026-07-13 | Slice 1F-A: authenticated-actor refusal codes (unauthenticated, identity-input-prohibited, identity-substitution, principal-class-mismatch, actor-principal-mismatch) and pointer to the Actor Context Specification per ONT-PRN-028 (AGC Session 018 amendments). |
+| 0.10.0 | 2026-07-13 | Slice 1F-B: authority decision codes (action-not-authorized, visibility-not-authorized, out-of-scope-resource) and pointer to the Authority and Visibility Specification per ONT-PRN-029/030 (AGC Session 020 amendments). |

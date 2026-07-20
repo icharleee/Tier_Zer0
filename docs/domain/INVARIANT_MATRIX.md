@@ -1,6 +1,6 @@
 # ARGUS Domain Invariant Matrix
 
-- **Document version:** 0.11.0 (Slice 1F-A: Authenticated Actor Context rows per the four Session 018 amendments)
+- **Document version:** 0.12.0 (Slice 1F-B: Authority and Visibility rows per the five Session 020 amendments)
 - **Date:** 2026-07-13
 - **Required by:** ADR-0006 (per-table enforcement specification and material-mutation enumeration)
 - **Derived from:** the [Ontology](ONTOLOGY.md) via the [Derivation Specification](DERIVATION_SPECIFICATION.md) (ADR-0014), with structure from the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md) and [Entity Lifecycles](ENTITY_LIFECYCLES.md)
@@ -172,6 +172,23 @@ No epistemic tables are added or altered. Migration 012 adds the database princi
 | Identity ≠ epistemic meaning | ONT-PRN-028 corollary, Article IX | invariant | — | — | records authored under different authenticated principals are epistemically identical; differences confined to attribution/audit fields | — | `test_same_object_different_authors` |
 | Refusal | ONT-PRN-007 | invariant | — | — | canonical codes (unauthenticated / identity-input-prohibited / identity-substitution / principal-class-mismatch / actor-principal-mismatch) | — | `test_refusal_codes` |
 
+### Authority and Visibility (Slice 1F-B, ADR-0034/0035)
+
+No epistemic tables are added or altered. Migration 013 adds the dual-render `authorize` decision function (no table access); grants come from an injected provider (persisted grants deferred).
+
+| Entity / field group | Ontology rule | Class | Permitted mutations | Permitted actors | Enforcing mechanism | Material mutations audited | Verifying test |
+|---|---|---|---|---|---|---|---|
+| Authority decision: capability + Case scope | ONT-PRN-029 (Amendments 1, 5) | invariant | — | — | pure `authorize(required_capability, resource_case_id, grants)`; Case scope only (no `*`); no capability inheritance; dual-rendered Python + `argus_private.authorize`, conformance-swept | — | `test_authorize_matrix`, `test_authorize_conformance`, `test_capability_non_inheritance` |
+| Resource scope: Case-A grant ≠ Case-B | ONT-PRN-029 (Amendment 5) | invariant | — | — | scope_id match required; a grant for one Case never authorizes another | — | `test_case_scope_isolation` |
+| Provider returns facts, not decisions | ONT-PRN-029 (Amendment 4) | invariant | — | — | `AuthorityProvider` yields `AuthorityGrant` facts only; no ALLOW/DENY, no epistemic inspection, no scope expansion (structural) | — | `test_provider_facts_only` |
+| Two-stage visibility: no existence leak | ONT-PRN-030 (Amendment 2) | invariant | — | — | no `CASE_READ` → generic resource denial (existence not disclosed); `CASE_READ` → existence visible, protected fields explicitly withheld; withholding exposed only within the entitled-to-existence stage | — | `test_no_existence_leak_without_case_read`, `test_withholding_when_existence_disclosed` |
+| Visibility projection: singular record | ONT-PRN-030, ONT-PRN-029 | invariant | — | — | `state/existence_visible/metadata_visible/content_visible/withholding_basis` derived from capabilities; the underlying record is singular, only the projection changes (O14 falsifier) | — | `test_o14_projection_varies_record_singular` |
+| Protected content: audit before disclosure | ONT-PRN-030 (Amendment 3) | CT (access history) | append access event | Human (SEALED_CONTENT_READ) | content returned only after `sealed-content-accessed` durably appended; audit failure → no disclosure; read failure → no success event; evidence byte-identical | sealed-content-accessed / sealed-content-access-failed | `test_protected_access_audited`, `test_content_withheld_if_audit_fails`, `test_evidence_byte_identical` |
+| SEALED_VERIFY ≠ SEALED_CONTENT_READ | ONT-PRN-030, ONT-PRN-026 | invariant | — | — | `SEALED_VERIFY` returns the integrity result only, never bytes; integrity ≠ authenticity survives elevated access | (verification is a read; no epistemic mutation) | `test_sealed_verify_no_content`, `test_verify_is_integrity_not_authenticity` |
+| Epistemic neutrality | ONT-PRN-029, Article IX | invariant | — | — | authority grant/denial changes no stored field, derived state, or admissibility; two principals see identical epistemic state for shared fields | — | `test_authority_changes_no_epistemic_state` |
+| Authentication ≠ authority; trusted-internal ≠ user authority | ONT-PRN-029, ONT-PRN-028 | invariant | — | — | an authenticated principal with no grants is denied; trusted-internal (no principal) is infrastructure, never a user-facing authority pass | — | `test_authentication_grants_no_authority`, `test_trusted_internal_not_user_authority` |
+| Action authority vs mutation | ONT-PRN-029 | invariant | — | — | read authority without an action capability cannot write; denied action writes nothing | — | `test_read_authority_cannot_write`, `test_denied_action_writes_nothing` |
+
 ### Constitutional predicates (Slice 1C, ADR-0018)
 
 | Entity / field group | Ontology rule | Class | Permitted mutations | Permitted actors | Enforcing mechanism | Material mutations audited | Verifying test |
@@ -197,3 +214,4 @@ No epistemic tables are added or altered. Migration 012 adds the database princi
 | 0.9.0 | 2026-07-13 | Slice 3A gate: Case Reconstruction read-model rows (purity, two-level equivalence, manifest completeness, visibility envelope, structural non-preference, historical/current pairing, audit summary semantics, refusal) per the six Session 014 amendments. No schema changes. |
 | 0.10.0 | 2026-07-13 | Slice 1E gate: Storage Reconciliation rows (purity, closed integrity conditions, strengthened MATCHED, diagnostic divergence reasons, normative precedence, sealed metadata-only probe, stalled-verification separation, summary reconciliation, ContentStore contract, refusal) per the four Session 016 amendments. No schema changes. |
 | 0.11.0 | 2026-07-13 | Slice 1F-A gate: Authenticated Actor Context rows (derived attribution, identity-free schemas, unauthenticated refusal, principal-class check, attribution-only human_attribution, SET LOCAL fail-closed DB guard, authentication≠authority, identity≠epistemic, refusal codes) per ONT-PRN-028 and the four Session 018 amendments. No epistemic schema changes. |
+| 0.12.0 | 2026-07-13 | Slice 1F-B gate: Authority and Visibility rows (dual-render authorize, Case-scope isolation, facts-only provider, two-stage visibility with no existence leak, singular-record projection, audit-before-disclosure, SEALED_VERIFY≠CONTENT_READ, epistemic neutrality, authentication/trusted-internal ≠ authority) per ONT-PRN-029/030 and the five Session 020 amendments. No epistemic schema changes. |
