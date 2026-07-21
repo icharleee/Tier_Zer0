@@ -57,3 +57,4 @@ An ADR is required for any decision that:
 | [0033](0033-identity-is-authenticated-never-asserted.md) | Identity is authenticated, never asserted | Accepted (freeze exemption per ONT-PRN-011) |
 | [0034](0034-authority-governs-actions-and-visibility-never-truth.md) | Authority governs actions and visibility, never epistemic standing | Accepted (freeze exemption per ONT-PRN-011) |
 | [0035](0035-protected-access-explicit-least-privileged-auditable.md) | Protected access is explicit, least-privileged, attributable, and auditable | Accepted (freeze exemption per ONT-PRN-011) |
+| [0036](0036-presentation-organizes-never-creates-epistemic-hierarchy.md) | Presentation organizes, never creates epistemic hierarchy | Accepted (freeze exemption per ONT-PRN-011) |

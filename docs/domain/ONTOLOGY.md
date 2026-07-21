@@ -1,6 +1,6 @@
 # The ARGUS Ontology
 
-- **Document version:** 1.18.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; subsequent minor versions add stable identifiers and principles through ONT-PRN-030 and the fifteenth object ONT-CDP-001 (see version history)
+- **Document version:** 1.19.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; subsequent minor versions add stable identifiers and principles through ONT-PRN-031 and the fifteenth object ONT-CDP-001 (see version history)
 - **Date:** 2026-07-13
 - **Governed by:** [Engineering Constitution](../foundation/ENGINEERING_CONSTITUTION.md) 1.0.0, [Lexicon](../glossary/LEXICON.md) 1.0.0, ADR-0009 (Founder Resolution 003)
 - **Derived from it:** the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md), [Entity Lifecycles](ENTITY_LIFECYCLES.md), the [Invariant Matrix](INVARIANT_MATRIX.md), and every implementation artifact thereafter
@@ -169,6 +169,7 @@ Cross-cutting principles carry stable identifiers alongside the object registry 
 | ONT-PRN-028 | Identity is authenticated, never asserted: the actor attributed to a constitutional action derives from an authenticated principal context and is never determined by caller payload; authentication establishes attribution only — no authority, access, credibility, or epistemic standing (Resolution 023) | §5, §6 |
 | ONT-PRN-029 | Authority governs permitted actions and visibility, never epistemic standing: granting or denying authority does not change the meaning, admissibility, credibility, or truth status of any constitutional record (Resolution 024) | §5, §6 |
 | ONT-PRN-030 | Access to protected information is explicit, least-privileged, attributable, and auditable; absence of access is never represented as absence of evidence (Resolution 025) | §5, §6 |
+| ONT-PRN-031 | Presentation may organize constitutional information for comprehension, but it must not create epistemic hierarchy, certainty, preference, or conclusion absent from the underlying authorized projection; prominence, ordering, color, defaults, affordances, and labels are part of the constitutional presentation surface wherever they can imply evidentiary or epistemic meaning (Resolution 026) | §2, §5 |
 
 ## 10. Unresolved ontological questions
 
@@ -211,3 +212,4 @@ Ratified as one constitutional package with the [Domain Schema Specification](DO
 | 1.16.0 | 2026-07-13 | Added ONT-PRN-026 (representational agreement is never evidentiary truth, Resolution 021 / ADR-0031) and ONT-PRN-027 (no silent repair — detect ≠ decide ≠ mutate, Resolution 022 / ADR-0032), per AGC Review Session 015. |
 | 1.17.0 | 2026-07-13 | Added ONT-PRN-028 (identity is authenticated, never asserted; attribution only, Resolution 023 / ADR-0033), per AGC Review Session 018. |
 | 1.18.0 | 2026-07-13 | Added ONT-PRN-029 (authority governs actions and visibility, never epistemic standing, Resolution 024 / ADR-0034) and ONT-PRN-030 (protected access is explicit, least-privileged, attributable, auditable; absence of access ≠ absence of evidence, Resolution 025 / ADR-0035), per AGC Review Session 019. |
+| 1.19.0 | 2026-07-13 | Added ONT-PRN-031 (presentation organizes, never creates epistemic hierarchy; the presentation surface is constitutional, Resolution 026 / ADR-0036), per AGC Review Session 021. |
