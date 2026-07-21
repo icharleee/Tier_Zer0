@@ -1,6 +1,6 @@
 # ARGUS Derivation Specification
 
-- **Document version:** 1.10.0 — Ratified at 1.0.0 by AGC Review Session 003, 2026-07-13; 1.10.0 adds D-PRN-029/030 (authority and protected access) per the Slice 1F-B amendments (see version history)
+- **Document version:** 1.11.0 — Ratified at 1.0.0 by AGC Review Session 003, 2026-07-13; 1.11.0 adds D-PRN-031 (constitutional presentation) per the Slice 1F-C amendments (see version history)
 - **Date:** 2026-07-13
 - **Established by:** [ADR-0014](../adr/0014-establish-the-derivation-specification-layer.md) (AGC Review Session 002)
 - **Derived from:** [The ARGUS Ontology](ONTOLOGY.md) 1.2.0
@@ -135,6 +135,15 @@ Applies to every access to protected (SEALED) information.
 - **Visibility:** the two-stage ladder — withholding is explicit only once existence may be disclosed (secrecy is not an existence leak); a principal without CASE_READ receives a generic resource denial, never a SEALED envelope.
 - **Access accounting:** protected content is disclosed only when access attribution has been durably recorded; the evidence stays byte-identical; the access event is a new fact (the bounded refinement of read purity). `SEALED_VERIFY` returns integrity, never content, never authenticity.
 - **Tests:** no existence leak without CASE_READ; content withheld if the access audit fails; SEALED_VERIFY without SEALED_CONTENT_READ; explicit withholding never absence. Cite ONT-PRN-030. Detail in [AUTHORITY.md](AUTHORITY.md).
+
+### D-PRN-031 — Presentation organizes, never creates (from ONT-PRN-031)
+
+Applies to every human-facing rendering of constitutional state.
+
+- **Surfaces:** the rendered page is downstream of the authorized projection — presentation may describe structure and visibility (closed vocabulary) but never paraphrase, summarize, infer, evaluate, or synthesize epistemic content; content parity holds in both directions (every projection value exactly once; nothing visible outside the projection except the closed vocabulary).
+- **Invariants:** peers receive equal presentation rules (never required equal dimensions; truncation for geometry prohibited); citation order and visible citations; retractions inline and counted; text-primary health/integrity semantics without truth color or iconography; contamination scanning covers visible text, classes, IDs, data-* attributes, aria-labels, and titles; the renderer holds no grants and calls no authorize.
+- **Bounds:** static DOM inspection verifies accessibility-relevant source semantics only (accessibility-semantic source parity); full assistive-technology conformance claims are not authorized.
+- **Tests:** the transcribed checklist plus red-team fixtures that must fail the conformance scanner. Cite ONT-PRN-031. Detail in [CASE_PRESENTATION.md](CASE_PRESENTATION.md).
 
 ### D-AUD — Atomic audit (from ONT-AUD-001 semantics)
 
@@ -286,3 +295,4 @@ Under the vertical-slice strategy (ADR-0015), the [Invariant Matrix](INVARIANT_M
 | 1.8.0 | 2026-07-13 | Added D-PRN-026 (integrity is never truth, ADR-0031), D-PRN-027 (no silent repair, ADR-0032), and D-REC-STORAGE (reconciliation detection obligations, deferring to STORAGE_RECONCILIATION.md), per the Slice 1E gate (AGC Session 016). |
 | 1.9.0 | 2026-07-13 | Added D-PRN-028 (identity is authenticated, never asserted; the authentication/attribution/authority/epistemic separation, deferring to ACTOR_CONTEXT.md), per the Slice 1F-A gate (AGC Session 018). |
 | 1.10.0 | 2026-07-13 | Added D-PRN-029 (authority governs actions and visibility, never truth) and D-PRN-030 (protected access explicit, least-privileged, auditable; two-stage visibility; audit before disclosure), deferring to AUTHORITY.md, per the Slice 1F-B gate (AGC Session 020). |
+| 1.11.0 | 2026-07-13 | Added D-PRN-031 (presentation organizes, never creates epistemic meaning; two-class content parity, peer rules, contamination across text/attributes/CSS, accessibility-semantic source parity), deferring to CASE_PRESENTATION.md, per the Slice 1F-C gate (AGC Session 022). |

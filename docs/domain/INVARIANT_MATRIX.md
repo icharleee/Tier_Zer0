@@ -1,6 +1,6 @@
 # ARGUS Domain Invariant Matrix
 
-- **Document version:** 0.12.0 (Slice 1F-B: Authority and Visibility rows per the five Session 020 amendments)
+- **Document version:** 0.13.0 (Slice 1F-C: Case Presentation rows per the five Session 022 amendments)
 - **Date:** 2026-07-13
 - **Required by:** ADR-0006 (per-table enforcement specification and material-mutation enumeration)
 - **Derived from:** the [Ontology](ONTOLOGY.md) via the [Derivation Specification](DERIVATION_SPECIFICATION.md) (ADR-0014), with structure from the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md) and [Entity Lifecycles](ENTITY_LIFECYCLES.md)
@@ -189,6 +189,23 @@ No epistemic tables are added or altered. Migration 013 adds the dual-render `au
 | Authentication ≠ authority; trusted-internal ≠ user authority | ONT-PRN-029, ONT-PRN-028 | invariant | — | — | an authenticated principal with no grants is denied; trusted-internal (no principal) is infrastructure, never a user-facing authority pass | — | `test_authentication_grants_no_authority`, `test_trusted_internal_not_user_authority` |
 | Action authority vs mutation | ONT-PRN-029 | invariant | — | — | read authority without an action capability cannot write; denied action writes nothing | — | `test_read_authority_cannot_write`, `test_denied_action_writes_nothing` |
 
+### Case Presentation (Slice 1F-C, ADR-0036)
+
+No schema changes, no migration, no new refusal codes: the review surface consumes the 1F-B authorized projection unchanged. These rows govern the rendered surface itself ([CASE_PRESENTATION.md](CASE_PRESENTATION.md)).
+
+| Entity / field group | Ontology rule | Class | Permitted mutations | Permitted actors | Enforcing mechanism | Material mutations audited | Verifying test |
+|---|---|---|---|---|---|---|---|
+| Rendered page: read-only, downstream of authority | ONT-PRN-031, ONT-PRN-029 | invariant | none — no mutation path, no workflow controls; renderer receives the projection only (no grants, no authorize access) | — | pure `render_case_review(projection)`; route applies 1F-B generic denial before rendering; defensive omission permitted, visibility expansion structurally impossible | — (an ordinary constitutional read) | `test_projection_only_authority`, `test_no_existence_leak_review` |
+| Non-interference: structure, never meaning | ONT-PRN-031 (Amendment 1) | invariant | — | — | closed presentation vocabulary; no paraphrase/summary/inference/evaluation/synthesis of epistemic content | — | `test_no_synthesized_content` |
+| Content parity: exactly once, both directions | ONT-PRN-031 (Amendment 2) | invariant | — | — | every projection-derived value present once in its structural context; visible values outside the projection belong to the closed vocabulary; no unauthorized duplication (repetition ≠ prominence) | — | `test_content_parity_completeness`, `test_no_unauthorized_duplication` |
+| Peer symmetry: equal rules, not equal dimensions | ONT-PRN-031 (Amendment 4) | invariant | — | — | same template/heading level/field order/classes/state/landmarks for peers; no conditional prominence by health, disposition, or identity; no truncation for geometry | — | `test_peer_rule_equality` |
+| Retraction visibility, inline | ONT-PRN-006, ONT-PRN-031 (Amendment 5) | invariant | — | — | citation order in one section; `Status: RETRACTED` + reason inline; visible retracted count; no "failed" grouping, no condemnation styling | — | `test_retractions_visible_inline` |
+| Ordering and identity | ONT-PRN-031 | invariant | — | — | citation order only; citations visible (`Hypothesis — HYP-000001`); no ordinal or "main" labels | — | `test_citation_order_and_identity` |
+| Health/integrity as text; no truth semantics | ONT-PRN-026, ONT-PRN-031 | invariant | — | — | text labels primary; no green/red truth colors; no ✓/✗/⚠ as primary signal; neutral definitions on-page | — | `test_health_text_no_truth_semantics` |
+| Contamination: text, attributes, CSS | ONT-PRN-018, ONT-PRN-031 | invariant | — | — | scanner over visible text + class/id/data-*/aria-label/title against the transcribed registries; CSS in conformance review | — | `test_attribute_and_css_contamination` |
+| Accessibility-semantic source parity | ONT-PRN-031 (Amendment 3) | invariant | — | — | static DOM inspection: source order, heading hierarchy, landmarks, peer depth, focus order, accessible names; full AT conformance claims NOT AUTHORIZED | — | `test_accessibility_semantic_source_parity` |
+| Red-team discipline (O12 applied to presentation) | ONT-PRN-031, ONT-PRN-015 | invariant | — | — | synthetic violating fixtures must fail the conformance scanner (featured slot, vocabulary, health ordering, asymmetric expansion, hidden retraction, truth CSS, synthesized summary, order mismatch) | — | `test_red_team_fixtures_fail_scanner` |
+
 ### Constitutional predicates (Slice 1C, ADR-0018)
 
 | Entity / field group | Ontology rule | Class | Permitted mutations | Permitted actors | Enforcing mechanism | Material mutations audited | Verifying test |
@@ -215,3 +232,4 @@ No epistemic tables are added or altered. Migration 013 adds the dual-render `au
 | 0.10.0 | 2026-07-13 | Slice 1E gate: Storage Reconciliation rows (purity, closed integrity conditions, strengthened MATCHED, diagnostic divergence reasons, normative precedence, sealed metadata-only probe, stalled-verification separation, summary reconciliation, ContentStore contract, refusal) per the four Session 016 amendments. No schema changes. |
 | 0.11.0 | 2026-07-13 | Slice 1F-A gate: Authenticated Actor Context rows (derived attribution, identity-free schemas, unauthenticated refusal, principal-class check, attribution-only human_attribution, SET LOCAL fail-closed DB guard, authentication≠authority, identity≠epistemic, refusal codes) per ONT-PRN-028 and the four Session 018 amendments. No epistemic schema changes. |
 | 0.12.0 | 2026-07-13 | Slice 1F-B gate: Authority and Visibility rows (dual-render authorize, Case-scope isolation, facts-only provider, two-stage visibility with no existence leak, singular-record projection, audit-before-disclosure, SEALED_VERIFY≠CONTENT_READ, epistemic neutrality, authentication/trusted-internal ≠ authority) per ONT-PRN-029/030 and the five Session 020 amendments. No epistemic schema changes. |
+| 0.13.0 | 2026-07-13 | Slice 1F-C gate: Case Presentation rows (projection-only rendering, non-interference, two-class content parity, peer-rule symmetry, inline retraction visibility, citation identity, text-primary health semantics, text/attribute/CSS contamination, accessibility-semantic source parity, red-team scanner discipline) per ONT-PRN-031 and the five Session 022 amendments. No schema changes, no migration. |
