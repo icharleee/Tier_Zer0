@@ -93,6 +93,44 @@ def _enforce(required: Capability, case_id: str, grants) -> None:
         )
 
 
+def _authorized_case_projection(session: Session, case_id: str, grants) -> dict | None:
+    """The 1F-B authorized projection: identical epistemic sections for any
+    CASE_READ principal, artifact visibility per capability. Returns None
+    when existence may not be disclosed (no CASE_READ, or no such case) —
+    the caller issues the generic denial. This is the single input the
+    1F-C renderer receives: presentation is downstream of authority."""
+    case = session.get(Case, case_id)
+    if case is None or not authorize(Capability.CASE_READ, case_id, grants).allowed:
+        return None
+    doc = reconstruct_case(session, case_id)
+    artifacts = []
+    for a in sorted(
+        session.execute(select(EvidenceArtifact).where(
+            EvidenceArtifact.case_id == case_id)).scalars().all(),
+        key=lambda x: x.id,
+    ):
+        sealed = a.status.value == "SEALED"
+        vis = project_artifact_visibility(sealed=sealed, case_id=case_id, grants=grants)
+        entry = {"id": a.id, "status": a.status.value, "visibility": vis}
+        if vis["metadata_visible"]:
+            entry["metadata"] = {
+                "hash_algorithm": a.hash_algorithm, "hash_digest": a.hash_digest,
+                "size_bytes": a.size_bytes, "media_type": a.media_type,
+                "acquisition_description": a.acquisition_description,
+            }
+        artifacts.append(entry)
+    return {
+        "case": doc["case"],
+        "evidence_artifacts": artifacts,
+        "observations": doc["observations"],
+        "interpretations": doc["interpretations"],
+        "unknowns": doc["unknowns"],
+        "contradictions": doc["contradictions"],
+        "hypotheses": doc["hypotheses"],
+        "hypothesis_alternatives": doc["hypothesis_alternatives"],
+    }
+
+
 def create_app(*, verifier=None, session_factory=None, authority_provider=None,
                content_store=None) -> FastAPI:
     app = FastAPI(title="ARGUS", version="1F-B")
@@ -154,39 +192,33 @@ def create_app(*, verifier=None, session_factory=None, authority_provider=None,
         session: Session = Depends(get_session),
     ):
         grants = _grants(request, principal)
-        case = session.get(Case, case_id)
-        # Stage 1 — existence: no CASE_READ (or no such case) is a generic
-        # denial; existence is never disclosed to the unentitled.
-        if case is None or not authorize(Capability.CASE_READ, case_id, grants).allowed:
+        projection = _authorized_case_projection(session, case_id, grants)
+        if projection is None:
             raise _ResourceDenied()
-        # Epistemic records are identical for any CASE_READ principal.
-        doc = reconstruct_case(session, case_id)
-        artifacts = []
-        for a in sorted(
-            session.execute(select(EvidenceArtifact).where(
-                EvidenceArtifact.case_id == case_id)).scalars().all(),
-            key=lambda x: x.id,
-        ):
-            sealed = a.status.value == "SEALED"
-            vis = project_artifact_visibility(sealed=sealed, case_id=case_id, grants=grants)
-            entry = {"id": a.id, "status": a.status.value, "visibility": vis}
-            if vis["metadata_visible"]:
-                entry["metadata"] = {
-                    "hash_algorithm": a.hash_algorithm, "hash_digest": a.hash_digest,
-                    "size_bytes": a.size_bytes, "media_type": a.media_type,
-                    "acquisition_description": a.acquisition_description,
-                }
-            artifacts.append(entry)
-        return {
-            "case": doc["case"],
-            "evidence_artifacts": artifacts,
-            "observations": doc["observations"],
-            "interpretations": doc["interpretations"],
-            "unknowns": doc["unknowns"],
-            "contradictions": doc["contradictions"],
-            "hypotheses": doc["hypotheses"],
-            "hypothesis_alternatives": doc["hypothesis_alternatives"],
-        }
+        return projection
+
+    # ---- 1F-C: the read-only review surface (presentation) ----
+
+    @app.get("/cases/{case_id}/review")
+    async def get_case_review(
+        case_id: str,
+        request: Request,
+        principal: AuthenticatedPrincipal = Depends(require_principal),
+        session: Session = Depends(get_session),
+    ):
+        from fastapi.responses import HTMLResponse
+
+        from ..presentation.render import render_case_review
+
+        grants = _grants(request, principal)
+        # The same generic-denial behavior as 1F-B, applied BEFORE rendering
+        # begins: the page adds no existence channel the API lacks.
+        projection = _authorized_case_projection(session, case_id, grants)
+        if projection is None:
+            raise _ResourceDenied()
+        # The renderer receives only the authorized projection — no grants,
+        # no authorize access (ONT-PRN-031: downstream of authority).
+        return HTMLResponse(render_case_review(projection))
 
     # ---- 1F-B: action authority + resource scope ----
 

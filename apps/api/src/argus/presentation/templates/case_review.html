@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Case Review — {{ p.case.id }}</title>
+<style>
+/* Neutral by construction (CASE_PRESENTATION.md §7, §9): one border, one
+   text color, no state-dependent styling anywhere. Class names are part
+   of the constitutional surface and are scanned. */
+body { font-family: system-ui, sans-serif; margin: 2rem; color: #1a1a1a; background: #ffffff; }
+section { margin-bottom: 2rem; }
+article.record { border: 1px solid #999999; padding: 0.75rem 1rem; margin: 0.75rem 0; }
+h1, h2, h3 { font-weight: 600; }
+dl { margin: 0.25rem 0; }
+dt { font-weight: 600; display: inline; }
+dd { display: inline; margin: 0 0 0 0.35rem; }
+div.field { margin: 0.15rem 0; }
+ul { margin: 0.25rem 0 0.25rem 1.25rem; }
+</style>
+</head>
+<body>
+<main>
+<h1>Case Review</h1>
+
+<section aria-labelledby="h-case">
+  <h2 id="h-case">Case</h2>
+  <article class="record case-record">
+    <div class="field"><dl><dt>Citation</dt><dd>{{ p.case.id }}</dd></dl></div>
+    <div class="field"><dl><dt>Status</dt><dd>{{ p.case.status }}</dd></dl></div>
+    <div class="field"><dl><dt>Description</dt><dd>{{ p.case.title }}</dd></dl></div>
+  </article>
+</section>
+
+<section aria-labelledby="h-artifacts">
+  <h2 id="h-artifacts">Evidence Artifacts</h2>
+  {% for a in p.evidence_artifacts %}
+  <article class="record artifact-record">
+    <h3>Evidence Artifact — {{ a.id }}</h3>
+    <div class="field"><dl><dt>Status</dt><dd>{{ a.status }}</dd></dl></div>
+    {% if a.metadata is defined and a.metadata %}
+    <div class="field"><dl><dt>Statement</dt><dd>{{ a.metadata.acquisition_description }}</dd></dl></div>
+    {% else %}
+    <div class="field">Metadata withheld — Authority required</div>
+    {% endif %}
+    {% if not a.visibility.content_visible %}
+    <div class="field">Content withheld — Authority required</div>
+    {% endif %}
+  </article>
+  {% endfor %}
+</section>
+
+<section aria-labelledby="h-observations">
+  <h2 id="h-observations">Observations</h2>
+  {% for o in p.observations %}
+  <article class="record observation-record">
+    <h3>Observation — {{ o.citation }}</h3>
+    {% if o.retraction %}
+    <div class="field"><dl><dt>Status</dt><dd>RETRACTED</dd></dl></div>
+    <div class="field"><dl><dt>Retraction reason</dt><dd>{{ o.retraction.reason }}</dd></dl></div>
+    {% endif %}
+    <div class="field"><dl><dt>Statement</dt><dd>{{ o.statement }}</dd></dl></div>
+    <div class="field"><dl><dt>Method</dt><dd>{{ o.method_description }}</dd></dl></div>
+  </article>
+  {% endfor %}
+</section>
+
+<section aria-labelledby="h-interpretations">
+  <h2 id="h-interpretations">Interpretations</h2>
+  {% for i in p.interpretations %}
+  <article class="record interpretation-record">
+    <h3>Interpretation — {{ i.citation }}</h3>
+    {% if i.retraction %}
+    <div class="field"><dl><dt>Status</dt><dd>RETRACTED</dd></dl></div>
+    <div class="field"><dl><dt>Retraction reason</dt><dd>{{ i.retraction.reason }}</dd></dl></div>
+    {% endif %}
+    <div class="field"><dl><dt>Meaning</dt><dd>{{ i.meaning_statement }}</dd></dl></div>
+    <div class="field"><dl><dt>Reasoning</dt><dd>{{ i.reasoning_description }}</dd></dl></div>
+    <div class="field"><dl><dt>Uncertainty</dt><dd>{{ i.uncertainty_status }} — {{ i.uncertainty_explanation }}</dd></dl></div>
+    <div class="field"><dl><dt>Health</dt><dd>{{ i.derived.grounding_health }}</dd></dl></div>
+  </article>
+  {% endfor %}
+</section>
+
+<section aria-labelledby="h-unknowns">
+  <h2 id="h-unknowns">Unknowns</h2>
+  {% for u in p.unknowns %}
+  <article class="record unknown-record">
+    <h3>Unknown — {{ u.citation }}</h3>
+    <div class="field"><dl><dt>Question</dt><dd>{{ u.question }}</dd></dl></div>
+    {% if u.impact_statement %}<div class="field"><dl><dt>Impact</dt><dd>{{ u.impact_statement }}</dd></dl></div>{% endif %}
+    <div class="field"><dl><dt>Status</dt><dd>{{ u.derived.status }}</dd></dl></div>
+    {% if u.links %}
+    <div class="field"><dl><dt>Links</dt><dd>
+      <ul>{% for l in u.links %}<li>Limited by Unknown — {{ l.target_type }} {{ l.target_id }}</li>{% endfor %}</ul>
+    </dd></dl></div>
+    {% endif %}
+    {% if u.resolution %}
+    <div class="field"><dl><dt>Resolution</dt><dd>{{ u.resolution.resolution_type }} — {{ u.resolution.rationale }}</dd></dl></div>
+    {% endif %}
+  </article>
+  {% endfor %}
+</section>
+
+<section aria-labelledby="h-contradictions">
+  <h2 id="h-contradictions">Contradictions</h2>
+  {% for c in p.contradictions %}
+  <article class="record contradiction-record">
+    <h3>Contradiction — {{ c.citation }}</h3>
+    <div class="field"><dl><dt>Description</dt><dd>{{ c.description }}</dd></dl></div>
+    <div class="field"><dl><dt>Scope</dt><dd>{{ c.scope_definition }}</dd></dl></div>
+    <div class="field"><dl><dt>Basis</dt><dd>{{ c.incompatibility_basis }}</dd></dl></div>
+    <div class="field"><dl><dt>Status</dt><dd>{{ c.derived.status }}</dd></dl></div>
+    <div class="field"><dl><dt>Health</dt><dd>{{ c.derived.health }}</dd></dl></div>
+    <div class="field"><dl><dt>Members</dt><dd>
+      <ul>{% for m in c.members %}<li>{{ m.member_type }} {{ m.member_id }}</li>{% endfor %}</ul>
+    </dd></dl></div>
+    {% if c.links %}
+    <div class="field"><dl><dt>Links</dt><dd>
+      <ul>{% for l in c.links %}<li>Challenged by Contradiction — Hypothesis {{ l.hypothesis_id }}</li>{% endfor %}</ul>
+    </dd></dl></div>
+    {% endif %}
+    {% if c.disposition %}
+    <div class="field"><dl><dt>Disposition</dt><dd>{{ c.disposition.outcome }} — {{ c.disposition.rationale }}</dd></dl></div>
+    {% endif %}
+  </article>
+  {% endfor %}
+</section>
+
+<section aria-labelledby="h-hypotheses">
+  <h2 id="h-hypotheses">Hypotheses</h2>
+  {% if retracted_hypotheses %}
+  <p>{{ retracted_hypotheses }} retracted records present</p>
+  {% endif %}
+  {% for h in p.hypotheses %}
+  <article class="record hypothesis-record">
+    <h3>Hypothesis — {{ h.citation }}</h3>
+    {% if h.retraction %}
+    <div class="field"><dl><dt>Status</dt><dd>RETRACTED</dd></dl></div>
+    <div class="field"><dl><dt>Retraction reason</dt><dd>{{ h.retraction.reason }}</dd></dl></div>
+    {% endif %}
+    <div class="field"><dl><dt>Statement</dt><dd>{{ h.explanatory_statement }}</dd></dl></div>
+    <div class="field"><dl><dt>Reasoning</dt><dd>{{ h.reasoning_description }}</dd></dl></div>
+    <div class="field"><dl><dt>Uncertainty</dt><dd>{{ h.uncertainty_status }} — {{ h.uncertainty_explanation }}</dd></dl></div>
+    <div class="field"><dl><dt>Testability</dt><dd>{{ h.testability_statement }}</dd></dl></div>
+    <div class="field"><dl><dt>Challenge condition</dt><dd>{{ h.challenge_condition }}</dd></dl></div>
+    <div class="field"><dl><dt>At creation</dt><dd>{{ h.alternative_articulation_at_creation }}{% if h.alternative_absence_explanation %} — {{ h.alternative_absence_explanation }}{% endif %}</dd></dl></div>
+    <div class="field"><dl><dt>Currently</dt><dd>{{ h.derived.current_alternative_state }}; {{ h.derived.unknown_boundary_state }}; {{ h.derived.contradiction_boundary_state }}</dd></dl></div>
+    <div class="field"><dl><dt>Health</dt><dd>{{ h.derived.hypothesis_health }}</dd></dl></div>
+    <div class="field"><dl><dt>Grounded by</dt><dd>
+      <ul>{% for g in h.groundings %}<li>{% if g.grounding_role == "DERIVED_FROM" %}Derived from{% else %}Contextualized by{% endif %} — Interpretation {{ g.interpretation_id }}</li>{% endfor %}</ul>
+    </dd></dl></div>
+  </article>
+  {% endfor %}
+</section>
+
+<section aria-labelledby="h-alternatives">
+  <h2 id="h-alternatives">Hypothesis Alternatives</h2>
+  {% for alt in p.hypothesis_alternatives %}
+  <article class="record alternative-record">
+    <div class="field"><dl><dt>Alternative pair</dt><dd>{{ alt.hypothesis_a_id }} and {{ alt.hypothesis_b_id }} — {{ alt.relation_explanation }}</dd></dl></div>
+  </article>
+  {% endfor %}
+</section>
+
+<section aria-labelledby="h-definitions">
+  <h2 id="h-definitions">Definitions</h2>
+  <ul>
+  {% for name, definition in state_definitions %}
+    <li><dl><dt>{{ name }}</dt><dd>{{ definition }}</dd></dl></li>
+  {% endfor %}
+  </ul>
+</section>
+
+</main>
+</body>
+</html>
