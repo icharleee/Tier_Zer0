@@ -58,3 +58,4 @@ An ADR is required for any decision that:
 | [0034](0034-authority-governs-actions-and-visibility-never-truth.md) | Authority governs actions and visibility, never epistemic standing | Accepted (freeze exemption per ONT-PRN-011) |
 | [0035](0035-protected-access-explicit-least-privileged-auditable.md) | Protected access is explicit, least-privileged, attributable, and auditable | Accepted (freeze exemption per ONT-PRN-011) |
 | [0036](0036-presentation-organizes-never-creates-epistemic-hierarchy.md) | Presentation organizes, never creates epistemic hierarchy | Accepted (freeze exemption per ONT-PRN-011) |
+| [0037](0037-phase-4-constitutional-hardening-and-replication.md) | Phase 4 — constitutional hardening and replication; Baseline 1.0 | Accepted (freeze exemption per ONT-PRN-011) |
