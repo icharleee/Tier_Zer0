@@ -1,6 +1,6 @@
 # The ARGUS Ontology
 
-- **Document version:** 1.19.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; subsequent minor versions add stable identifiers and principles through ONT-PRN-031 and the fifteenth object ONT-CDP-001 (see version history)
+- **Document version:** 1.20.0 — Ratified at 1.0.0 by AGC Review Session 001, 2026-07-13; subsequent minor versions add stable identifiers and principles through ONT-PRN-032 and the fifteenth object ONT-CDP-001 (see version history)
 - **Date:** 2026-07-13
 - **Governed by:** [Engineering Constitution](../foundation/ENGINEERING_CONSTITUTION.md) 1.0.0, [Lexicon](../glossary/LEXICON.md) 1.0.0, ADR-0009 (Founder Resolution 003)
 - **Derived from it:** the [Domain Schema Specification](DOMAIN_SCHEMA_SPECIFICATION.md), [Entity Lifecycles](ENTITY_LIFECYCLES.md), the [Invariant Matrix](INVARIANT_MATRIX.md), and every implementation artifact thereafter
@@ -170,6 +170,7 @@ Cross-cutting principles carry stable identifiers alongside the object registry 
 | ONT-PRN-029 | Authority governs permitted actions and visibility, never epistemic standing: granting or denying authority does not change the meaning, admissibility, credibility, or truth status of any constitutional record (Resolution 024) | §5, §6 |
 | ONT-PRN-030 | Access to protected information is explicit, least-privileged, attributable, and auditable; absence of access is never represented as absence of evidence (Resolution 025) | §5, §6 |
 | ONT-PRN-031 | Presentation may organize constitutional information for comprehension, but it must not create epistemic hierarchy, certainty, preference, or conclusion absent from the underlying authorized projection; prominence, ordering, color, defaults, affordances, and labels are part of the constitutional presentation surface wherever they can imply evidentiary or epistemic meaning (Resolution 026) | §2, §5 |
+| ONT-PRN-032 | An adapter is constitutionally substitutable only when replacing the reference implementation changes neither the meaning of normalized inputs and outputs nor the constitutional behavior derived from them — interface compatibility alone is insufficient; backend-specific facts must be normalized before they enter constitutional derivations, and backend-specific failure semantics may never silently redefine constitutional states (Resolution 027) | §8 |
 
 ## 10. Unresolved ontological questions
 
@@ -213,3 +214,4 @@ Ratified as one constitutional package with the [Domain Schema Specification](DO
 | 1.17.0 | 2026-07-13 | Added ONT-PRN-028 (identity is authenticated, never asserted; attribution only, Resolution 023 / ADR-0033), per AGC Review Session 018. |
 | 1.18.0 | 2026-07-13 | Added ONT-PRN-029 (authority governs actions and visibility, never epistemic standing, Resolution 024 / ADR-0034) and ONT-PRN-030 (protected access is explicit, least-privileged, attributable, auditable; absence of access ≠ absence of evidence, Resolution 025 / ADR-0035), per AGC Review Session 019. |
 | 1.19.0 | 2026-07-13 | Added ONT-PRN-031 (presentation organizes, never creates epistemic hierarchy; the presentation surface is constitutional, Resolution 026 / ADR-0036), per AGC Review Session 021. |
+| 1.20.0 | 2026-07-21 | Added ONT-PRN-032 (constitutional substitutability of adapters: interface compatibility is insufficient; backend facts normalized before constitutional derivation, Resolution 027 / ADR-0038), per AGC Review Session 024. First post-baseline change: Baseline 1.0 pins 1.19.0 and remains immutable. |

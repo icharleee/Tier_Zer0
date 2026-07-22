@@ -59,3 +59,4 @@ An ADR is required for any decision that:
 | [0035](0035-protected-access-explicit-least-privileged-auditable.md) | Protected access is explicit, least-privileged, attributable, and auditable | Accepted (freeze exemption per ONT-PRN-011) |
 | [0036](0036-presentation-organizes-never-creates-epistemic-hierarchy.md) | Presentation organizes, never creates epistemic hierarchy | Accepted (freeze exemption per ONT-PRN-011) |
 | [0037](0037-phase-4-constitutional-hardening-and-replication.md) | Phase 4 — constitutional hardening and replication; Baseline 1.0 | Accepted (freeze exemption per ONT-PRN-011) |
+| [0038](0038-adapters-constitutionally-substitutable-not-interface-compatible.md) | Adapters are constitutionally substitutable, never merely interface-compatible | Accepted (freeze exemption per ONT-PRN-011) |
